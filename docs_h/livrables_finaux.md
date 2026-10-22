@@ -56,8 +56,8 @@ graph TB
     %% Relations Application -> Domain
     UC_Reschedule -->|"Manipule"| Entity_Concert
     UC_Reschedule -->|"Instancie"| VO_TimeSlot
-    Entity_Concert *-- VO_TimeSlot
-    Entity_Concert ..> Event_Rescheduled : "Produit"
+    Entity_Concert -->|"Possède"| VO_TimeSlot
+    Entity_Concert -.->|"Produit"| Event_Rescheduled
 
     %% Relations Application -> Ports (DIP)
     UC_Reschedule -->|"Dépend du contrat"| Port_Repo
@@ -154,14 +154,13 @@ sequenceDiagram
     Repo-->>UC: persisted_concert
 
     %% 6. Effet secondaire : Notification (Défaut 2)
-    critical Envoi de notification découplé
-        UC->>Notif: notify_schedule_change(concert_id, message)
-        alt Succès notification
-            Notif-->>UC: OK (notification_sent = True)
-        else Échec notification (ex: FESTIPLAN_FAIL_NOTIFICATIONS=True)
-            Notif-->>UC: Erreur (panne SMTP)
-            UC->>UC: Log warning (notification_sent = False, pas de rollback)
-        end
+    Note over UC,Notif: Envoi de notification découplé (effet secondaire non bloquant)
+    UC->>Notif: notify_schedule_change(concert_id, message)
+    alt Succès notification
+        Notif-->>UC: OK (notification_sent = True)
+    else Échec notification (ex: FESTIPLAN_FAIL_NOTIFICATIONS=True)
+        Notif-->>UC: Erreur (panne SMTP)
+        UC->>UC: Log warning (notification_sent = False, pas de rollback)
     end
 
     UC-->>Route: RescheduleConcertResult(concert, notification_sent)
