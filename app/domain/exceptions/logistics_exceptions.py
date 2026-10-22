@@ -15,3 +15,9 @@ class InvalidCapacityError(LogisticsError):
 
 class EquipmentMismatchError(LogisticsError):
     pass
+
+
+class FestivalNotFoundError(LogisticsError):
+    def __init__(self, festival_id: int):
+        super().__init__(f"Festival {festival_id} introuvable")
+        self.festival_id = festival_id

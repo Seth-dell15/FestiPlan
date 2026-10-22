@@ -6,3 +6,4 @@ __pycache__/
 festiplan.db
 *.sqlite
 *.sqlite3
+docs/modele-domaine.drawio
