@@ -9,12 +9,27 @@ from app.adapters.secondary.repositories.artist_sql_repository import ArtistSqlR
 from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlRepository
 from app.adapters.secondary.repositories.stage_sql_repository import StageSqlRepository
 from app.application.use_cases.logistics.create_artist import CreateArtistUseCase
+from app.application.use_cases.logistics.create_festival import CreateFestivalUseCase
 from app.application.use_cases.logistics.create_stage import CreateStageUseCase
+from app.application.use_cases.logistics.get_festival import GetFestivalUseCase
 from app.application.use_cases.logistics.list_artists import ListArtistsUseCase
+from app.application.use_cases.logistics.list_festivals import ListFestivalsUseCase
 from app.application.use_cases.logistics.list_stages import ListStagesUseCase
 from app.database import get_db
 
 DbSession = Annotated[Session, Depends(get_db)]
+
+
+def create_festival_use_case(db: DbSession) -> CreateFestivalUseCase:
+    return CreateFestivalUseCase(FestivalSqlRepository(db))
+
+
+def list_festivals_use_case(db: DbSession) -> ListFestivalsUseCase:
+    return ListFestivalsUseCase(FestivalSqlRepository(db))
+
+
+def get_festival_use_case(db: DbSession) -> GetFestivalUseCase:
+    return GetFestivalUseCase(FestivalSqlRepository(db))
 
 
 def create_artist_use_case(db: DbSession) -> CreateArtistUseCase:

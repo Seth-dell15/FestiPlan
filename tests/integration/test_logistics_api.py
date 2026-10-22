@@ -48,3 +48,26 @@ def test_list_stages_of_a_festival(client):
     stages = client.get("/stages", params={"festival_id": festival_id}).json()
 
     assert [stage["name"] for stage in stages] == ["Valley"]
+
+
+def test_create_list_and_get_festival(client):
+    created = client.post("/festivals", json=FESTIVAL)
+
+    assert created.status_code == 201
+    assert created.json()["status"] == "preparation"
+    festival_id = created.json()["id"]
+    assert [festival["id"] for festival in client.get("/festivals").json()] == [festival_id]
+    assert client.get(f"/festivals/{festival_id}").json()["name"] == "Hellforge Open Air"
+
+
+def test_get_unknown_festival_returns_404(client):
+    assert client.get("/festivals/999").status_code == 404
+
+
+def test_publish_route_still_works_on_a_new_festival(client):
+    festival_id = create_festival(client)
+
+    response = client.post(f"/festivals/{festival_id}/publish")
+
+    assert response.status_code == 200
+    assert client.get(f"/festivals/{festival_id}").json()["status"] == "published"
