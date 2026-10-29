@@ -154,5 +154,7 @@ Tous les livrables d'ingénierie logicielle sont disponibles dans le dossier `do
 * [Livrables Finaux (Pôle Développeur 3) : Diagrammes UML & Note d'Architecture Opérations](docs_h/livrables_dev3_operations.md)
 * [Dossier d'Ingénierie Cybersécurité & Hardening OWASP](docs_h/cybersecurite_hardening.md)
 * [Matrice de Traçabilité des Règles Métier](docs_h/regles_metier.md)
+* [Rétrospective, Analyse Critique & Guide des Bonnes Pratiques pour Futurs Projets](docs_h/bilan_critique_et_guide_bonnes_pratiques.md)
+
 
 
