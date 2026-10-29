@@ -1,32 +1,136 @@
-# FestiPlan — dépôt initial (legacy)
+# FestiPlan — API de Gestion de Festival (Architecture Hexagonale)
 
-API pédagogique FastAPI de gestion d'un festival metal fictif. Le dépôt est volontairement imparfait : règles métier dispersées, dépendances techniques accessibles depuis plusieurs couches, et effets secondaires couplés aux opérations métier. Il ne doit pas être utilisé en production.
+API FastAPI de gestion de festival de musique (*Hellforge Open Air*), refactorisée selon les principes de l'**Architecture Hexagonale (Ports & Adapters)** et du **Domain-Driven Design (DDD)**.
 
-## Fonctionnalités
-- Festivals, artistes, scènes et concerts
-- Consultation du planning, déplacement et annulation de concerts
-- Publication d'un festival et déclaration d'incidents
-- Notifications simulées, avec échec configurable
+---
 
-## Installation (Python 3.11+)
+## 1. Fonctionnalités & Domaine Métier
+
+* **Festivals :** Création, consultation, cycle de vie et publication du planning.
+* **Artistes & Scènes :** Enregistrement des groupes et de leurs besoins techniques, gestion des capacités et équipements des scènes.
+* **Programmation des Concerts (`Scheduling`) :**
+  * Création de concerts avec contrôle strict de non-chevauchement (**R2, R3**) et respect des dates du festival (**R6**).
+  * Déplacement de concerts (`reschedule`) avec protection contre les conflits de scène et d'artiste.
+  * Verrouillage des modifications si le festival est déjà publié (**R7**).
+  * Découplage de la notification (une panne réseau n'annule pas la persistance et ne crash pas l'API).
+* **Incidents :** Déclaration et suivi des incidents techniques en cours de concert.
+
+---
+
+## 2. Organisation de l'Architecture
+
+Le code sépare rigoureusement la logique métier pure des mécanismes techniques :
+
+```text
+app/
+├── domain/                         # Cœur Métier 100% Python pur (0 dépendance framework/DB)
+│   ├── models/                     # Entités DDD (Concert, etc.)
+│   ├── value_objects/              # Objets-Valeurs immuables (TimeSlot, etc.)
+│   ├── exceptions/                 # Exceptions métier explicites (StageOccupiedError...)
+│   ├── events/                     # Événements de domaine (ConcertRescheduledEvent)
+│   └── ports/                      # Interfaces abstraites (IConcertRepository, IFestivalQueryPort...)
+├── application/                    # Cas d'usage applicatifs (Use Cases)
+│   └── use_cases/scheduling/       # RescheduleConcertUseCase, ScheduleConcertUseCase...
+└── adapters/                       # Adaptateurs d'infrastructure
+    ├── primary/api/                # Contrôleurs HTTP FastAPI & Schemas Pydantic
+    └── secondary/                  # Repositories SQLAlchemy, InMemory & Adaptateurs Mail
+```
+
+---
+
+## 3. Installation et Démarrage rapide
+
+### Prérequis
+* Python 3.11+
+* SQLite3
+
+### Installation
+
 ```bash
+# 1. Créer et activer l'environnement virtuel
 python -m venv .venv
-# Windows: .venv\Scripts\Activate.ps1 ; macOS/Linux: source .venv/bin/activate
+# Sous Windows PowerShell :
+.venv\Scripts\Activate.ps1
+# Sous macOS / Linux :
+source .venv/bin/activate
+
+# 2. Installer les dépendances
 pip install -r requirements.txt
+
+# 3. Initialiser la base de données SQLite avec le jeu de données démo
 python -m app.seed
+```
+
+### Lancement de l'API
+
+```bash
 uvicorn app.main:app --reload
 ```
-Documentation : http://127.0.0.1:8000/docs
-Tests : `pytest`
 
-Par défaut, SQLite crée `festiplan.db` dans le dossier courant. Copier `.env.example` vers `.env` si nécessaire.
+* **API Swagger interactive :** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* **Healthcheck :** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
-## Données
-Festival fictif **Hellforge Open Air**, du 18 au 20 juin 2027. Scènes : Mainstage, Warzone, Valley et Temple. Les groupes, horaires et capacités sont inventés ; seule l'ambiance générale est inspirée des festivals metal multi-scènes.
+---
 
-## Scénarios à explorer
-1. Déplacer un concert sur un créneau occupé sur la même scène : la validation est incomplète dans le parcours de déplacement.
-2. Définir `FESTIPLAN_FAIL_NOTIFICATIONS=true`, déplacer un concert, puis consulter son créneau : l'API peut répondre 500 alors que le déplacement est déjà enregistré.
-3. Publier le festival puis déplacer un concert par l'endpoint ordinaire : le statut publié n'est pas protégé.
+## 4. Exécution des Tests
 
-Le dépôt contient des tests volontairement sommaires de validation. Les scénarios métier ci-dessus ne sont pas couverts complètement au départ : ils sont à investiguer et à sécuriser pendant la refactorisation.
+Le projet intègre une suite complète de **44 tests automatisés** (unitaires purs et intégration réelle) exécutables en moins d'une seconde :
+
+```bash
+# Exécution de toute la suite de tests
+python -m pytest
+
+# Exécution avec détails verbeux
+python -m pytest -v
+
+# Exécution ciblée des tests unitaires du domaine
+python -m pytest tests/unit/
+
+# Exécution des tests d'intégration avec l'API
+python -m pytest tests/integration/
+```
+
+---
+
+## 5. Comment tester les scénarios clés manuellement
+
+Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)) :
+
+### Scénario 1 : Déplacement nominal d'un concert
+1. Exécutez `GET /concerts?festival_id=1` pour visualiser les concerts seedés.
+2. Déplacez le concert n°1 via `PATCH /concerts/1/reschedule` avec le JSON :
+   ```json
+   {
+     "start_time": "2027-06-18T14:00:00",
+     "end_time": "2027-06-18T15:00:00"
+   }
+   ```
+3. L'API renvoie **HTTP 200 OK** et la date est mise à jour.
+
+### Scénario 2 : Protection contre les conflits de programmation (Défaut 1 résolu)
+* **Conflit de scène (R2) :** Tentez de déplacer un concert sur le créneau d'un autre concert de la même scène (ex: 18h30 à 19h30 sur Mainstage) ➔ L'API renvoie **HTTP 400 Bad Request** (`"Conflit de scène"`).
+* **Conflit d'artiste (R3) :** Tentez de déplacer un concert pour faire jouer un artiste sur deux scènes différentes en même temps ➔ L'API renvoie **HTTP 400 Bad Request** (`"Conflit d'artiste"`).
+
+### Scénario 3 : Résistance aux pannes de notification (Défaut 2 résolu)
+1. Activez la simulation de panne de notification dans votre fichier `.env` ou console :
+   ```bash
+   $env:FESTIPLAN_FAIL_NOTIFICATIONS="true"
+   ```
+2. Déplacez un concert via `PATCH /concerts/1/reschedule`.
+3. Contrairement au code legacy qui crashait en HTTP 500, l'API renvoie **HTTP 200 OK** et la persistance est préservée.
+
+### Scénario 4 : Verrouillage du festival publié (Défaut 3 résolu)
+1. Publiez le festival via `POST /festivals/1/publish`.
+2. Tentez ensuite de déplacer un concert via `PATCH /concerts/1/reschedule`.
+3. L'API refuse la modification et renvoie **HTTP 400 Bad Request** (`"Le festival a déjà été publié. Les modifications ordinaires du planning sont verrouillées."`).
+
+---
+
+## 6. Documentation Technique & Livrables
+
+Tous les livrables d'ingénierie logicielle sont disponibles dans le dossier `docs_h/` :
+* [Livrable Intermédiaire Étape 1 : Diagnostic Initial](docs_h/livrable_intermediaire_step_1.md)
+* [Livrable Intermédiaire Étape 2 : Modélisation Métier DDD](docs_h/livrable_intermediaire_step_2.md)
+* [Livrable Étape 6 : Stratégie de Tests & Pyramide](docs_h/strategie_de_tests.md)
+* [Livrables Finaux : Diagrammes UML de Composants & de Séquence, Note d'Architecture](docs_h/livrables_finaux.md)
+* [Matrice de Traçabilité des Règles Métier](docs_h/regles_metier.md)
