@@ -74,7 +74,7 @@ uvicorn app.main:app --reload
 
 ## 4. Exécution des Tests
 
-Le projet intègre une suite complète de **73 tests automatisés** (unitaires purs et intégration réelle) exécutables en moins de 2 secondes :
+Le projet intègre une suite complète de **83 tests automatisés** (unitaires purs, applicatifs, intégration réelle et sécurité OWASP) exécutables en moins de 2 secondes :
 
 ```bash
 # Exécution de toute la suite de tests
@@ -82,6 +82,9 @@ python -m pytest
 
 # Exécution avec détails verbeux
 python -m pytest -v
+
+# Exécution de la suite de sécurité (Injections SQL, XSS, En-têtes, DoS, Info Leak)
+python -m pytest tests/security/
 
 # Exécution ciblée des tests unitaires du domaine
 python -m pytest tests/unit/
@@ -149,5 +152,7 @@ Tous les livrables d'ingénierie logicielle sont disponibles dans le dossier `do
 * [Livrable Étape 6 : Stratégie de Tests & Pyramide](docs_h/strategie_de_tests.md)
 * [Livrables Finaux (Pôle Développeur 1) : Diagrammes UML & Note d'Architecture](docs_h/livrables_finaux.md)
 * [Livrables Finaux (Pôle Développeur 3) : Diagrammes UML & Note d'Architecture Opérations](docs_h/livrables_dev3_operations.md)
+* [Dossier d'Ingénierie Cybersécurité & Hardening OWASP](docs_h/cybersecurite_hardening.md)
 * [Matrice de Traçabilité des Règles Métier](docs_h/regles_metier.md)
+
 
