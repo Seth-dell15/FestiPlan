@@ -19,3 +19,11 @@ class IFestivalQueryPort(Protocol):
     def get_schedule_info(self, festival_id: int) -> FestivalScheduleInfo | None:
         """Récupère les dates et le statut de publication d'un festival."""
         ...
+
+
+class IFestivalCommandPort(Protocol):
+    """Port sortant pour modifier le statut du festival (ex: publication)."""
+
+    def publish_festival(self, festival_id: int) -> FestivalScheduleInfo | None:
+        """Passe le statut du festival à 'published' et renvoie les infos mises à jour."""
+        ...
