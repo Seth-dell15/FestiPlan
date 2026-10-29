@@ -74,7 +74,7 @@ uvicorn app.main:app --reload
 
 ## 4. Exécution des Tests
 
-Le projet intègre une suite complète de **44 tests automatisés** (unitaires purs et intégration réelle) exécutables en moins d'une seconde :
+Le projet intègre une suite complète de **73 tests automatisés** (unitaires purs et intégration réelle) exécutables en moins de 2 secondes :
 
 ```bash
 # Exécution de toute la suite de tests
@@ -116,13 +116,28 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
    ```bash
    $env:FESTIPLAN_FAIL_NOTIFICATIONS="true"
    ```
-2. Déplacez un concert via `PATCH /concerts/1/reschedule`.
+2. Déplacez un concert via `PATCH /concerts/1/reschedule` ou publiez un festival via `POST /festivals/1/publish`.
 3. Contrairement au code legacy qui crashait en HTTP 500, l'API renvoie **HTTP 200 OK** et la persistance est préservée.
 
 ### Scénario 4 : Verrouillage du festival publié (Défaut 3 résolu)
 1. Publiez le festival via `POST /festivals/1/publish`.
 2. Tentez ensuite de déplacer un concert via `PATCH /concerts/1/reschedule`.
 3. L'API refuse la modification et renvoie **HTTP 400 Bad Request** (`"Le festival a déjà été publié. Les modifications ordinaires du planning sont verrouillées."`).
+
+### Scénario 5 : Publication avec contrôle strict du planning (R8)
+1. Tentez de publier un festival dont le planning contient des conflits ou des concerts hors dates : l'API bloque la publication et renvoie **HTTP 400 Bad Request**.
+2. Sur un planning valide, `POST /festivals/1/publish` passe le statut à `"published"` et notifie les équipes.
+
+### Scénario 6 : Déclaration et résolution d'incidents (R10)
+1. Déclarez un incident via `POST /incidents` avec :
+   ```json
+   {
+     "concert_id": 1,
+     "description": "Panne de retour son sur la scène principale"
+   }
+   ```
+2. Une description vide est immédiatement rejetée (**HTTP 400**).
+3. Clôturez l'incident via `PATCH /incidents/{id}/resolve` ➔ son statut passe à `resolved: true`.
 
 ---
 
@@ -132,5 +147,7 @@ Tous les livrables d'ingénierie logicielle sont disponibles dans le dossier `do
 * [Livrable Intermédiaire Étape 1 : Diagnostic Initial](docs_h/livrable_intermediaire_step_1.md)
 * [Livrable Intermédiaire Étape 2 : Modélisation Métier DDD](docs_h/livrable_intermediaire_step_2.md)
 * [Livrable Étape 6 : Stratégie de Tests & Pyramide](docs_h/strategie_de_tests.md)
-* [Livrables Finaux : Diagrammes UML de Composants & de Séquence, Note d'Architecture](docs_h/livrables_finaux.md)
+* [Livrables Finaux (Pôle Développeur 1) : Diagrammes UML & Note d'Architecture](docs_h/livrables_finaux.md)
+* [Livrables Finaux (Pôle Développeur 3) : Diagrammes UML & Note d'Architecture Opérations](docs_h/livrables_dev3_operations.md)
 * [Matrice de Traçabilité des Règles Métier](docs_h/regles_metier.md)
+

@@ -20,20 +20,24 @@ Notre stratégie poursuit 4 objectifs clés :
 
 ```text
            ▲
-          / \     Tests d'Intégration (API + SQLite)
+          / \     Tests d'Intégration & E2E (API + SQLite) (20 tests)
          /   \    - test_scheduling_integration.py (6 tests)
-        /─────\   - Tests de bout en bout avec TestClient & DB réelle
-       /       \
-      /         \   Tests Applicatifs (Cas d'Usage)
-     /           \  - test_reschedule_use_case.py (7 tests)
-    /             \ - test_schedule_use_case.py (5 tests)
-   /───────────────\ - Repositories In-Memory & fakes de notification
-  /                 \
- /                   \  Tests Unitaires Purs du Domaine
-/                     \ - test_time_slot.py (12 tests)
-/───────────────────────\ - test_concert.py (8 tests)
-                          - 100% Python pur (dataclasses, 0 I/O)
+        /─────\   - test_operations_integration.py (8 tests)
+       /       \  - Tests API initiaux legacy (6 tests)
+      /         \
+     /           \  Tests Applicatifs des Cas d'Usage (25 tests)
+    /             \ - Scheduling: reschedule (7 tests), schedule (5 tests)
+   /───────────────\- Operations: publish (7 tests), incidents (6 tests)
+  /                 \ Repositories In-Memory & fakes de notification
+ /                   \
+/                     \ Tests Unitaires Purs du Domaine (28 tests)
+/───────────────────────\- Scheduling: TimeSlot (12 tests), Concert (8 tests)
+                         - Operations: Incident R10 (8 tests)
+                         - 100% Python pur (dataclasses, 0 I/O)
 ```
+
+**Bilan d'exécution :** **73 tests automatisés exécutés en ~1.6 seconde (100% au vert)**.
+
 
 ---
 
