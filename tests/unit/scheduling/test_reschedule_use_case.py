@@ -94,6 +94,7 @@ def test_defect_1_stage_conflict_refused(concert_repo, festival_info):
     use_case = RescheduleConcertUseCase(
         concert_repository=concert_repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
+        notification_sender=FakeNotificationAdapter(),
     )
 
     # Tentative de déplacer Concert 1 (sur Mainstage) pour chevaucher Concert 2 (19h30 - 20h30)
@@ -115,6 +116,7 @@ def test_defect_1_artist_conflict_refused(concert_repo, festival_info):
     use_case = RescheduleConcertUseCase(
         concert_repository=concert_repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
+        notification_sender=FakeNotificationAdapter(),
     )
 
     # Déplacer Concert 1 (Artiste 10) sur le créneau du 19 juin 21h où l'Artiste 10 joue déjà (Concert 3)
@@ -164,6 +166,7 @@ def test_defect_3_cannot_reschedule_published_festival(concert_repo):
     use_case = RescheduleConcertUseCase(
         concert_repository=concert_repo,
         festival_query_port=FakeFestivalQueryAdapter({1: published_festival}),
+        notification_sender=FakeNotificationAdapter(),
     )
 
     cmd = RescheduleConcertCommand(
@@ -181,6 +184,7 @@ def test_reschedule_outside_festival_dates_refused(concert_repo, festival_info):
     use_case = RescheduleConcertUseCase(
         concert_repository=concert_repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
+        notification_sender=FakeNotificationAdapter(),
     )
 
     # Déplacement au 25 juin (le festival finit le 20 juin)
@@ -198,6 +202,7 @@ def test_reschedule_nonexistent_concert_raises_not_found(concert_repo, festival_
     use_case = RescheduleConcertUseCase(
         concert_repository=concert_repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
+        notification_sender=FakeNotificationAdapter(),
     )
 
     cmd = RescheduleConcertCommand(

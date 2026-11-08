@@ -14,7 +14,17 @@ from app.application.use_cases.scheduling.schedule_concert import (
 from app.application.use_cases.scheduling.cancel_concert import CancelConcertUseCase
 from app.application.use_cases.scheduling.get_schedule import GetFestivalScheduleUseCase
 from app.adapters.secondary.repositories.in_memory_concert_repository import InMemoryConcertRepository
+from app.adapters.secondary.repositories.in_memory_scheduling_catalog import InMemorySchedulingCatalog
+from app.domain.ports.repositories.scheduling_catalog_port import ArtistScheduleInfo, StageScheduleInfo
 from tests.unit.scheduling.test_reschedule_use_case import FakeFestivalQueryAdapter
+
+
+def make_catalog() -> InMemorySchedulingCatalog:
+    # Scène 100 (festival 1) et artistes 10 et 20 sans besoin technique particulier
+    return InMemorySchedulingCatalog(
+        stages=[StageScheduleInfo(id=100, festival_id=1, name="Mainstage")],
+        artists=[ArtistScheduleInfo(id=10, name="Iron Vow"), ArtistScheduleInfo(id=20, name="Crimson Engine")],
+    )
 
 
 @pytest.fixture
@@ -33,6 +43,7 @@ def test_schedule_concert_success(festival_info):
     use_case = ScheduleConcertUseCase(
         concert_repository=repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
+        catalog_port=make_catalog(),
     )
 
     cmd = ScheduleConcertCommand(
@@ -61,6 +72,7 @@ def test_schedule_concert_conflict_raises_stage_occupied(festival_info):
     use_case = ScheduleConcertUseCase(
         concert_repository=repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
+        catalog_port=make_catalog(),
     )
 
     cmd = ScheduleConcertCommand(
@@ -75,7 +87,7 @@ def test_schedule_concert_conflict_raises_stage_occupied(festival_info):
         use_case.execute(cmd)
 
 
-def test_cancel_concert():
+def test_cancel_concert(festival_info):
     concert = Concert(
         id=1,
         festival_id=1,
@@ -84,16 +96,16 @@ def test_cancel_concert():
         time_slot=TimeSlot(datetime(2027, 6, 18, 18, 0), datetime(2027, 6, 18, 19, 0)),
     )
     repo = InMemoryConcertRepository([concert])
-    use_case = CancelConcertUseCase(repo)
+    use_case = CancelConcertUseCase(repo, FakeFestivalQueryAdapter({1: festival_info}))
 
     cancelled = use_case.execute(1)
     assert cancelled.is_cancelled
     assert repo.get_by_id(1).is_cancelled
 
 
-def test_cancel_nonexistent_concert():
+def test_cancel_nonexistent_concert(festival_info):
     repo = InMemoryConcertRepository()
-    use_case = CancelConcertUseCase(repo)
+    use_case = CancelConcertUseCase(repo, FakeFestivalQueryAdapter({1: festival_info}))
 
     with pytest.raises(ConcertNotFoundError):
         use_case.execute(999)

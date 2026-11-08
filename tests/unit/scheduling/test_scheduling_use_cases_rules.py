@@ -1,0 +1,126 @@
+"""Tests des cas d'utilisation Planification avec des adaptateurs en mémoire (R4, R5, R7, annulation)."""
+from datetime import datetime
+import pytest
+
+from app.domain.models.concert import Concert
+from app.domain.value_objects.time_slot import TimeSlot
+from app.domain.ports.repositories.festival_repository_port import FestivalScheduleInfo
+from app.domain.ports.repositories.scheduling_catalog_port import ArtistScheduleInfo, StageScheduleInfo
+from app.domain.exceptions.scheduling_exceptions import (
+    CannotModifyPublishedFestivalError,
+    ConcertAlreadyCancelledError,
+    MissingStageEquipmentError,
+    StageNotInFestivalError,
+    UnknownArtistError,
+    UnknownFestivalError,
+    UnknownStageError,
+)
+from app.application.use_cases.scheduling.schedule_concert import ScheduleConcertUseCase, ScheduleConcertCommand
+from app.application.use_cases.scheduling.reschedule_concert import (
+    RescheduleConcertUseCase,
+    RescheduleConcertCommand,
+)
+from app.application.use_cases.scheduling.cancel_concert import CancelConcertUseCase
+from app.adapters.secondary.repositories.in_memory_concert_repository import InMemoryConcertRepository
+from app.adapters.secondary.repositories.in_memory_scheduling_catalog import InMemorySchedulingCatalog
+from app.adapters.secondary.notifications.fake_notification_adapter import FakeNotificationAdapter
+from tests.unit.scheduling.test_reschedule_use_case import FakeFestivalQueryAdapter
+
+OPEN = FestivalScheduleInfo(id=1, name="Hellforge", start_date=datetime(2027, 6, 18, 10),
+                            end_date=datetime(2027, 6, 20, 23, 59), is_published=False)
+PUBLISHED = FestivalScheduleInfo(**{**OPEN.__dict__, "is_published": True})
+
+CATALOG = InMemorySchedulingCatalog(
+    stages=[
+        StageScheduleInfo(id=100, festival_id=1, name="Mainstage",
+                          available_equipment=frozenset({"large_rigging", "special_lighting"})),
+        StageScheduleInfo(id=200, festival_id=1, name="Warzone", available_equipment=frozenset({"special_lighting"})),
+        StageScheduleInfo(id=900, festival_id=2, name="Ailleurs"),
+    ],
+    artists=[
+        ArtistScheduleInfo(id=10, name="Iron Vow", required_equipment=frozenset({"large_rigging"})),
+        ArtistScheduleInfo(id=20, name="Concrete Reign"),
+    ],
+)
+
+
+def schedule(repo=None, festival=OPEN):
+    return ScheduleConcertUseCase(repo or InMemoryConcertRepository(), FakeFestivalQueryAdapter({1: festival}), CATALOG)
+
+
+def cmd(**overrides):
+    values = dict(festival_id=1, artist_id=20, stage_id=200,
+                  start_time=datetime(2027, 6, 19, 10), end_time=datetime(2027, 6, 19, 11))
+    values.update(overrides)
+    return ScheduleConcertCommand(**values)
+
+
+def existing_concert(status="scheduled"):
+    return Concert(id=1, festival_id=1, artist_id=20, stage_id=200,
+                   time_slot=TimeSlot(datetime(2027, 6, 19, 10), datetime(2027, 6, 19, 11)), status=status)
+
+
+# --- Programmer : R4 / R5 / R7 ----------------------------------------------------
+
+@pytest.mark.parametrize("overrides, error", [
+    ({"festival_id": 99}, UnknownFestivalError),
+    ({"stage_id": 99}, UnknownStageError),
+    ({"artist_id": 99}, UnknownArtistError),
+    ({"stage_id": 900}, StageNotInFestivalError),
+    ({"artist_id": 10, "stage_id": 200}, MissingStageEquipmentError),
+])
+def test_schedule_rejects_invalid_references_and_nothing_is_saved(overrides, error):
+    repo = InMemoryConcertRepository()
+    with pytest.raises(error):
+        schedule(repo).execute(cmd(**overrides))
+    assert repo.list_for_festival(1, include_cancelled=True) == []
+
+
+def test_schedule_accepts_artist_on_stage_with_required_equipment():
+    concert = schedule().execute(cmd(artist_id=10, stage_id=100))
+    assert concert.id is not None
+
+
+def test_schedule_is_refused_on_published_festival():
+    with pytest.raises(CannotModifyPublishedFestivalError):
+        schedule(festival=PUBLISHED).execute(cmd())
+
+
+# --- Déplacer un concert annulé ---------------------------------------------------
+
+def test_reschedule_cancelled_concert_is_refused_and_no_notification_is_sent():
+    repo = InMemoryConcertRepository([existing_concert(status="cancelled")])
+    notifier = FakeNotificationAdapter()
+    use_case = RescheduleConcertUseCase(repo, FakeFestivalQueryAdapter({1: OPEN}), notifier)
+    with pytest.raises(ConcertAlreadyCancelledError):
+        use_case.execute(RescheduleConcertCommand(1, datetime(2027, 6, 19, 14), datetime(2027, 6, 19, 15)))
+    assert notifier.sent_notifications == []
+
+
+def test_reschedule_notification_describes_the_move():
+    repo = InMemoryConcertRepository([existing_concert()])
+    notifier = FakeNotificationAdapter()
+    RescheduleConcertUseCase(repo, FakeFestivalQueryAdapter({1: OPEN}), notifier).execute(
+        RescheduleConcertCommand(1, datetime(2027, 6, 19, 14), datetime(2027, 6, 19, 15))
+    )
+    assert notifier.sent_notifications == [{
+        "concert_id": 1,
+        "message": "Le concert a été déplacé du 2027-06-19T10:00:00 au 2027-06-19T14:00:00",
+    }]
+
+
+# --- Annuler : R7 et double annulation -------------------------------------------
+
+def test_cancel_is_refused_on_published_festival_and_concert_is_unchanged():
+    repo = InMemoryConcertRepository([existing_concert()])
+    with pytest.raises(CannotModifyPublishedFestivalError):
+        CancelConcertUseCase(repo, FakeFestivalQueryAdapter({1: PUBLISHED})).execute(1)
+    assert not repo.get_by_id(1).is_cancelled
+
+
+def test_cancel_twice_is_refused():
+    repo = InMemoryConcertRepository([existing_concert()])
+    use_case = CancelConcertUseCase(repo, FakeFestivalQueryAdapter({1: OPEN}))
+    use_case.execute(1)
+    with pytest.raises(ConcertAlreadyCancelledError):
+        use_case.execute(1)

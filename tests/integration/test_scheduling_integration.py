@@ -134,31 +134,31 @@ def test_integration_defect_1_stage_overlap_rejected(client, setup_festival_data
             "end_time": "2027-06-18T19:30:00",
         },
     )
-    assert res_conflict.status_code == 400
+    assert res_conflict.status_code == 409
     assert "Conflit de scène" in res_conflict.json()["detail"]
 
 
 def test_integration_defect_1_artist_overlap_rejected(client, setup_festival_data):
     data = setup_festival_data
 
-    # Concert 1 : Artiste 1 sur Mainstage de 18h à 19h
+    # Concert 1 : Artiste 2 (sans besoin technique) sur Mainstage de 18h à 19h
     client.post(
         "/concerts",
         json={
             "festival_id": data["festival_id"],
-            "artist_id": data["artist_1_id"],
+            "artist_id": data["artist_2_id"],
             "stage_id": data["stage_1_id"],
             "start_time": "2027-06-18T18:00:00",
             "end_time": "2027-06-18T19:00:00",
         },
     )
 
-    # Concert 2 : Même Artiste 1 sur Warzone de 21h à 22h
+    # Concert 2 : Même Artiste 2 sur Warzone (R5 respectée) de 21h à 22h
     r2 = client.post(
         "/concerts",
         json={
             "festival_id": data["festival_id"],
-            "artist_id": data["artist_1_id"],
+            "artist_id": data["artist_2_id"],
             "stage_id": data["stage_2_id"],
             "start_time": "2027-06-18T21:00:00",
             "end_time": "2027-06-18T22:00:00",
@@ -174,7 +174,7 @@ def test_integration_defect_1_artist_overlap_rejected(client, setup_festival_dat
             "end_time": "2027-06-18T19:15:00",
         },
     )
-    assert res_conflict.status_code == 400
+    assert res_conflict.status_code == 409
     assert "Conflit d'artiste" in res_conflict.json()["detail"]
 
 
@@ -245,7 +245,7 @@ def test_integration_defect_3_published_festival_locked(client, setup_festival_d
             "end_time": "2027-06-18T21:00:00",
         },
     )
-    assert res.status_code == 400
+    assert res.status_code == 409
     assert "déjà été publié" in res.json()["detail"]
 
 

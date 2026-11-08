@@ -2,11 +2,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from app.domain.models.concert import Concert
 from app.domain.value_objects.time_slot import TimeSlot
+from app.domain.services import scheduling_policy as policy
 from app.domain.ports.repositories.concert_repository_port import IConcertRepository
 from app.domain.ports.repositories.festival_repository_port import IFestivalQueryPort
+from app.domain.ports.repositories.scheduling_catalog_port import ISchedulingCatalogPort
 from app.domain.exceptions.scheduling_exceptions import (
-    ConcertOutsideFestivalError,
-    CannotModifyPublishedFestivalError,
+    UnknownArtistError,
+    UnknownFestivalError,
+    UnknownStageError,
 )
 
 
@@ -21,49 +24,56 @@ class ScheduleConcertCommand:
 
 
 class ScheduleConcertUseCase:
-    """Cas d'usage : Programmer un concert."""
+    """Cas d'usage : Programmer un concert.
+
+    Vérifie, dans cet ordre : R1 (créneau), R4 (festival, scène et artiste existants,
+    scène du bon festival), R7 (planning non publié), R6 (dates du festival),
+    R5 (équipements) puis R2/R3 (conflits), avant d'enregistrer le concert.
+    Tous les ports sont obligatoires : aucune règle ne peut être sautée par oubli d'injection.
+    """
 
     def __init__(
         self,
         concert_repository: IConcertRepository,
-        festival_query_port: IFestivalQueryPort | None = None,
+        festival_query_port: IFestivalQueryPort,
+        catalog_port: ISchedulingCatalogPort,
     ):
         self._concert_repo = concert_repository
         self._festival_port = festival_query_port
+        self._catalog = catalog_port
 
     def execute(self, command: ScheduleConcertCommand) -> Concert:
-        # 1. R1 : vérification du créneau horaire
+        # R1 : le créneau valide lui-même ses bornes
         time_slot = TimeSlot(start=command.start_time, end=command.end_time)
 
-        # 2. R6 & R7 : vérification par rapport au festival
-        if self._festival_port is not None:
-            festival_info = self._festival_port.get_schedule_info(command.festival_id)
-            if festival_info is not None:
-                if festival_info.is_published:
-                    raise CannotModifyPublishedFestivalError(
-                        f"Impossible de programmer un concert sur le festival #{command.festival_id} déjà publié."
-                    )
-                if not time_slot.is_within(festival_info.start_date, festival_info.end_date):
-                    raise ConcertOutsideFestivalError(
-                        f"Le créneau ({time_slot.start} - {time_slot.end}) ne s'inscrit pas "
-                        f"dans les dates du festival ({festival_info.start_date} - {festival_info.end_date})"
-                    )
+        # R4 : le festival doit exister
+        festival = self._festival_port.get_schedule_info(command.festival_id)
+        if festival is None:
+            raise UnknownFestivalError(command.festival_id)
 
-        # 3. Création du concert candidat
+        # R7 puis R6
+        policy.ensure_festival_is_modifiable(festival)
+        policy.ensure_within_festival(time_slot, festival)
+
+        # R4 : la scène et l'artiste doivent exister ; R4/R5 : scène du festival, équipements
+        stage = self._catalog.get_stage_info(command.stage_id)
+        if stage is None:
+            raise UnknownStageError(command.stage_id)
+        artist = self._catalog.get_artist_info(command.artist_id)
+        if artist is None:
+            raise UnknownArtistError(command.artist_id)
+        policy.ensure_stage_can_host(command.festival_id, stage, artist)
+
+        # R2 & R3 : conflits avec les concerts actifs du festival
         new_concert = Concert(
             festival_id=command.festival_id,
             artist_id=command.artist_id,
             stage_id=command.stage_id,
             time_slot=time_slot,
         )
-
-        # 4. R2 & R3 : vérification des conflits avec les concerts existants
-        existing = self._concert_repo.list_for_festival(
-            festival_id=command.festival_id,
-            include_cancelled=False,
+        policy.ensure_no_conflict(
+            new_concert,
+            self._concert_repo.list_for_festival(festival_id=command.festival_id, include_cancelled=False),
         )
-        for other in existing:
-            new_concert.check_conflict_with(other)
 
-        # 5. Persistance
         return self._concert_repo.save(new_concert)
