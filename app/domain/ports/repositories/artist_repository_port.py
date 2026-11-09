@@ -3,8 +3,8 @@ from typing import Protocol
 from app.domain.models.artist import Artist
 
 
-class ArtistRepositoryPort(Protocol):
-    def get(self, artist_id: int) -> Artist | None: ...
+class IArtistRepository(Protocol):
+    def get_by_id(self, artist_id: int) -> Artist | None: ...
 
     def list(self) -> list[Artist]: ...
 

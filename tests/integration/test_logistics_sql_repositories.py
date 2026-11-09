@@ -40,7 +40,7 @@ def test_festival_round_trip_keeps_period_and_status(session):
     repository = FestivalSqlRepository(session)
     saved = repository.save(make_festival())
 
-    loaded = repository.get(saved.id)
+    loaded = repository.get_by_id(saved.id)
 
     assert loaded.name == "Hellforge Open Air"
     assert loaded.period == saved.period
@@ -58,7 +58,7 @@ def test_festival_save_updates_existing_row(session):
 
 
 def test_unknown_festival_is_none(session):
-    assert FestivalSqlRepository(session).get(42) is None
+    assert FestivalSqlRepository(session).get_by_id(42) is None
 
 
 def test_artist_equipment_is_stored_as_csv_and_read_back_as_set(session):
@@ -68,7 +68,7 @@ def test_artist_equipment_is_stored_as_csv_and_read_back_as_set(session):
     )
 
     assert session.get(ArtistRow, artist.id).required_equipment == "double_kick,pyro"
-    assert repository.get(artist.id).required_equipment == EquipmentSet.of(["pyro", "double_kick"])
+    assert repository.get_by_id(artist.id).required_equipment == EquipmentSet.of(["pyro", "double_kick"])
 
 
 def test_stages_are_listed_per_festival(session):

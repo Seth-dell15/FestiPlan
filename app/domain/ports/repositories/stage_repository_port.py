@@ -3,8 +3,8 @@ from typing import Protocol
 from app.domain.models.stage import Stage
 
 
-class StageRepositoryPort(Protocol):
-    def get(self, stage_id: int) -> Stage | None: ...
+class IStageRepository(Protocol):
+    def get_by_id(self, stage_id: int) -> Stage | None: ...
 
     def list_for_festival(self, festival_id: int) -> list[Stage]: ...
 

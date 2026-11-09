@@ -1,18 +1,18 @@
 from sqlalchemy.orm import Session
 
 from app.domain.models.artist import Artist
-from app.domain.ports.repositories.artist_repository_port import ArtistRepositoryPort
+from app.domain.ports.repositories.artist_repository_port import IArtistRepository
 from app.domain.value_objects.equipment_set import EquipmentSet
 from app.models import Artist as ArtistRow
 
 
-class ArtistSqlRepository(ArtistRepositoryPort):
+class ArtistSqlRepository(IArtistRepository):
     """Traduit entre le modèle ORM legacy et l'entité Artist ; les équipements restent stockés en CSV."""
 
     def __init__(self, session: Session):
         self._session = session
 
-    def get(self, artist_id: int) -> Artist | None:
+    def get_by_id(self, artist_id: int) -> Artist | None:
         row = self._session.get(ArtistRow, artist_id)
         return _to_entity(row) if row else None
 

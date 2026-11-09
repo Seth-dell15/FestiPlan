@@ -6,7 +6,7 @@ from app.adapters.primary.api.logistics_dependencies import create_stage_use_cas
 from app.adapters.primary.api.schemas.stage_schemas import StageCreateRequest, StageResponse
 from app.application.use_cases.logistics.create_stage import CreateStageCommand, CreateStageUseCase
 from app.application.use_cases.logistics.list_stages import ListStagesUseCase
-from app.domain.exceptions.logistics_exceptions import LogisticsError
+from app.domain.exceptions.scheduling_exceptions import DomainException
 
 router = APIRouter(prefix="/stages", tags=["stages"])
 
@@ -34,7 +34,7 @@ def create_stage(
     )
     try:
         stage = use_case.execute(command)
-    except LogisticsError as exc:
+    except DomainException as exc:
         # 400 comme l'ancienne route, y compris pour un festival inconnu.
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return StageResponse.from_entity(stage)

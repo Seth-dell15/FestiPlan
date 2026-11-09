@@ -24,7 +24,7 @@ def test_create_festival_saves_it_in_preparation():
 
     assert festival.id is not None
     assert festival.status is FestivalStatus.PREPARATION
-    assert repository.get(festival.id) is festival
+    assert repository.get_by_id(festival.id) is festival
 
 
 def test_create_festival_with_end_before_start_saves_nothing():

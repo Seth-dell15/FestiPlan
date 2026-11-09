@@ -1,23 +1,19 @@
-class LogisticsError(ValueError):
-    """Erreur métier du référentiel (festivals, scènes, artistes).
-
-    Hérite de ValueError pour rester compatible avec les routes actuelles, qui traduisent ValueError en HTTP 400.
-    """
+from app.domain.exceptions.scheduling_exceptions import DomainException
 
 
-class InvalidFestivalDatesError(LogisticsError):
+class InvalidFestivalDatesError(DomainException):
     pass
 
 
-class InvalidCapacityError(LogisticsError):
+class InvalidCapacityError(DomainException):
     pass
 
 
-class EquipmentMismatchError(LogisticsError):
+class EquipmentMismatchError(DomainException):
     pass
 
 
-class FestivalNotFoundError(LogisticsError):
+class FestivalNotFoundError(DomainException):
     def __init__(self, festival_id: int):
         super().__init__(f"Festival {festival_id} introuvable")
         self.festival_id = festival_id

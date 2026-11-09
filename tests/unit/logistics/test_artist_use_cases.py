@@ -12,7 +12,7 @@ def test_create_artist_turns_equipment_list_into_equipment_set():
 
     assert artist.id is not None
     assert artist.required_equipment == EquipmentSet.of(["pyro"])
-    assert repository.get(artist.id) is artist
+    assert repository.get_by_id(artist.id) is artist
 
 
 def test_create_artist_without_equipment():

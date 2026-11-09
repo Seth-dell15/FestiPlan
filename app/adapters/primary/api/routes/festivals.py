@@ -11,7 +11,8 @@ from app.adapters.primary.api.schemas.festival_schemas import FestivalCreateRequ
 from app.application.use_cases.logistics.create_festival import CreateFestivalCommand, CreateFestivalUseCase
 from app.application.use_cases.logistics.get_festival import GetFestivalUseCase
 from app.application.use_cases.logistics.list_festivals import ListFestivalsUseCase
-from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError, LogisticsError
+from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError
+from app.domain.exceptions.scheduling_exceptions import DomainException
 
 # La route de publication reste dans app/api/festivals.py (pôle opérations).
 router = APIRouter(prefix="/festivals", tags=["festivals"])
@@ -40,7 +41,7 @@ def create_festival(
     )
     try:
         festival = use_case.execute(command)
-    except LogisticsError as exc:
+    except DomainException as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return FestivalResponse.from_entity(festival)
 
