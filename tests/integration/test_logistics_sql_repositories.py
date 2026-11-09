@@ -4,18 +4,18 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app import models  # noqa: F401  enregistre les tables dans Base.metadata
+from app.adapters.secondary.database import models  # noqa: F401  enregistre les tables dans Base.metadata
 from app.adapters.secondary.repositories.artist_sql_repository import ArtistSqlRepository
 from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlRepository
 from app.adapters.secondary.repositories.stage_sql_repository import StageSqlRepository
-from app.database import Base
+from app.adapters.secondary.database.session import Base
 from app.domain.models.artist import Artist
 from app.domain.models.festival import Festival
 from app.domain.models.stage import Stage
 from app.domain.value_objects.equipment_set import EquipmentSet
 from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.festival_status import FestivalStatus
-from app.models import Artist as ArtistRow
+from app.adapters.secondary.database.models import Artist as ArtistRow
 
 
 @pytest.fixture

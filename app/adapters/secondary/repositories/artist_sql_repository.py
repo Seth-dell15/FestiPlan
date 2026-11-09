@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.domain.models.artist import Artist
 from app.domain.ports.repositories.artist_repository_port import IArtistRepository
 from app.domain.value_objects.equipment_set import EquipmentSet
-from app.models import Artist as ArtistRow
+from app.adapters.secondary.database.models import Artist as ArtistRow
 
 
 class ArtistSqlRepository(IArtistRepository):

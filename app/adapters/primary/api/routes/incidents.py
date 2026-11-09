@@ -2,12 +2,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.adapters.primary.api.operations_dependencies import (
+from app.composition import (
     declare_incident_use_case,
     list_incidents_use_case,
     resolve_incident_use_case,
 )
-from app.schemas import IncidentCreate, IncidentRead
+from app.adapters.primary.api.schemas.incident_schemas import IncidentCreate, IncidentRead
 from app.application.ports.inbound import DeclareIncidentCommand, IDeclareIncidentPort
 from app.application.use_cases.operations.list_incidents import ListIncidentsUseCase
 from app.application.use_cases.operations.resolve_incident import ResolveIncidentUseCase

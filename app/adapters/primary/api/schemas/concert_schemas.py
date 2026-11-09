@@ -1,4 +1,30 @@
-from app.schemas import ConcertRead
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict
+
+
+class ConcertCreate(BaseModel):
+    festival_id: int
+    artist_id: int
+    stage_id: int
+    start_time: datetime
+    end_time: datetime
+
+
+class ConcertReschedule(BaseModel):
+    start_time: datetime
+    end_time: datetime
+
+
+class ConcertRead(BaseModel):
+    id: int
+    festival_id: int
+    artist_id: int
+    stage_id: int
+    start_time: datetime
+    end_time: datetime
+    status: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ConcertRescheduleRead(ConcertRead):

@@ -1,16 +1,16 @@
 from datetime import datetime
-from app.database import Base,SessionLocal,engine
-from app.models import Festival,Artist,Stage,Concert,Incident
+from app.adapters.secondary.database.session import Base,SessionLocal,engine
+from app.adapters.secondary.database.models import Festival,Artist,Stage,Concert,Incident
 
 IRON_VOW = "Iron Vow"
 CRIMSON_ENGINE = "Crimson Engine"
 JUNE_18_19H = "2027-06-18T19:00:00"
 
-Base.metadata.create_all(bind=engine)
 
 def dt(v): 
   return datetime.fromisoformat(v)
 def seed():
+ Base.metadata.create_all(bind=engine)
  db=SessionLocal()
  try:
   for model in (Incident,Concert,Stage,Artist,Festival): 

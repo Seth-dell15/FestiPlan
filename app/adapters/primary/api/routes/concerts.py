@@ -1,16 +1,15 @@
 """Adaptateur primaire HTTP du pôle Planification (/concerts).
 
 Le contrôleur ne connaît ni SQLAlchemy ni l'envoi de notifications : il reçoit des cas
-d'utilisation assemblés dans scheduling_dependencies.py, traduit la requête en commande,
+d'utilisation assemblés dans composition.py, traduit la requête en commande,
 puis traduit le résultat ou l'erreur métier en réponse HTTP.
 """
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.schemas import ConcertCreate, ConcertRead, ConcertReschedule
-from app.adapters.primary.api.schemas.concert_schemas import ConcertRescheduleRead
-from app.adapters.primary.api import scheduling_dependencies as deps
+from app.adapters.primary.api.schemas.concert_schemas import ConcertCreate, ConcertRead, ConcertReschedule, ConcertRescheduleRead
+from app import composition as deps
 from app.domain.models.concert import Concert
 from app.domain.exceptions.scheduling_exceptions import (
     DomainException,

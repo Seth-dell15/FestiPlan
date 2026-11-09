@@ -1,17 +1,26 @@
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app import composition
 from app.config import settings
-from app.database import Base, engine
-from app import models  # noqa
 from app.adapters.primary.api.routes import artists, concerts, festivals, incidents, publication, stages
 from app.adapters.primary.security.security_headers import SecurityHeadersMiddleware
 from app.adapters.primary.security.error_handler import global_security_exception_handler
 
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    composition.create_tables()
+    yield
+
+
 app = FastAPI(
     title=settings.app_name,
     version="0.1.0",
     description="API de gestion de festival sécurisée (Architecture Hexagonale)",
+    lifespan=lifespan,
 )
 
 # 1. En-têtes de sécurité HTTP (OWASP)

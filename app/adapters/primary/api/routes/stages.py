@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.adapters.primary.api.logistics_dependencies import create_stage_use_case, list_stages_use_case
+from app.composition import create_stage_use_case, list_stages_use_case
 from app.adapters.primary.api.schemas.stage_schemas import StageCreateRequest, StageResponse
 from app.application.use_cases.logistics.create_stage import CreateStageCommand, CreateStageUseCase
 from app.application.use_cases.logistics.list_stages import ListStagesUseCase

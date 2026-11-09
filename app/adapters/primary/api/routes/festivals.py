@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.adapters.primary.api.logistics_dependencies import (
+from app.composition import (
     create_festival_use_case,
     get_festival_use_case,
     list_festivals_use_case,

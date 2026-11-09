@@ -170,8 +170,8 @@ def test_api_publish_with_schedule_conflict_refused_r8(client, setup_festival_an
 
     # Créer un second concert SUR LA MÊME SCÈNE AU MÊME CRÉNEAU (15h - 16h)
     # L'endpoint POST standard sans notre UseCase de déplacement permettrait une insertion ou via DB
-    from app.models import Concert as ConcertOrm
-    from app.database import SessionLocal
+    from app.adapters.secondary.database.models import Concert as ConcertOrm
+    from app.adapters.secondary.database.session import SessionLocal
     db = SessionLocal()
     conflicting_concert = ConcertOrm(
         festival_id=fid,

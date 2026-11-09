@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from app.adapters.primary.api.logistics_dependencies import create_artist_use_case, list_artists_use_case
+from app.composition import create_artist_use_case, list_artists_use_case
 from app.adapters.primary.api.schemas.artist_schemas import ArtistCreateRequest, ArtistResponse
 from app.application.use_cases.logistics.create_artist import CreateArtistCommand, CreateArtistUseCase
 from app.application.use_cases.logistics.list_artists import ListArtistsUseCase

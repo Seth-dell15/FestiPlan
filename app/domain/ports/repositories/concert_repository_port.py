@@ -19,7 +19,3 @@ class IConcertRepository(Protocol):
     def save(self, concert: Concert) -> Concert:
         """Sauvegarde (création ou mise à jour) un concert et retourne l'entité persistée."""
         ...
-
-    def delete(self, concert_id: int) -> None:
-        """Supprime un concert de la persistance."""
-        ...

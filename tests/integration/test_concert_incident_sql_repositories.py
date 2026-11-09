@@ -4,13 +4,13 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app import models  # noqa: F401  enregistre les tables dans Base.metadata
+from app.adapters.secondary.database import models  # noqa: F401  enregistre les tables dans Base.metadata
 from app.adapters.secondary.repositories.artist_sql_repository import ArtistSqlRepository
 from app.adapters.secondary.repositories.concert_sql_repository import ConcertSqlRepository
 from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlRepository
 from app.adapters.secondary.repositories.incident_sql_repository import IncidentSqlRepository
 from app.adapters.secondary.repositories.stage_sql_repository import StageSqlRepository
-from app.database import Base
+from app.adapters.secondary.database.session import Base
 from app.domain.models.artist import Artist
 from app.domain.models.concert import Concert
 from app.domain.models.festival import Festival
@@ -19,7 +19,7 @@ from app.domain.models.stage import Stage
 from app.domain.value_objects.concert_status import ConcertStatus
 from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.time_slot import TimeSlot
-from app.models import Concert as ConcertRow
+from app.adapters.secondary.database.models import Concert as ConcertRow
 
 
 @pytest.fixture

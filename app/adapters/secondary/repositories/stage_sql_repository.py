@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.domain.models.stage import Stage
 from app.domain.ports.repositories.stage_repository_port import IStageRepository
 from app.domain.value_objects.equipment_set import EquipmentSet
-from app.models import Stage as StageRow
+from app.adapters.secondary.database.models import Stage as StageRow
 
 
 class StageSqlRepository(IStageRepository):

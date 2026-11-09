@@ -1,7 +1,7 @@
 from app.domain.events.concert_events import ConcertRescheduledEvent
 from app.domain.events.operation_events import FestivalPublishedEvent
 from app.domain.ports.services.notification_sender_port import INotificationSenderPort
-from app.utils.email_sender import send_email
+from app.adapters.secondary.notifications.email_sender import send_email
 
 
 class EmailNotificationAdapter(INotificationSenderPort):

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models import Concert as ConcertOrm
+from app.adapters.secondary.database.models import Concert as ConcertOrm
 from app.domain.models.concert import Concert
 from app.domain.value_objects.concert_status import ConcertStatus
 from app.domain.value_objects.time_slot import TimeSlot
@@ -62,9 +62,3 @@ class ConcertSqlRepository(IConcertRepository):
 
         concert.id = orm.id
         return concert
-
-    def delete(self, concert_id: int) -> None:
-        orm = self._db.query(ConcertOrm).filter(ConcertOrm.id == concert_id).first()
-        if orm:
-            self._db.delete(orm)
-            self._db.commit()

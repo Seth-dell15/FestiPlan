@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models import Incident as IncidentModel
+from app.adapters.secondary.database.models import Incident as IncidentModel
 from app.domain.models.incident import Incident
 from app.domain.ports.repositories.incident_repository_port import IIncidentRepository
 

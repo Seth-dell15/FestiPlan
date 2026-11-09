@@ -31,6 +31,3 @@ class InMemoryConcertRepository(IConcertRepository):
             self._auto_id += 1
         self._storage[concert.id] = concert
         return concert
-
-    def delete(self, concert_id: int) -> None:
-        self._storage.pop(concert_id, None)

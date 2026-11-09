@@ -8,7 +8,7 @@ from app.domain.ports.repositories.festival_repository_port import (
 )
 from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.festival_status import FestivalStatus
-from app.models import Festival as FestivalRow
+from app.adapters.secondary.database.models import Festival as FestivalRow
 
 
 class FestivalSqlRepository(IFestivalRepository):

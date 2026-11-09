@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.adapters.primary.api.operations_dependencies import publish_festival_use_case
+from app.composition import publish_festival_use_case
 from app.adapters.primary.api.schemas.festival_schemas import FestivalPublishResponse, FestivalResponse
 from app.application.ports.inbound import IPublishFestivalPort
 from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError

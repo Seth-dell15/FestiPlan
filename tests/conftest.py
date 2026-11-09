@@ -3,8 +3,8 @@ import pytest
 _tmp=tempfile.NamedTemporaryFile(suffix=".db",delete=False); _tmp.close()
 os.environ["FESTIPLAN_DATABASE_URL"]=f"sqlite:///{_tmp.name}"
 from fastapi.testclient import TestClient
-from app.database import Base,engine,SessionLocal
-from app import models
+from app.adapters.secondary.database.session import Base,engine,SessionLocal
+from app.adapters.secondary.database import models
 from app.main import app
 
 @pytest.fixture(scope="session",autouse=True)

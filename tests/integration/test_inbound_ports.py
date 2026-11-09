@@ -3,9 +3,8 @@ from typing import get_type_hints
 
 import pytest
 
-from app.adapters.primary.api.operations_dependencies import publish_festival_use_case
 from app.adapters.primary.api.routes import concerts, incidents, publication
-from app.adapters.primary.api.scheduling_dependencies import reschedule_concert_use_case
+from app.composition import publish_festival_use_case, reschedule_concert_use_case
 from app.application.ports.inbound import (
     IDeclareIncidentPort,
     IPublishFestivalPort,
