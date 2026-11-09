@@ -22,6 +22,9 @@ Pour structurer ce domaine et protéger nos règles métier, nous appliquons les
 
 ## 2. Modélisation Conceptuelle du Domaine (Diagramme Mermaid)
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 classDiagram
     direction TB
@@ -87,7 +90,7 @@ Une entité possède un identifiant unique qui persiste même si l'ensemble de s
 
 | Entité | Identité | Justification métier |
 | :--- | :--- | :--- |
-| **`Concert`** ([app/domain/models/concert.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/domain/models/concert.py)) | `id: int \| None` | Deux concerts peuvent avoir lieu sur le même festival, avec le même groupe, à deux dates différentes (ex. *Iron Vow* jouant un set acoustique puis un set électrique). Le concert possède son propre cycle de vie (`scheduled` -> `cancelled`). |
+| **`Concert`** ([app/domain/models/concert.py](../app/domain/models/concert.py)) | `id: int \| None` | Deux concerts peuvent avoir lieu sur le même festival, avec le même groupe, à deux dates différentes (ex. *Iron Vow* jouant un set acoustique puis un set électrique). Le concert possède son propre cycle de vie (`scheduled` -> `cancelled`). |
 | **`Festival`** | `id: int` | Représente l'événement global (ex: *Hellforge Open Air 2027*). Son nom ou ses dates peuvent être réajustés sans changer l'identité de l'événement. |
 | **`Artist`** | `id: int` | Représente le groupe musical invité. |
 | **`Stage`** | `id: int` | Représente l'espace physique (scène *Mainstage*, *Warzone*). |
@@ -99,7 +102,7 @@ Une entité possède un identifiant unique qui persiste même si l'ensemble de s
 
 Un objet-valeur n'a pas d'identité propre. Il est défini uniquement par les valeurs qu'il contient. Deux objets-valeurs possédant les mêmes attributs sont strictement interchangeables. Ils sont **immuables** (`frozen=True`) et garantissent leur propre validité dès leur instanciation.
 
-#### 1. L'Objet-Valeur `TimeSlot` ([app/domain/value_objects/time_slot.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/domain/value_objects/time_slot.py))
+#### 1. L'Objet-Valeur `TimeSlot` ([app/domain/value_objects/time_slot.py](../app/domain/value_objects/time_slot.py))
 * **Attributs :** `start: datetime`, `end: datetime`.
 * **Pourquoi est-ce un Value Object ?** Un créneau *18h00 - 19h00* n'a pas d'ID en base. Si deux concerts ont lieu de 18h à 19h, ils partagent conceptuellement la même valeur temporelle.
 * **Richesse comportementale :**
@@ -107,7 +110,7 @@ Un objet-valeur n'a pas d'identité propre. Il est défini uniquement par les va
   * `overlaps(other)` : calcul pur d'intersection temporelle (`start_a < end_b and start_b < end_a`).
   * `is_within(start_limit, end_limit)` : vérification d'inclusion dans une période.
 
-#### 2. L'Objet-Valeur `FestivalScheduleInfo` ([app/domain/ports/repositories/festival_repository_port.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/domain/ports/repositories/festival_repository_port.py))
+#### 2. L'Objet-Valeur `FestivalScheduleInfo` ([app/domain/ports/repositories/festival_repository_port.py](../app/domain/ports/repositories/festival_repository_port.py))
 * Modèle de lecture immuable transmettant les bornes temporelles et le statut `is_published` du festival au cas d'usage sans exposer l'ORM.
 
 ---
@@ -120,12 +123,12 @@ DDD impose de placer chaque invariant **au plus près de la structure qui en a l
 
 | Invariant Métier | Règle Sujet | Localisation dans le code | Justification du choix |
 | :--- | :---: | :--- | :--- |
-| **Heure de fin strictement postérieure à l'heure de début** | **R1** | [app/domain/value_objects/time_slot.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/domain/value_objects/time_slot.py) (`__post_init__`) | **Invariant intrinsèque :** Un créneau dont la fin précède ou égale le début n'a aucun sens physique. En le plaçant dans le `TimeSlot`, il est techniquement impossible qu'un concert existe dans l'application avec des dates incohérentes. |
-| **Interdiction de déplacer un concert annulé** | Interne | [app/domain/models/concert.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/domain/models/concert.py) (`reschedule()`) | **Invariant d'Entité :** Une entité `Concert` est responsable de son cycle de vie. Elle refuse elle-même une mutation incompatible avec son statut. |
-| **Non-chevauchement sur une même scène** | **R2** | [app/domain/models/concert.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/domain/models/concert.py) (`check_conflict_with()`) | **Invariant inter-entités :** La méthode métier compare deux concerts et lève `StageOccupiedError` si les scènes coïncident et que les créneaux se recoupent. |
-| **Disponibilité de l'artiste** | **R3** | [app/domain/models/concert.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/domain/models/concert.py) (`check_conflict_with()`) | **Invariant inter-entités :** Lève `ArtistAlreadyBookedError` si un artiste est mobilisé sur deux scènes au même moment. |
-| **Inclusion dans la période du festival** | **R6** | [app/application/use_cases/scheduling/reschedule_concert.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/application/use_cases/scheduling/reschedule_concert.py) | **Invariant d'Agrégat / Cas d'usage :** Requiert la confrontation de deux agrégats (`Festival` et `Concert`). Confié au cas d'usage qui orchestre la vérification avant mutation. |
-| **Verrouillage du planning publié** | **R7** | [app/application/use_cases/scheduling/reschedule_concert.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/application/use_cases/scheduling/reschedule_concert.py) | **Invariant d'État :** Empêche toute altération ordinaire si le festival a atteint le statut publié. |
+| **Heure de fin strictement postérieure à l'heure de début** | **R1** | [app/domain/value_objects/time_slot.py](../app/domain/value_objects/time_slot.py) (`__post_init__`) | **Invariant intrinsèque :** Un créneau dont la fin précède ou égale le début n'a aucun sens physique. En le plaçant dans le `TimeSlot`, il est techniquement impossible qu'un concert existe dans l'application avec des dates incohérentes. |
+| **Interdiction de déplacer un concert annulé** | Interne | [app/domain/models/concert.py](../app/domain/models/concert.py) (`reschedule()`) | **Invariant d'Entité :** Une entité `Concert` est responsable de son cycle de vie. Elle refuse elle-même une mutation incompatible avec son statut. |
+| **Non-chevauchement sur une même scène** | **R2** | [app/domain/models/concert.py](../app/domain/models/concert.py) (`check_conflict_with()`) | **Invariant inter-entités :** La méthode métier compare deux concerts et lève `StageOccupiedError` si les scènes coïncident et que les créneaux se recoupent. |
+| **Disponibilité de l'artiste** | **R3** | [app/domain/models/concert.py](../app/domain/models/concert.py) (`check_conflict_with()`) | **Invariant inter-entités :** Lève `ArtistAlreadyBookedError` si un artiste est mobilisé sur deux scènes au même moment. |
+| **Inclusion dans la période du festival** | **R6** | [app/application/use_cases/scheduling/reschedule_concert.py](../app/application/use_cases/scheduling/reschedule_concert.py) | **Invariant d'Agrégat / Cas d'usage :** Requiert la confrontation de deux agrégats (`Festival` et `Concert`). Confié au cas d'usage qui orchestre la vérification avant mutation. |
+| **Verrouillage du planning publié** | **R7** | [app/application/use_cases/scheduling/reschedule_concert.py](../app/application/use_cases/scheduling/reschedule_concert.py) | **Invariant d'État :** Empêche toute altération ordinaire si le festival a atteint le statut publié. |
 
 ---
 

@@ -1,7 +1,7 @@
-# Livrables Finaux & Documentation Technique — FestiPlan
+# Note d'Architecture & Choix Techniques — Pôle Planification & Programmation (Développeur 1)
 
 **Projet :** FestiPlan — Refactorisation en Architecture Hexagonale & DDD  
-**Auteur :** Hugo Cabanes (Développeur 1 — Planning & Scheduling)  
+**Auteur du pôle :** Hugo Cabanes (Développeur 1 — Planning & Scheduling)  
 **Contexte :** Module Architecture Hexagonale — Ynov B3  
 **Références du sujet :** Documentation technique attendue (p. 13-14 du sujet de synthèse)
 
@@ -11,6 +11,9 @@
 
 Le diagramme suivant représente l'architecture hexagonale **réellement implémentée** dans le code.  
 Il illustre la séparation stricte entre le monde extérieur (adaptateurs entrants et sortants), les cas d'usage applicatifs et le cœur de domaine, en mettant en avant les **ports** (interfaces) assurant l'inversion de dépendance.
+
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
 
 ```mermaid
 graph TB
@@ -88,6 +91,9 @@ graph TB
 
 Conformément à la consigne du sujet (p. 13), le diagramme de séquence ci-dessous détaille le cas d'utilisation pivot : **le déplacement d'un concert (`RescheduleConcertUseCase`)**.  
 Il met en évidence les contrôles métier, les cas d'erreur alternatifs, la persistance transactionnelle, et le traitement non bloquant d'un échec de notification.
+
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
 
 ```mermaid
 sequenceDiagram
@@ -187,7 +193,7 @@ Le dépôt legacy initial souffrait de trois carences structurelles :
 * **Application (`app/application/`) :** Contient les cas d'utilisation (`RescheduleConcertUseCase`, etc.). Coordonne les entités métier, appelle les ports abstraits et applique les règles transactionnelles et de synchronisation des événements.
 * **Ports (`app/domain/ports/`) :** Contrats d'interfaces (`typing.Protocol`) définissant les besoins du domaine applicatif (`IConcertRepository`, `IFestivalQueryPort`, `INotificationSenderPort`).
 * **Adaptateurs (`app/adapters/`) :**
-  * *Primaires (Driving) :* Routeur FastAPI [app/api/concerts.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/api/concerts.py) traduisant les requêtes JSON en commandes applicatives et les résultats en DTOs Pydantic.
+  * *Primaires (Driving) :* Routeur FastAPI [`app/api/concerts.py`](../app/api/concerts.py) traduisant les requêtes JSON en commandes applicatives et les résultats en DTOs Pydantic.
   * *Secondaires (Driven) :* `ConcertSqlRepository` (persistance relationnelle) et `EmailNotificationAdapter` (effets de bord).
 
 ---
@@ -221,14 +227,34 @@ Le dépôt legacy initial souffrait de trois carences structurelles :
 ---
 
 ### 3.6 Stratégie de tests et bilan d'exécution
-Notre suite compte **44 tests automatisés exécutés en 0.87s** :
-* **Tests Unitaires Domaine (20 tests) :** Validation pure de `TimeSlot` et `Concert` sans I/O.
-* **Tests Unitaires Applicatifs (12 tests) :** Validation des Use Cases avec `InMemoryConcertRepository`.
-* **Tests d'Intégration (6 tests) :** Validation de bout en bout avec `TestClient(app)` et base SQLite temporaire.
-* **Tests Legacy (6 tests) :** Non-régression sur le socle initial.
+Notre suite globale compte **169 tests automatisés exécutés en ~3.2s (100% au vert)** :
+* **Tests Unitaires Domaine (64 tests) :** Validation pure de `TimeSlot`, `Concert`, `SchedulingPolicy`, `Stage`, `EquipmentSet` et `Incident` sans I/O.
+* **Tests Unitaires Applicatifs (48 tests) :** Validation des Use Cases avec repositories `InMemory` et fakes de notification.
+* **Tests d'Intégration & E2E (39 tests) :** Validation de bout en bout avec `TestClient(app)` et base SQLite réelle.
+* **Tests de Non-Régression & Sécurité (18 tests) :** Couverture ciblée des 3 défauts initiaux (`test_scheduling_regressions.py`) et hardening OWASP.
 
 ---
 
 ### 3.7 Limites restantes et compromis réalisés
 1. **Événements synchrones vs Broker asynchrone :** L'événement `ConcertRescheduledEvent` est actuellement traité de manière synchrone au sein du cas d'usage. Dans une application distribuée de grande envergure, cet événement serait publié sur un bus de messages (ex. RabbitMQ, Kafka) pour être consommé par un worker de notification dédié.
 2. **Verrouillage concurrentiel (Optimistic/Pessimistic Locking) :** En cas de forte concurrence (deux organisateurs déplaçant deux concerts au même millième de seconde sur la même scène), une clause de versionnement (optimistic concurrency control) sur l'agrégat pourrait être ajoutée en base de données.
+
+---
+
+### 3.8 Patrons de Conception (Design Patterns) Mobilisés & Justifications ("Pourquoi ?")
+
+En complément de l'Architecture Hexagonale, notre conception mobilise plusieurs Design Patterns éprouvés pour répondre à des besoins précis :
+
+| Patron de Conception | Classification | Emplacement dans le code | Pourquoi ce choix ? (Justification d'ingénierie) |
+| :--- | :---: | :--- | :--- |
+| **Repository Pattern** | DDD / Fowler | `app/domain/ports/repositories/`<br>`app/adapters/secondary/repositories/` | **Isole la persistance :** Fait abstraction du stockage relationnel. Permet d'alterner instantanément entre la base SQLite réelle et un dictionnaire mémoire ultra-rapide (`InMemoryConcertRepository`), rendant possible l'exécution des tests unitaires en quelques millisecondes sans dépendance I/O. |
+| **Adapter Pattern** | GoF Structurel | `ConcertSqlRepository`<br>`FestivalSqlQueryAdapter`<br>`EmailNotificationAdapter` | **Protège l'inversion de dépendance :** Convertit les interfaces des bibliothèques externes (SQLAlchemy, smtplib) vers les contrats de ports abstraits attendus par le domaine. Permet de changer d'ORM ou de provider email sans modifier une seule ligne de code métier. |
+| **Value Object** | DDD | `TimeSlot`<br>`EquipmentSet`<br>`FestivalPeriod` | **Éradique l'obsession primitive (*Primitive Obsession*) :** Objets immuables (`frozen=True`) qui s'auto-valident à la création (`__post_init__`). Rend physiquement impossible l'existence d'un créneau invalide dans le système et encapsule la complexité algorithmique (`overlaps`, `is_within`, `covers`). |
+| **Domain Event** | DDD | `ConcertRescheduledEvent`<br>`FestivalPublishedEvent`<br>`IncidentReportedEvent` | **Découple les effets secondaires (Résolution Défaut 2) :** Matérialise un fait métier accompli. Permet au cas d'usage de notifier les tiers sans corrompre la transaction métier : si l'envoi d'email échoue, l'événement est loggué et le déplacement persiste avec succès. |
+| **Command Pattern** | GoF Comportemental | `RescheduleConcertCommand`<br>`ScheduleConcertCommand`<br>`DeclareIncidentCommand` | **Uniformise l'entrée des cas d'usage :** Encapsule tous les paramètres d'une intention métier dans un objet fortement typé. Découple la couche HTTP (DTOs Pydantic) de la couche application qui expose une méthode standard `execute(command)`. |
+| **Strategy Pattern** | GoF Comportemental | `INotificationSenderPort`<br>`EmailNotificationAdapter`<br>`FakeNotificationAdapter` | **Interchangeabilité des algorithmes :** Permet au cas d'usage d'interagir avec une stratégie d'envoi abstraite sans savoir s'il s'agit d'un envoi SMTP réel (production) ou d'un collecteur factice en mémoire (tests). |
+| **Policy / Domain Service** | DDD | `SchedulingPolicy` | **Centralise les règles métier transverses :** Regroupe la logique de détection des conflits (R2, R3, R4, R5, R6, R7) dans un composant pur, évitant de dupliquer ces vérifications entre la création et le déplacement d'un concert. |
+| **Factory Method** | GoF Créationnel | `EquipmentSet.from_csv()`<br>`EquipmentSet.of()`<br>`EquipmentSet.to_csv()` | **Encapsule la conversion de formats :** Isole la logique de normalisation et de parsing des listes d'équipements, assurant la compatibilité avec le schéma de base SQLite hérité sans altérer la pureté du domaine. |
+| **Dependency Injection** | Architecture | `scheduling_dependencies.py`<br>`logistics_dependencies.py` | **Inversion de Contrôle (IoC) :** Point d'assemblage unique (Composition Root) créant et injectant les adaptateurs concrets dans les cas d'usage. Élimine toute instanciation en dur (`new`) au sein de la logique métier. |
+| **Data Transfer Object (DTO)** | Fowler | `app/adapters/primary/api/schemas/` (`ConcertRead`, `ConcertCreate`...) | **Étanchéité des frontières réseau :** Sépare le modèle d'exposition API des entités internes du domaine. Prend en charge la sérialisation JSON, le bornage anti-DoS (`max_length`) et la neutralisation XSS (`InputSanitizer`). |
+| **Chain of Responsibility / Middleware** | GoF Comportemental | `SecurityHeadersMiddleware`<br>`global_security_exception_handler` | **Traitement orthogonal des requêtes :** Intercepte les flux HTTP à l'entrée et à la sortie pour injecter les en-têtes OWASP et masquer les stack traces sensibles sans impacter le code métier. |

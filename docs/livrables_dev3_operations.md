@@ -17,6 +17,9 @@ Le pôle **Opérations & Publication** est chargé de deux responsabilités maje
 
 ## 2. Diagramme UML de Composants (Pôle Opérations)
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 graph TB
     subgraph Driving_Adapters ["Adaptateurs Entrants (Driving Adapters)"]
@@ -87,6 +90,9 @@ graph TB
 ---
 
 ## 3. Diagramme UML de Séquence : Publication du Festival (R8 & Défaut 2)
+
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
 
 ```mermaid
 sequenceDiagram

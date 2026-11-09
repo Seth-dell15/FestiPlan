@@ -21,15 +21,17 @@ L'objectif est double :
 ### Les Points Forts Remarquables
 * **Cœur de domaine 100% pur (DDD respecté) :** Les entités (`Concert`, `Incident`) et objets-valeurs (`TimeSlot`) sont totalement agnostiques de tout framework. Zéro dépendance à FastAPI, Pydantic ou SQLAlchemy dans `app/domain/`.
 * **Inversion de dépendance exemplaire (Ports & Adapters) :** L'application communique exclusivement avec des contrats abstraits (`typing.Protocol`), ce qui permet d'interchanger instantanément la persistance SQLite réelle avec des dépôts en mémoire.
-* **Pyramide de tests ultra-rapide (83 tests en ~1.7s) :**
-  * 28 tests unitaires de domaine purs (exécutés en quelques millisecondes, sans I/O).
-  * 25 tests unitaires applicatifs validant l'orchestration des cas d'usage.
-  * 20 tests d'intégration réelle avec FastAPI `TestClient` et base relationnelle.
+* **Pyramide de tests ultra-rapide (169 tests en ~3.8s) :**
+  * 57 tests unitaires de domaine purs (Planification, Logistique, Opérations).
+  * 48 tests unitaires applicatifs validant l'orchestration des cas d'usage avec repositories InMemory.
+  * 44 tests d'intégration réelle avec FastAPI `TestClient` et base relationnelle SQLite.
   * 10 tests automatisés de cybersécurité (Injections SQL, XSS, headers OWASP, anti-fuite d'erreurs).
+  * 10 tests transverses et de non-régression.
 * **Résolution éprouvée des 3 défauts initiaux :**
   * *Défaut 1 (Conflits de scène et d'artiste) :* Impossible de créer un chevauchement.
   * *Défaut 2 (Panne de notification) :* La persistance en base n'est plus compromise par une défaillance de messagerie réseau.
   * *Défaut 3 (Verrouillage du planning) :* Toute altération ordinaire d'un festival publié est formellement bloquée.
+* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Strategy/Policy, Factory Method, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`livrables_finaux.md`](livrables_finaux.md#38-patrons-de-conception-design-patterns-mobilisés--justifications-pourquoi)).
 
 ### Les Faiblesses et Dettes Techniques Résiduelles
 1. **Absence de gestion de la concurrence (Race Conditions) :**
@@ -59,6 +61,9 @@ L'objectif est double :
 Dans ce projet, l'**Architecture Hexagonale (Ports & Adapters)** était le choix imposé par le module, et elle a parfaitement rempli son rôle pédagogique en forçant la séparation du domaine et de l'infrastructure.
 
 Néanmoins, en entreprise, d'autres architectures auraient présenté des avantages majeurs :
+
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
 
 ```mermaid
 graph TD
