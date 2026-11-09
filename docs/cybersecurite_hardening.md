@@ -24,6 +24,9 @@ Dans l'état initial (legacy), plusieurs faiblesses techniques laissaient entrev
 
 Dans notre architecture, la cybersécurité n'est pas reléguée dans un coin isolé : elle applique le principe de **Défense en Profondeur** à chaque frontière hexagonale :
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 flowchart TD
     subgraph Primary_Adapters ["1. Adaptateurs Entrants (Driving Adapters)"]

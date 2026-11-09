@@ -12,6 +12,9 @@
 Le diagramme suivant représente l'architecture hexagonale **réellement implémentée** dans le code.  
 Il illustre la séparation stricte entre le monde extérieur (adaptateurs entrants et sortants), les cas d'usage applicatifs et le cœur de domaine, en mettant en avant les **ports** (interfaces) assurant l'inversion de dépendance.
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 graph TB
     subgraph Driving_Adapters ["Adaptateurs Entrants (Driving / Primary Adapters)"]
@@ -88,6 +91,9 @@ graph TB
 
 Conformément à la consigne du sujet (p. 13), le diagramme de séquence ci-dessous détaille le cas d'utilisation pivot : **le déplacement d'un concert (`RescheduleConcertUseCase`)**.  
 Il met en évidence les contrôles métier, les cas d'erreur alternatifs, la persistance transactionnelle, et le traitement non bloquant d'un échec de notification.
+
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
 
 ```mermaid
 sequenceDiagram

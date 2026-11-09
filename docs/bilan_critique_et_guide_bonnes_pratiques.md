@@ -61,6 +61,9 @@ Dans ce projet, l'**Architecture Hexagonale (Ports & Adapters)** était le choix
 
 Néanmoins, en entreprise, d'autres architectures auraient présenté des avantages majeurs :
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 graph TD
     subgraph Hexagonal ["Architecture Hexagonale (Choix Actuel)"]

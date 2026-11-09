@@ -165,6 +165,9 @@ tests/
 
 ## 5. Feuille de Route par Phases
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 graph TD
     P0[Phase 0 : Socle Commun & Structure des Dossiers] --> P1[Phase 1 : Domaine Pur & Tests Unitaires]

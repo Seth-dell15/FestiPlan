@@ -31,6 +31,9 @@ Le couplage initial est documenté sous deux formes complémentaires :
 * Le schéma Draw.io téléchargeable : **[architecture-initiale.drawio](architecture-initiale.drawio)**.
 * Le diagramme de flux Mermaid ci-dessous, matérialisant les dépendances illégitimes :
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 flowchart TD
     subgraph Layer_HTTP [Couche Web - API]

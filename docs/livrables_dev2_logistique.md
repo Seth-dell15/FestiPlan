@@ -20,6 +20,9 @@ Le pôle **Référentiel & Logistique** constitue le socle fondamental sur leque
 
 Le diagramme suivant illustre l'architecture hexagonale du pôle logistique, démontrant le respect strict de l'inversion de dépendance via les ports de persistance :
 
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+
 ```mermaid
 graph TB
     subgraph Driving_Adapters ["Adaptateurs Entrants (Driving / Primary Adapters)"]
@@ -108,6 +111,9 @@ graph TB
 ## 3. Diagramme UML de Séquence : Création d'une Scène avec Invariants
 
 Ce diagramme illustre le flux complet lors de la création d'une nouvelle scène, mettant en évidence la vérification de l'existence du festival (**R4**), le rejet d'une capacité invalide (**R9**) et la persistance découplée :
+
+> [!NOTE]
+> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
 
 ```mermaid
 sequenceDiagram
