@@ -32,7 +32,7 @@ L'objectif est double :
   * *Défaut 1 (Conflits de scène et d'artiste) :* Impossible de créer un chevauchement.
   * *Défaut 2 (Panne de notification) :* La persistance en base n'est plus compromise par une défaillance de messagerie réseau.
   * *Défaut 3 (Verrouillage du planning) :* Toute altération ordinaire d'un festival publié est formellement bloquée.
-* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Strategy/Policy, Factory Method, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`note_architecture.md`](note_architecture.md#9-patrons-de-conception)).
+* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Strategy/Policy, Factory Method, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`03_note_architecture.md`](03_note_architecture.md#9-patrons-de-conception)).
 
 ### Les Faiblesses et Dettes Techniques Résiduelles
 1. **Absence de gestion de la concurrence (Race Conditions) :**
@@ -63,9 +63,9 @@ Dans ce projet, l'**Architecture Hexagonale (Ports & Adapters)** était le choix
 
 Néanmoins, en entreprise, d'autres architectures auraient présenté des avantages majeurs :
 
-![Architecture hexagonale et Vertical Slice](architectures_comparees.svg)
+![Architecture hexagonale et Vertical Slice](../schemas/architectures_comparees.svg)
 
-Version modifiable : [architectures_comparees.drawio](architectures_comparees.drawio).
+Version modifiable : [architectures_comparees.drawio](../schemas/architectures_comparees.drawio).
 
 ### 1. Vertical Slice Architecture (Architecture en Tranches Verticales) — *La plus adaptée au travail d'équipe*
 * **Principe :** Au lieu de découper horizontalement en couches techniques (`domain`, `application`, `adapters`, `repositories`), on découpe verticalement par **cas d'utilisation métier** (ex. `features/scheduling/reschedule_concert/`). Chaque tranche contient son DTO, son handler de commande et sa requête SQL.

@@ -165,9 +165,9 @@ tests/
 
 ## 5. Feuille de Route par Phases
 
-![Feuille de route par phases](docs/feuille_de_route.svg)
+![Feuille de route par phases](docs/schemas/feuille_de_route.svg)
 
-Version modifiable : [feuille_de_route.drawio](docs/feuille_de_route.drawio).
+Version modifiable : [feuille_de_route.drawio](docs/schemas/feuille_de_route.drawio).
 
 ### Phase 0 : Socle Commun (Ensemble)
 - Création de l'arborescence des dossiers.

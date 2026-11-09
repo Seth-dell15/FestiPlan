@@ -151,14 +151,15 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 
 ## 6. Documentation Technique & Livrables
 
-Tous les livrables sont regroupés dans le dossier [`docs/`](docs/) :
+Les documents sont dans [`docs/livrables/`](docs/livrables/), à lire dans cet ordre :
 
-* [Note d'architecture et diagramme de séquence](docs/note_architecture.md)
-* [Diagramme UML de composants](docs/diagramme_composants.svg) ([version modifiable](docs/diagramme_composants.drawio))
-* [Diagnostic de l'architecture initiale](docs/livrable_intermediaire_step_1.md) et son [schéma](docs/architecture-initiale.drawio)
-* [Modélisation DDD](docs/livrable_intermediaire_step_2.md) et son [schéma](docs/modele-domaine.drawio)
-* [Reproduction des trois défauts](docs/reproduction_defauts.md)
-* [Stratégie de tests](docs/strategie_de_tests.md)
-* [Traçabilité des règles métier](docs/regles_metier.md)
-* [Sécurité](docs/cybersecurite_hardening.md)
-* [Rétrospective et bonnes pratiques](docs/bilan_critique_et_guide_bonnes_pratiques.md)
+1. [Diagnostic de l'architecture initiale](docs/livrables/01_diagnostic_initial.md)
+2. [Modélisation DDD](docs/livrables/02_modelisation_ddd.md)
+3. [Note d'architecture](docs/livrables/03_note_architecture.md)
+4. [Traçabilité des règles métier](docs/livrables/04_regles_metier.md)
+5. [Reproduction des trois défauts](docs/livrables/05_reproduction_defauts.md)
+6. [Stratégie de tests](docs/livrables/06_strategie_de_tests.md)
+7. [Sécurité](docs/livrables/07_securite.md)
+8. [Bilan et bonnes pratiques](docs/livrables/08_bilan_et_bonnes_pratiques.md)
+
+Les schémas sont dans [`docs/schemas/`](docs/schemas/) : un fichier `.drawio` modifiable et, pour l'affichage dans les documents, une image `.svg`.

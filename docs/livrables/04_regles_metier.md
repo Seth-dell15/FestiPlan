@@ -84,4 +84,4 @@ Ce document indique où chaque règle du sujet est garantie et quels tests la pr
 - **Défaut 1** : déplacement soumis à R2, R3, R6 et R7
 - **Défaut 2** : réponse 200 avec `notification_sent: false` si la notification échoue
 - **Défaut 3** : refus 409 après publication, dépublication explicite pour rouvrir le planning
-- **Preuve** : voir [reproduction_defauts.md](reproduction_defauts.md)
+- **Preuve** : voir [05_reproduction_defauts.md](05_reproduction_defauts.md)

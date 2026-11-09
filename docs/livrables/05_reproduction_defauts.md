@@ -97,7 +97,7 @@ Pour modifier ce planning sur le code livré, appelez d'abord `POST /festivals/1
 
 ## 5. Preuve par les tests
 
-Les tests HTTP de [test_scheduling_integration.py](../tests/integration/test_scheduling_integration.py) ont été exécutés sur les deux versions. Ils passent uniquement par l'API, donc ils s'exécutent aussi sur le code initial.
+Les tests HTTP de [test_scheduling_integration.py](../../tests/integration/test_scheduling_integration.py) ont été exécutés sur les deux versions. Ils passent uniquement par l'API, donc ils s'exécutent aussi sur le code initial.
 
 | Test | Code initial | Code livré |
 |---|---|---|
@@ -113,4 +113,4 @@ Copy-Item ..\FestiPlan\tests\integration\test_scheduling_integration.py tests\te
 python -m pytest tests/test_defects_regression.py -k integration_defect
 ```
 
-Adaptez `..\FestiPlan` au nom de votre dossier. Les mêmes défauts sont aussi couverts sans HTTP dans [test_reschedule_use_case.py](../tests/unit/scheduling/test_reschedule_use_case.py), à l'aide de doubles de test.
+Adaptez `..\FestiPlan` au nom de votre dossier. Les mêmes défauts sont aussi couverts sans HTTP dans [test_reschedule_use_case.py](../../tests/unit/scheduling/test_reschedule_use_case.py), à l'aide de doubles de test.

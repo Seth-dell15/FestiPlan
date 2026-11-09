@@ -21,9 +21,9 @@ Résultat au moment de la rédaction : **236 tests passent**, avec `python -m py
 
 Ces tests ne démarrent ni FastAPI ni SQLite.
 
-- [tests/unit/scheduling](../tests/unit/scheduling) : `test_time_slot.py` (12), `test_concert.py` (12), `test_scheduling_policy.py` (18), `test_publishable_policy.py` (5).
-- [tests/unit/logistics](../tests/unit/logistics) : `test_festival.py` (8), `test_stage.py` (7), `test_equipment_set.py` (6), `test_festival_period.py` (4).
-- [tests/unit/operations](../tests/unit/operations) : `test_incident.py` (9).
+- [tests/unit/scheduling](../../tests/unit/scheduling) : `test_time_slot.py` (12), `test_concert.py` (12), `test_scheduling_policy.py` (18), `test_publishable_policy.py` (5).
+- [tests/unit/logistics](../../tests/unit/logistics) : `test_festival.py` (8), `test_stage.py` (7), `test_equipment_set.py` (6), `test_festival_period.py` (4).
+- [tests/unit/operations](../../tests/unit/operations) : `test_incident.py` (9).
 
 Ils couvrent les créneaux invalides, les chevauchements, les invariants et les transitions d'état.
 
@@ -39,7 +39,7 @@ Ils vérifient les décisions métier, les erreurs et les appels aux ports, nota
 
 ## Sens des dépendances (4 tests)
 
-[test_architecture.py](../tests/unit/test_architecture.py) analyse les imports. Le domaine et l'application ne peuvent pas importer de framework ni d'adaptateur, et les adaptateurs entrants ne peuvent pas importer SQLAlchemy ni les adaptateurs sortants.
+[test_architecture.py](../../tests/unit/test_architecture.py) analyse les imports. Le domaine et l'application ne peuvent pas importer de framework ni d'adaptateur, et les adaptateurs entrants ne peuvent pas importer SQLAlchemy ni les adaptateurs sortants.
 
 ## Adaptateurs (49 tests)
 
@@ -49,14 +49,14 @@ Ils vérifient les décisions métier, les erreurs et les appels aux ports, nota
 
 ## Non-régression (19 tests)
 
-- [test_scheduling_integration.py](../tests/integration/test_scheduling_integration.py) (6) : parcours HTTP, dont les trois défauts du sujet.
-- [test_scheduling_regressions.py](../tests/integration/test_scheduling_regressions.py) (13) : erreurs corrigées pendant la refactorisation, comme une scène d'un autre festival, un concert annulé ou un fuseau horaire.
+- [test_scheduling_integration.py](../../tests/integration/test_scheduling_integration.py) (6) : parcours HTTP, dont les trois défauts du sujet.
+- [test_scheduling_regressions.py](../../tests/integration/test_scheduling_regressions.py) (13) : erreurs corrigées pendant la refactorisation, comme une scène d'un autre festival, un concert annulé ou un fuseau horaire.
 
-Les 4 tests HTTP des défauts échouent sur le code initial et passent sur le code livré. La comparaison est décrite dans [reproduction_defauts.md](reproduction_defauts.md).
+Les 4 tests HTTP des défauts échouent sur le code initial et passent sur le code livré. La comparaison est décrite dans [05_reproduction_defauts.md](05_reproduction_defauts.md).
 
 ## Autres tests
 
-- [tests/security](../tests/security) (14) : en-têtes HTTP, injections, XSS, charges trop volumineuses et masquage des erreurs.
+- [tests/security](../../tests/security) (14) : en-têtes HTTP, injections, XSS, charges trop volumineuses et masquage des erreurs.
 - `tests/test_*_api.py`, `test_publication.py` et `test_scheduling.py` (6) : tests fournis avec le projet initial, conservés pour vérifier le comportement de départ.
 
 ## Choix retenus

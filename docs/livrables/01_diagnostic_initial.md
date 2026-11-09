@@ -4,7 +4,7 @@
 **Auteurs :** Hugo Cabanes (Développeur 1 — Planning & Scheduling) & Ewan Senergous (Développeur 2 — Référentiel & Logistique)  
 **Contexte :** Module Architecture Hexagonale & DDD — Ynov B3  
 **Dépôt de référence :** Commit initial `3a5aa55`, avant refactorisation  
-**Schéma Draw.io associé :** [architecture-initiale.drawio](architecture-initiale.drawio) (les repères ①, ② et ③ ci-dessous renvoient à ses flèches)
+**Schéma Draw.io associé :** [architecture-initiale.drawio](../schemas/architecture-initiale.drawio) (les repères ①, ② et ③ ci-dessous renvoient à ses flèches)
 
 ---
 
@@ -28,12 +28,12 @@ L'application initiale suit une organisation apparemment en couches (contrôleur
 
 ### Schémas d'Architecture Initiale
 Le couplage initial est documenté sous deux formes complémentaires :
-* Le schéma Draw.io téléchargeable : **[architecture-initiale.drawio](architecture-initiale.drawio)**.
+* Le schéma Draw.io téléchargeable : **[architecture-initiale.drawio](../schemas/architecture-initiale.drawio)**.
 * Le diagramme ci-dessous, matérialisant les dépendances illégitimes :
 
-![Dépendances du code initial](dependances_initiales.svg)
+![Dépendances du code initial](../schemas/dependances_initiales.svg)
 
-Version modifiable : [dependances_initiales.drawio](dependances_initiales.drawio).
+Version modifiable : [dependances_initiales.drawio](../schemas/dependances_initiales.drawio).
 
 ### Analyse des Écarts et Raccourcis Observés
 1. **① La route interroge directement la base :**
@@ -169,4 +169,4 @@ La cible hexagonale mise en place :
 3. **Cas d'usage applicatifs :** `RescheduleConcertUseCase` et `PublishFestivalUseCase` qui orchestrent les règles avant persistance et isolent les effets de bord (notifications tolérantes aux pannes).
 4. **Adaptateurs interchangeables :** `ConcertSqlRepository` et `InMemoryConcertRepository`.
 
-Les trois défauts ont été exécutés sur le code initial : les requêtes et les résultats figurent dans [reproduction_defauts.md](reproduction_defauts.md).
+Les trois défauts ont été exécutés sur le code initial : les requêtes et les résultats figurent dans [05_reproduction_defauts.md](05_reproduction_defauts.md).

@@ -14,34 +14,34 @@ Cette note justifie la refactorisation de FestiPlan en architecture hexagonale, 
 8. Limites et compromis
 9. Patrons de conception
 
-Documents associés : [diagnostic initial](livrable_intermediaire_step_1.md), [modélisation DDD](livrable_intermediaire_step_2.md), [reproduction des défauts](reproduction_defauts.md), [traçabilité des règles](regles_metier.md), [stratégie de tests](strategie_de_tests.md).
+Documents associés : [diagnostic initial](01_diagnostic_initial.md), [modélisation DDD](02_modelisation_ddd.md), [reproduction des défauts](05_reproduction_defauts.md), [traçabilité des règles](04_regles_metier.md), [stratégie de tests](06_strategie_de_tests.md).
 
 ## 1. Défauts de l'architecture initiale
 
-Le diagnostic complet figure dans le [livrable de l'étape 1](livrable_intermediaire_step_1.md). Quatre problèmes ont guidé la refactorisation.
+Le diagnostic complet figure dans le [livrable de l'étape 1](01_diagnostic_initial.md). Quatre problèmes ont guidé la refactorisation.
 
 - **Couplage technique** : la `Session` SQLAlchemy et les modèles ORM traversaient les routes, les services et les repositories. Tester une règle demandait une base SQLite.
 - **Responsabilités mal placées** : certaines routes interrogeaient la base, et les règles étaient réparties entre Pydantic, les routes et les services.
 - **Dépendances instanciées en dur** : chaque service créait son repository et son service de notification, ce qui empêchait de les remplacer.
 - **Effets de bord non isolés** : la notification partait après le commit, donc une panne produisait une erreur 500 alors que la donnée était enregistrée.
 
-Le déplacement d'un concert réunissait ces problèmes : il ne vérifiait que l'ordre des dates. Les trois défauts du sujet ont été [reproduits sur le code initial](reproduction_defauts.md).
+Le déplacement d'un concert réunissait ces problèmes : il ne vérifiait que l'ordre des dates. Les trois défauts du sujet ont été [reproduits sur le code initial](05_reproduction_defauts.md).
 
 ## 2. Diagrammes UML
 
 ### Diagramme de composants
 
-![Diagramme UML de composants](diagramme_composants.svg)
+![Diagramme UML de composants](../schemas/diagramme_composants.svg)
 
-La version modifiable est [diagramme_composants.drawio](diagramme_composants.drawio).
+La version modifiable est [diagramme_composants.drawio](../schemas/diagramme_composants.drawio).
 
-Une requête arrive sur une route FastAPI. La route valide le format avec Pydantic, puis appelle un cas d'usage fourni par `app/composition.py`. Le cas d'usage s'appuie sur le domaine et sur des ports sortants. Les adaptateurs SQLAlchemy et email implémentent ces ports. Le sens des dépendances est vérifié par [test_architecture.py](../tests/unit/test_architecture.py).
+Une requête arrive sur une route FastAPI. La route valide le format avec Pydantic, puis appelle un cas d'usage fourni par `app/composition.py`. Le cas d'usage s'appuie sur le domaine et sur des ports sortants. Les adaptateurs SQLAlchemy et email implémentent ces ports. Le sens des dépendances est vérifié par [test_architecture.py](../../tests/unit/test_architecture.py).
 
 ### Diagramme de séquence : déplacer un concert
 
-![Diagramme UML de séquence du déplacement d'un concert](diagramme_sequence.svg)
+![Diagramme UML de séquence du déplacement d'un concert](../schemas/diagramme_sequence.svg)
 
-Version modifiable : [diagramme_sequence.drawio](diagramme_sequence.drawio).
+Version modifiable : [diagramme_sequence.drawio](../schemas/diagramme_sequence.drawio).
 
 ## 3. Responsabilités de chaque couche
 
@@ -59,9 +59,9 @@ Les codes HTTP suivent une règle unique. Le code 400 signale des données contr
 
 ### Ports entrants
 
-Définis dans [inbound.py](../app/application/ports/inbound.py), ils décrivent les commandes métier principales : `IScheduleConcertPort`, `IRescheduleConcertPort`, `IPublishFestivalPort`, `IUnpublishFestivalPort` et `IDeclareIncidentPort`.
+Définis dans [inbound.py](../../app/application/ports/inbound.py), ils décrivent les commandes métier principales : `IScheduleConcertPort`, `IRescheduleConcertPort`, `IPublishFestivalPort`, `IUnpublishFestivalPort` et `IDeclareIncidentPort`.
 
-Les lectures simples, les créations du référentiel et l'annulation appellent directement leur cas d'usage. Une interface supplémentaire n'y protégerait aucune variation réelle. [test_inbound_ports.py](../tests/integration/test_inbound_ports.py) vérifie qu'une route accepte toute implémentation de son port.
+Les lectures simples, les créations du référentiel et l'annulation appellent directement leur cas d'usage. Une interface supplémentaire n'y protégerait aucune variation réelle. [test_inbound_ports.py](../../tests/integration/test_inbound_ports.py) vérifie qu'une route accepte toute implémentation de son port.
 
 ### Ports sortants
 
@@ -79,7 +79,7 @@ Les repositories isolent le stockage et permettent de tester les cas d'usage san
 
 ## 5. Modèle métier
 
-Le schéma complet est [modele-domaine.drawio](modele-domaine.drawio).
+Le schéma complet est [modele-domaine.drawio](../schemas/modele-domaine.drawio).
 
 ### Entités
 
@@ -117,7 +117,7 @@ Pour un déplacement, `RescheduleConcertCommand` exprime la demande, `Reschedule
 
 ## 6. Correction des trois défauts
 
-Le détail des requêtes et des résultats, avant et après, figure dans [reproduction_defauts.md](reproduction_defauts.md).
+Le détail des requêtes et des résultats, avant et après, figure dans [05_reproduction_defauts.md](05_reproduction_defauts.md).
 
 ### Défaut 1 : conflits de programmation
 
@@ -139,7 +139,7 @@ La règle retenue est le refus suivi d'une dépublication explicite. Programmer,
 
 ## 7. Stratégie de tests
 
-La suite compte 236 tests, tous au vert. Le détail est dans [strategie_de_tests.md](strategie_de_tests.md).
+La suite compte 236 tests, tous au vert. Le détail est dans [06_strategie_de_tests.md](06_strategie_de_tests.md).
 
 - **Domaine** : 81 tests, sans FastAPI ni SQLite.
 - **Cas d'usage** : 63 tests avec des doubles de test.

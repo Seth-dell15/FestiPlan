@@ -22,11 +22,11 @@ Pour structurer ce domaine et protéger nos règles métier, nous appliquons les
 
 ## 2. Modélisation Conceptuelle du Domaine
 
-Ce diagramme détaille le déplacement d'un concert. Le modèle complet, avec les cinq agrégats, est dans [modele-domaine.drawio](modele-domaine.drawio).
+Ce diagramme détaille le déplacement d'un concert. Le modèle complet, avec les cinq agrégats, est dans [modele-domaine.drawio](../schemas/modele-domaine.drawio).
 
-![Modèle du déplacement d'un concert](modele_deplacement.svg)
+![Modèle du déplacement d'un concert](../schemas/modele_deplacement.svg)
 
-Version modifiable : [modele_deplacement.drawio](modele_deplacement.drawio).
+Version modifiable : [modele_deplacement.drawio](../schemas/modele_deplacement.drawio).
 
 ---
 
@@ -36,7 +36,7 @@ Version modifiable : [modele_deplacement.drawio](modele_deplacement.drawio).
 
 Une entité possède un identifiant unique qui persiste même si l'ensemble de ses attributs change. Deux entités ayant exactement les mêmes valeurs restent distinctes si leurs identifiants diffèrent.
 
-- **`Concert`** ([concert.py](../app/domain/models/concert.py)) : un même artiste peut jouer plusieurs concerts. Le concert a son propre cycle de vie, de programmé à annulé.
+- **`Concert`** ([concert.py](../../app/domain/models/concert.py)) : un même artiste peut jouer plusieurs concerts. Le concert a son propre cycle de vie, de programmé à annulé.
 - **`Festival`** : événement global, dont le planning passe de préparation à publié, et peut être retiré.
 - **`Artist`** : groupe invité, partagé entre festivals.
 - **`Stage`** : espace rattaché à un festival, avec sa capacité et ses équipements.
@@ -48,7 +48,7 @@ Une entité possède un identifiant unique qui persiste même si l'ensemble de s
 
 Un objet-valeur n'a pas d'identité propre. Il est défini uniquement par les valeurs qu'il contient. Deux objets-valeurs possédant les mêmes attributs sont strictement interchangeables. Ils sont **immuables** (`frozen=True`) et garantissent leur propre validité dès leur instanciation.
 
-#### 1. L'Objet-Valeur `TimeSlot` ([app/domain/value_objects/time_slot.py](../app/domain/value_objects/time_slot.py))
+#### 1. L'Objet-Valeur `TimeSlot` ([app/domain/value_objects/time_slot.py](../../app/domain/value_objects/time_slot.py))
 * **Attributs :** `start: datetime`, `end: datetime`.
 * **Pourquoi est-ce un Value Object ?** Un créneau *18h00 - 19h00* n'a pas d'ID en base. Si deux concerts ont lieu de 18h à 19h, ils partagent conceptuellement la même valeur temporelle.
 * **Richesse comportementale :**
@@ -56,7 +56,7 @@ Un objet-valeur n'a pas d'identité propre. Il est défini uniquement par les va
   * `overlaps(other)` : calcul pur d'intersection temporelle (`start_a < end_b and start_b < end_a`).
   * `is_within(start_limit, end_limit)` : vérification d'inclusion dans une période.
 
-#### 2. L'Objet-Valeur `FestivalScheduleInfo` ([app/domain/ports/repositories/festival_repository_port.py](../app/domain/ports/repositories/festival_repository_port.py))
+#### 2. L'Objet-Valeur `FestivalScheduleInfo` ([app/domain/ports/repositories/festival_repository_port.py](../../app/domain/ports/repositories/festival_repository_port.py))
 * Modèle de lecture immuable transmettant les bornes temporelles et le statut `is_published` du festival au cas d'usage sans exposer l'ORM.
 
 ---
@@ -99,7 +99,7 @@ Deux approches étaient possibles.
 
 - **Isolation** : un concert peut être déplacé ou annulé sans charger tout le festival.
 - **Cohérence entre agrégats** : `RescheduleConcertUseCase` charge les concerts du festival et de l'artiste, puis `scheduling_policy` applique R2 et R3 avant l'enregistrement.
-- **Limite assumée** : sans verrou en base, deux requêtes simultanées peuvent contourner ce contrôle. La [note d'architecture](note_architecture.md) détaille ce compromis.
+- **Limite assumée** : sans verrou en base, deux requêtes simultanées peuvent contourner ce contrôle. La [note d'architecture](03_note_architecture.md) détaille ce compromis.
 
 ---
 

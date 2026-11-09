@@ -24,9 +24,9 @@ Dans l'état initial (legacy), plusieurs faiblesses techniques laissaient entrev
 
 Dans notre architecture, la cybersécurité n'est pas reléguée dans un coin isolé : elle applique le principe de **Défense en Profondeur** à chaque frontière hexagonale :
 
-![Sécurité en profondeur par couche](securite_en_couches.svg)
+![Sécurité en profondeur par couche](../schemas/securite_en_couches.svg)
 
-Version modifiable : [securite_en_couches.drawio](securite_en_couches.drawio).
+Version modifiable : [securite_en_couches.drawio](../schemas/securite_en_couches.drawio).
 
 ### Organisation des Composants de Sécurité
 * **`app/adapters/primary/security/security_headers.py`** : Middleware injectant automatiquement les en-têtes HTTP de sécurité recommandés par l'OWASP sur toutes les réponses de l'application.
