@@ -57,15 +57,12 @@ class PublishFestivalUseCase:
 
         # Le planning est vérifié avant la transition, pour ne jamais marquer publié un festival refusé.
         self._ensure_schedule_is_valid(festival)
-        festival.publish()
+        event = festival.publish()
         published = self._festivals.save(festival)
 
-        # Effet secondaire : un échec est journalisé sans annuler la publication (Défaut 2).
+        # La notification réagit à l'événement ; un échec est journalisé sans annuler la publication (Défaut 2).
         try:
-            self._notification_sender.notify_schedule_change(
-                festival_id,
-                f"Le planning officiel du festival '{published.name}' est maintenant publié !",
-            )
+            self._notification_sender.notify_festival_published(event)
         except Exception as exc:  # noqa: BLE001 - toute panne du canal de notification est non bloquante
             logger.warning(
                 "Échec de l'envoi de notification de publication pour le festival #%s : %s",
@@ -78,6 +75,8 @@ class PublishFestivalUseCase:
 
     def _ensure_schedule_is_valid(self, festival: Festival) -> None:
         concerts = self._concerts.list_for_festival(festival.id, include_cancelled=False)
+        if not concerts:
+            raise CannotPublishInvalidScheduleError("Impossible de publier un planning sans concert programmé.")
         for index, concert in enumerate(concerts):
             if not concert.time_slot.is_within(festival.period.start, festival.period.end):
                 raise CannotPublishInvalidScheduleError(

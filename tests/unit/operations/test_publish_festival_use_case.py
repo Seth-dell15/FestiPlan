@@ -1,6 +1,7 @@
 from datetime import datetime
 import pytest
 
+from app.adapters.secondary.notifications.fake_notification_adapter import FakeNotificationAdapter
 from app.adapters.secondary.repositories.in_memory_artist_repository import InMemoryArtistRepository
 from app.adapters.secondary.repositories.in_memory_concert_repository import InMemoryConcertRepository
 from app.adapters.secondary.repositories.in_memory_festival_repository import InMemoryFestivalRepository
@@ -14,8 +15,9 @@ from app.domain.exceptions.operation_exceptions import (
 from app.domain.models.artist import Artist
 from app.domain.models.concert import Concert
 from app.domain.models.festival import Festival
+from app.domain.events.operation_events import FestivalPublishedEvent
 from app.domain.models.stage import Stage
-from app.domain.ports.services.notification_sender_port import INotificationSenderPort
+from app.domain.value_objects.concert_status import ConcertStatus
 from app.domain.value_objects.equipment_set import EquipmentSet
 from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.festival_status import FestivalStatus
@@ -23,17 +25,6 @@ from app.domain.value_objects.time_slot import TimeSlot
 
 SLOT = TimeSlot(start=datetime(2027, 6, 18, 14, 0), end=datetime(2027, 6, 18, 15, 0))
 OUTSIDE_FESTIVAL = TimeSlot(start=datetime(2027, 6, 21, 0, 0), end=datetime(2027, 6, 21, 1, 0))
-
-
-class FakeNotificationAdapter(INotificationSenderPort):
-    def __init__(self, should_fail: bool = False) -> None:
-        self.should_fail = should_fail
-        self.sent_messages: list[tuple[int, str]] = []
-
-    def notify_schedule_change(self, festival_id: int, message: str) -> None:
-        if self.should_fail:
-            raise RuntimeError("Simulation de panne réseau d'envoi d'e-mail.")
-        self.sent_messages.append((festival_id, message))
 
 
 def make_festival(status=FestivalStatus.PREPARATION):
@@ -77,10 +68,26 @@ def test_publish_festival_not_found_raises_error():
 
 
 def test_publish_already_published_festival_raises_error():
-    use_case, _ = make_use_case([make_festival(FestivalStatus.PUBLISHED)])
+    use_case, _ = make_use_case([make_festival(FestivalStatus.PUBLISHED)], [concert()])
 
     with pytest.raises(FestivalAlreadyPublishedError):
         use_case.execute(festival_id=1)
+
+
+@pytest.mark.parametrize(
+    "concerts",
+    [[], [Concert(festival_id=1, artist_id=2, stage_id=2, time_slot=SLOT, status=ConcertStatus.CANCELLED)]],
+    ids=["aucun_concert", "uniquement_des_annules"],
+)
+def test_publish_empty_schedule_is_refused(concerts):
+    notification = FakeNotificationAdapter()
+    use_case, festivals = make_use_case([make_festival()], concerts, notification)
+
+    with pytest.raises(CannotPublishInvalidScheduleError, match="sans concert"):
+        use_case.execute(festival_id=1)
+
+    assert festivals.get_by_id(1).status is FestivalStatus.PREPARATION
+    assert notification.sent_notifications == []
 
 
 @pytest.mark.parametrize(
@@ -115,11 +122,15 @@ def test_publish_nominal_success():
     assert result.festival.is_published is True
     assert festivals.get_by_id(1).is_published is True
     assert result.notification_sent is True
-    assert len(notification.sent_messages) == 1
+    [event] = notification.sent_notifications
+    assert isinstance(event, FestivalPublishedEvent)
+    assert (event.festival_id, event.festival_name) == (1, "Hellforge")
 
 
 def test_publish_with_notification_failure_still_publishes():
-    use_case, festivals = make_use_case([make_festival()], notification=FakeNotificationAdapter(should_fail=True))
+    use_case, festivals = make_use_case(
+        [make_festival()], [concert()], notification=FakeNotificationAdapter(should_fail=True)
+    )
 
     result = use_case.execute(festival_id=1)
 

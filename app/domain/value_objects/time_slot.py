@@ -1,18 +1,7 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from app.domain.exceptions.scheduling_exceptions import InvalidTimeSlotError
-
-
-def _to_naive_utc(value: datetime) -> datetime:
-    """Convention de stockage : toutes les dates sont des datetime « naïfs ».
-
-    Une date avec fuseau (ex. "2027-06-18T18:00:00Z" ou "+02:00") est convertie en UTC
-    puis rendue naïve, afin de pouvoir être comparée aux dates déjà stockées en base
-    sans lever de TypeError (naïf vs. avec fuseau).
-    """
-    if value.tzinfo is None:
-        return value
-    return value.astimezone(timezone.utc).replace(tzinfo=None)
+from app.domain.value_objects.utc_datetime import to_naive_utc
 
 
 @dataclass(frozen=True)
@@ -26,8 +15,8 @@ class TimeSlot:
     end: datetime
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "start", _to_naive_utc(self.start))
-        object.__setattr__(self, "end", _to_naive_utc(self.end))
+        object.__setattr__(self, "start", to_naive_utc(self.start))
+        object.__setattr__(self, "end", to_naive_utc(self.end))
         if self.end <= self.start:
             raise InvalidTimeSlotError(
                 f"Créneau invalide : fin ({self.end.isoformat()}) doit être > début ({self.start.isoformat()})"
@@ -49,4 +38,4 @@ class TimeSlot:
 
     def is_within(self, period_start: datetime, period_end: datetime) -> bool:
         """Règle métier R6 : vérifie si le créneau est entièrement compris dans une période."""
-        return self.start >= _to_naive_utc(period_start) and self.end <= _to_naive_utc(period_end)
+        return self.start >= to_naive_utc(period_start) and self.end <= to_naive_utc(period_end)

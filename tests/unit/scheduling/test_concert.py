@@ -1,6 +1,7 @@
 from datetime import datetime
 import pytest
 from app.domain.models.concert import Concert
+from app.domain.value_objects.concert_status import ConcertStatus
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.exceptions.scheduling_exceptions import (
     StageOccupiedError,
@@ -60,7 +61,31 @@ def test_cancel_concert():
     
     concert.cancel()
     assert concert.is_cancelled
-    assert concert.status == "cancelled"
+    assert concert.status is ConcertStatus.CANCELLED
+
+
+def test_two_concerts_with_same_values_are_distinct_entities():
+    first, second = make_concert(concert_id=None), make_concert(concert_id=None)
+    assert first != second
+
+
+def test_unknown_status_is_refused_at_creation():
+    with pytest.raises(ValueError):
+        make_concert(status="n_importe_quoi")
+
+
+def test_unknown_status_is_refused_on_assignment():
+    concert = make_concert()
+
+    with pytest.raises(ValueError):
+        concert.status = "n_importe_quoi"
+
+    assert concert.status is ConcertStatus.SCHEDULED
+
+
+def test_status_values_match_legacy_database_strings():
+    assert ConcertStatus("scheduled") is ConcertStatus.SCHEDULED
+    assert ConcertStatus("cancelled") is ConcertStatus.CANCELLED
 
 
 def test_conflict_on_same_stage_raises_stage_occupied_error():

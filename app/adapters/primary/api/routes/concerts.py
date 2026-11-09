@@ -41,7 +41,7 @@ def _to_read_dto(concert: Concert) -> ConcertRead:
         stage_id=concert.stage_id,
         start_time=concert.time_slot.start,
         end_time=concert.time_slot.end,
-        status=concert.status,
+        status=concert.status.value,
     )
 
 

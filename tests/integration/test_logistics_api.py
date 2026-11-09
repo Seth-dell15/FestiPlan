@@ -64,13 +64,52 @@ def test_get_unknown_festival_returns_404(client):
     assert client.get("/festivals/999").status_code == 404
 
 
+def program_concert(client, festival_id, artist_id):
+    stage = client.post("/stages", json={"festival_id": festival_id, "name": "Valley", "capacity": 8000}).json()
+    response = client.post("/concerts", json={
+        "festival_id": festival_id,
+        "artist_id": artist_id,
+        "stage_id": stage["id"],
+        "start_time": "2027-06-18T18:00:00",
+        "end_time": "2027-06-18T19:00:00",
+    })
+    assert response.status_code == 201, response.text
+
+
 def test_publish_route_still_works_on_a_new_festival(client):
     festival_id = create_festival(client)
+    artist = client.post("/artists", json={"name": "Iron Vow", "genre": "Heavy metal"}).json()
+    program_concert(client, festival_id, artist["id"])
 
     response = client.post(f"/festivals/{festival_id}/publish")
 
     assert response.status_code == 200
+    assert response.json()["notification_sent"] is True
     assert client.get(f"/festivals/{festival_id}").json()["status"] == "published"
+
+
+def test_publishing_an_empty_schedule_returns_400(client):
+    festival_id = create_festival(client)
+
+    response = client.post(f"/festivals/{festival_id}/publish")
+
+    assert response.status_code == 400
+    assert client.get(f"/festivals/{festival_id}").json()["status"] == "preparation"
+
+
+def test_festival_with_mixed_timezone_dates_does_not_crash(client):
+    payload = {**FESTIVAL, "start_date": "2027-06-18T10:00:00Z", "end_date": "2027-06-20T23:00:00"}
+
+    response = client.post("/festivals", json=payload)
+
+    assert response.status_code == 201
+    assert response.json()["start_date"] == "2027-06-18T10:00:00"
+
+
+def test_festival_with_mixed_timezone_dates_is_still_validated(client):
+    payload = {**FESTIVAL, "start_date": "2027-06-20T10:00:00+02:00", "end_date": "2027-06-18T10:00:00"}
+
+    assert client.post("/festivals", json=payload).status_code == 400
 
 
 SCRIPT = "<script>alert(1)</script>"
@@ -103,6 +142,7 @@ def test_punctuation_in_names_survives_creation_and_publication(client):
 
     festival = client.post("/festivals", json=payload).json()
     artist = client.post("/artists", json={"name": "Guns N' Roses", "genre": "Hard & Heavy"}).json()
+    program_concert(client, festival["id"], artist["id"])
     published = client.post(f"/festivals/{festival['id']}/publish").json()
 
     assert (festival["name"], festival["location"]) == ("Rock & Metal", "L'Isle-d'Abeau")

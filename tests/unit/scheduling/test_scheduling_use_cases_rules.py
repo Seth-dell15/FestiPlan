@@ -98,16 +98,16 @@ def test_reschedule_cancelled_concert_is_refused_and_no_notification_is_sent():
     assert notifier.sent_notifications == []
 
 
-def test_reschedule_notification_describes_the_move():
+def test_reschedule_notifies_the_concert_rescheduled_event():
     repo = InMemoryConcertRepository([existing_concert()])
     notifier = FakeNotificationAdapter()
     RescheduleConcertUseCase(repo, FakeFestivalQueryAdapter({1: OPEN}), notifier).execute(
         RescheduleConcertCommand(1, datetime(2027, 6, 19, 14), datetime(2027, 6, 19, 15))
     )
-    assert notifier.sent_notifications == [{
-        "concert_id": 1,
-        "message": "Le concert a été déplacé du 2027-06-19T10:00:00 au 2027-06-19T14:00:00",
-    }]
+    [event] = notifier.sent_notifications
+    assert event.concert_id == 1
+    assert event.previous_time_slot.start == datetime(2027, 6, 19, 10)
+    assert event.new_time_slot.start == datetime(2027, 6, 19, 14)
 
 
 # --- Annuler : R7 et double annulation -------------------------------------------

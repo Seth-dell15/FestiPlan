@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from app.domain.value_objects.concert_status import ConcertStatus
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.events.concert_events import ConcertRescheduledEvent
 from app.domain.exceptions.scheduling_exceptions import (
@@ -9,7 +10,8 @@ from app.domain.exceptions.scheduling_exceptions import (
 )
 
 
-@dataclass
+# eq=False : deux concerts aux mêmes horaires restent deux concerts distincts.
+@dataclass(eq=False)
 class Concert:
     """Entité pure du domaine représentant un concert.
     
@@ -21,11 +23,17 @@ class Concert:
     stage_id: int
     time_slot: TimeSlot
     id: int | None = None
-    status: str = "scheduled"
+    status: ConcertStatus = ConcertStatus.SCHEDULED
+
+    def __setattr__(self, name: str, value: object) -> None:
+        # Un statut inconnu est refusé à la création comme lors d'une affectation.
+        if name == "status":
+            value = ConcertStatus(value)
+        super().__setattr__(name, value)
 
     @property
     def is_cancelled(self) -> bool:
-        return self.status == "cancelled"
+        return self.status is ConcertStatus.CANCELLED
 
     def reschedule(self, new_time_slot: TimeSlot) -> ConcertRescheduledEvent:
         """Déplace le concert sur un nouveau créneau et produit un événement de domaine."""
@@ -47,7 +55,7 @@ class Concert:
         """Annule le concert. Un concert déjà annulé ne peut pas l'être à nouveau."""
         if self.is_cancelled:
             raise ConcertAlreadyCancelledError(f"Le concert #{self.id} est déjà annulé")
-        self.status = "cancelled"
+        self.status = ConcertStatus.CANCELLED
 
     def check_conflict_with(self, other: "Concert") -> None:
         """Règles R2 et R3 : vérifie l'absence de conflit avec un autre concert.

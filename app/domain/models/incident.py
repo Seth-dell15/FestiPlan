@@ -4,10 +4,10 @@ from app.domain.exceptions.operation_exceptions import (
     IncidentInvalidDescriptionError,
     IncidentAlreadyResolvedError,
 )
-from app.domain.events.operation_events import IncidentResolvedEvent
 
 
-@dataclass
+# eq=False : deux incidents identiques restent deux signalements distincts.
+@dataclass(eq=False)
 class Incident:
     """Entité pure du Domaine représentant un incident survenu lors d'un concert.
     
@@ -31,14 +31,10 @@ class Incident:
             )
         self.description = self.description.strip()
 
-    def resolve(self) -> IncidentResolvedEvent:
-        """Résout l'incident et produit l'événement de domaine correspondant."""
+    def resolve(self) -> None:
+        """Résout l'incident. Un incident déjà résolu ne peut pas l'être à nouveau."""
         if self.resolved:
             raise IncidentAlreadyResolvedError(
                 f"L'incident #{self.id or 'nouveau'} est déjà résolu."
             )
         self.resolved = True
-        return IncidentResolvedEvent(
-            incident_id=self.id or 0,
-            resolved_at=datetime.now(timezone.utc).replace(tzinfo=None),
-        )

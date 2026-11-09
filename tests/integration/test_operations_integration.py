@@ -199,3 +199,4 @@ def test_api_publish_notification_failure_does_not_crash(client, setup_festival_
     r = client.post(f"/festivals/{fid}/publish")
     assert r.status_code == 200
     assert r.json()["status"] == "published"
+    assert r.json()["notification_sent"] is False

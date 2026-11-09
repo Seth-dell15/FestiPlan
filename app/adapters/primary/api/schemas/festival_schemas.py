@@ -36,3 +36,9 @@ class FestivalResponse(BaseModel):
             end_date=festival.period.end,
             status=festival.status.value,
         )
+
+
+class FestivalPublishResponse(FestivalResponse):
+    """Le festival publié et l'état de la notification : la publication reste valide si elle a échoué."""
+
+    notification_sent: bool

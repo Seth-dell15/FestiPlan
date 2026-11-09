@@ -101,13 +101,7 @@ class RescheduleConcertUseCase:
         # 7. Effet secondaire : la notification réagit à l'événement.
         #    Un échec est journalisé et signalé dans le résultat, sans annuler le déplacement (Défaut 2).
         try:
-            self._notification_sender.notify_schedule_change(
-                concert_id=persisted_concert.id or event.concert_id,
-                message=(
-                    f"Le concert a été déplacé du {event.previous_time_slot.start.isoformat()} "
-                    f"au {event.new_time_slot.start.isoformat()}"
-                ),
-            )
+            self._notification_sender.notify_concert_rescheduled(event)
         except Exception as exc:  # noqa: BLE001 - toute panne du canal de notification est non bloquante
             logger.warning(
                 "Échec de l'envoi de notification pour le concert #%s : %s",

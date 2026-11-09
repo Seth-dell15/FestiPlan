@@ -5,7 +5,13 @@ from app.domain.exceptions.operation_exceptions import (
     IncidentInvalidDescriptionError,
     IncidentAlreadyResolvedError,
 )
-from app.domain.events.operation_events import IncidentResolvedEvent
+
+
+def test_two_identical_incidents_are_distinct_entities():
+    occurred_at = datetime(2027, 6, 18, 20, 15)
+    first = Incident(concert_id=1, description="Micro défectueux", occurred_at=occurred_at)
+    second = Incident(concert_id=1, description="Micro défectueux", occurred_at=occurred_at)
+    assert first != second
 
 
 def test_valid_incident_creation():
@@ -46,11 +52,9 @@ def test_resolve_incident_success():
     incident = Incident(concert_id=1, description="Câble XLR sectionné", id=42)
     assert incident.resolved is False
 
-    event = incident.resolve()
+    incident.resolve()
 
     assert incident.resolved is True
-    assert isinstance(event, IncidentResolvedEvent)
-    assert event.incident_id == 42
 
 
 def test_resolve_already_resolved_incident_raises_error():

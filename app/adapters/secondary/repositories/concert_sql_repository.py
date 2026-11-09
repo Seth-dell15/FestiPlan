@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models import Concert as ConcertOrm
 from app.domain.models.concert import Concert
+from app.domain.value_objects.concert_status import ConcertStatus
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.ports.repositories.concert_repository_port import IConcertRepository
 
@@ -22,7 +23,7 @@ class ConcertSqlRepository(IConcertRepository):
             artist_id=orm.artist_id,
             stage_id=orm.stage_id,
             time_slot=TimeSlot(start=orm.start_time, end=orm.end_time),
-            status=orm.status,
+            status=ConcertStatus(orm.status),
         )
 
     def _to_orm(self, domain: Concert, existing_orm: ConcertOrm | None = None) -> ConcertOrm:
@@ -32,7 +33,7 @@ class ConcertSqlRepository(IConcertRepository):
         orm.stage_id = domain.stage_id
         orm.start_time = domain.time_slot.start
         orm.end_time = domain.time_slot.end
-        orm.status = domain.status
+        orm.status = domain.status.value
         return orm
 
     def get_by_id(self, concert_id: int) -> Concert | None:
@@ -42,7 +43,7 @@ class ConcertSqlRepository(IConcertRepository):
     def list_for_festival(self, festival_id: int, include_cancelled: bool = False) -> list[Concert]:
         query = self._db.query(ConcertOrm).filter(ConcertOrm.festival_id == festival_id)
         if not include_cancelled:
-            query = query.filter(ConcertOrm.status != "cancelled")
+            query = query.filter(ConcertOrm.status != ConcertStatus.CANCELLED.value)
         
         rows = query.order_by(ConcertOrm.start_time).all()
         return [self._to_domain(row) for row in rows]
