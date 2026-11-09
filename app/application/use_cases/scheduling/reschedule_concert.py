@@ -70,9 +70,13 @@ class RescheduleConcertUseCase(IRescheduleConcertPort):
             time_slot=new_slot,
             status=concert.status,
         )
+        # R3 s'applique aussi entre festivals : un artiste est global.
         policy.ensure_no_conflict(
             candidate,
-            self._concert_repo.list_for_festival(festival_id=concert.festival_id, include_cancelled=False),
+            [
+                *self._concert_repo.list_for_festival(festival_id=concert.festival_id, include_cancelled=False),
+                *self._concert_repo.list_for_artist(concert.artist_id),
+            ],
         )
 
         # 5. Mutation métier : l'entité produit l'événement ConcertRescheduled

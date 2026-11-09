@@ -96,6 +96,29 @@ def test_concerts_are_listed_chronologically_without_cancelled_by_default(sessio
     ]
 
 
+def test_concerts_of_an_artist_are_listed_across_festivals_without_cancelled(session, references):
+    festival_id, artist_id, stage_id = references
+    other_festival = FestivalSqlRepository(session).save(
+        Festival(
+            name="Autre",
+            location="Nantes",
+            period=FestivalPeriod(start=datetime(2027, 6, 18, 10), end=datetime(2027, 6, 20, 23)),
+        )
+    )
+    other_artist = ArtistSqlRepository(session).save(Artist(name="Abyss", genre="Doom"))
+    repository = ConcertSqlRepository(session)
+    late = repository.save(make_concert(references, hour=20))
+    elsewhere = make_concert(references, hour=14)
+    elsewhere.festival_id = other_festival.id
+    elsewhere = repository.save(elsewhere)
+    cancelled = make_concert(references, hour=16)
+    cancelled.cancel()
+    repository.save(cancelled)
+    repository.save(make_concert((festival_id, other_artist.id, stage_id), hour=18))
+
+    assert [c.id for c in repository.list_for_artist(artist_id)] == [elsewhere.id, late.id]
+
+
 def test_unknown_concert_is_none(session):
     assert ConcertSqlRepository(session).get_by_id(42) is None
 

@@ -48,6 +48,15 @@ class ConcertSqlRepository(IConcertRepository):
         rows = query.order_by(ConcertOrm.start_time).all()
         return [self._to_domain(row) for row in rows]
 
+    def list_for_artist(self, artist_id: int) -> list[Concert]:
+        rows = (
+            self._db.query(ConcertOrm)
+            .filter(ConcertOrm.artist_id == artist_id, ConcertOrm.status != ConcertStatus.CANCELLED.value)
+            .order_by(ConcertOrm.start_time)
+            .all()
+        )
+        return [self._to_domain(row) for row in rows]
+
     def save(self, concert: Concert) -> Concert:
         existing_orm = None
         if concert.id is not None:

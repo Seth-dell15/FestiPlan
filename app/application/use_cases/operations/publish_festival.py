@@ -1,7 +1,6 @@
 import logging
 
 from app.application.ports.inbound import IPublishFestivalPort, PublishFestivalResult
-from app.domain.models.concert import Concert
 from app.domain.models.festival import Festival
 from app.domain.services import scheduling_policy as policy
 from app.domain.ports.repositories.artist_repository_port import IArtistRepository
@@ -9,13 +8,7 @@ from app.domain.ports.repositories.concert_repository_port import IConcertReposi
 from app.domain.ports.repositories.festival_repository_port import IFestivalRepository
 from app.domain.ports.repositories.stage_repository_port import IStageRepository
 from app.domain.ports.services.notification_sender_port import INotificationSenderPort
-from app.domain.exceptions.logistics_exceptions import EquipmentMismatchError, FestivalNotFoundError
-from app.domain.exceptions.operation_exceptions import CannotPublishInvalidScheduleError
-from app.domain.exceptions.scheduling_exceptions import (
-    ArtistAlreadyBookedError,
-    StageNotInFestivalError,
-    StageOccupiedError,
-)
+from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -69,32 +62,12 @@ class PublishFestivalUseCase(IPublishFestivalPort):
 
     def _ensure_schedule_is_valid(self, festival: Festival) -> None:
         concerts = self._concerts.list_for_festival(festival.id, include_cancelled=False)
-        if not concerts:
-            raise CannotPublishInvalidScheduleError("Impossible de publier un planning sans concert programmé.")
-        for index, concert in enumerate(concerts):
-            if not concert.time_slot.is_within(festival.period.start, festival.period.end):
-                raise CannotPublishInvalidScheduleError(
-                    f"Impossible de publier le planning : le concert #{concert.id} déborde des dates du festival (R6)."
-                )
-            self._ensure_concert_fits_its_stage(festival, concert)
-            for other in concerts[index + 1:]:
-                try:
-                    concert.check_conflict_with(other)
-                except (StageOccupiedError, ArtistAlreadyBookedError) as conflict:
-                    raise CannotPublishInvalidScheduleError(
-                        f"Impossible de publier le planning : conflit de programmation détecté ({conflict}) (R8)."
-                    ) from conflict
-
-    def _ensure_concert_fits_its_stage(self, festival: Festival, concert: Concert) -> None:
-        stage = self._stages.get_by_id(concert.stage_id)
-        artist = self._artists.get_by_id(concert.artist_id)
-        if stage is None or artist is None:
-            raise CannotPublishInvalidScheduleError(
-                f"Impossible de publier le planning : le concert #{concert.id} référence une scène ou un artiste inconnu (R4)."
-            )
-        try:
-            policy.ensure_stage_can_host(festival.id, stage, artist)
-        except (StageNotInFestivalError, EquipmentMismatchError) as exc:
-            raise CannotPublishInvalidScheduleError(
-                f"Impossible de publier le planning : concert #{concert.id} invalide ({exc}) (R4/R5)."
-            ) from exc
+        stages = {concert.stage_id: self._stages.get_by_id(concert.stage_id) for concert in concerts}
+        artists = {concert.artist_id: self._artists.get_by_id(concert.artist_id) for concert in concerts}
+        bookings_elsewhere = [
+            booking
+            for artist_id in artists
+            for booking in self._concerts.list_for_artist(artist_id)
+            if booking.festival_id != festival.id
+        ]
+        policy.ensure_publishable(festival, concerts, stages, artists, bookings_elsewhere)

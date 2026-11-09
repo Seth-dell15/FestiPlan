@@ -132,9 +132,27 @@ def test_r7_cancel_is_rejected_once_festival_is_published(client, data):
     assert client.get(f"/concerts/{cid}").json()["status"] == "scheduled"
 
 
+# --- R3 : un artiste ne joue pas dans deux festivals en même temps -----------
+
+def test_r3_artist_cannot_play_in_two_festivals_at_the_same_time(client, data):
+    assert client.post("/concerts", json=concert(data)).status_code == 201
+    twin = client.post("/festivals", json={
+        "name": "Festival Jumeau",
+        "location": "Nantes",
+        "start_date": "2027-06-18T10:00:00",
+        "end_date": "2027-06-20T23:59:00",
+    }).json()["id"]
+    stage = client.post("/stages", json={"festival_id": twin, "name": "Altar", "capacity": 1000}).json()["id"]
+
+    r = client.post("/concerts", json=concert(data, festival_id=twin, stage_id=stage))
+
+    assert r.status_code == 409
+    assert "artiste" in r.json()["detail"]
+
+
 # --- Défaut 2 : la réponse signale l'échec de la notification ----------------
 
-def test_reschedule_response_reports_notification_status(client, data):
+def test_reschedule_response_reports_notification_status(client, data, monkeypatch):
     cid = client.post("/concerts", json=concert(data)).json()["id"]
     body = {"start_time": "2027-06-19T12:00:00", "end_time": "2027-06-19T13:00:00"}
 
@@ -142,12 +160,9 @@ def test_reschedule_response_reports_notification_status(client, data):
     assert ok.status_code == 200
     assert ok.json()["notification_sent"] is True
 
-    settings.fail_notifications = True
-    try:
-        body = {"start_time": "2027-06-19T14:00:00", "end_time": "2027-06-19T15:00:00"}
-        failed = client.patch(f"/concerts/{cid}/reschedule", json=body)
-    finally:
-        settings.fail_notifications = False
+    monkeypatch.setattr(settings, "fail_notifications", True)
+    body = {"start_time": "2027-06-19T14:00:00", "end_time": "2027-06-19T15:00:00"}
+    failed = client.patch(f"/concerts/{cid}/reschedule", json=body)
     assert failed.status_code == 200
     assert failed.json()["notification_sent"] is False
     # la modification est bien persistée malgré l'échec de notification

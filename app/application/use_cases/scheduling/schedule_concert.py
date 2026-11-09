@@ -56,7 +56,7 @@ class ScheduleConcertUseCase(IScheduleConcertPort):
             raise UnknownArtistError(command.artist_id)
         policy.ensure_stage_can_host(command.festival_id, stage, artist)
 
-        # R2 & R3 : conflits avec les concerts actifs du festival
+        # R2 et R3 : R3 s'applique aussi entre festivals, car un artiste est global.
         new_concert = Concert(
             festival_id=command.festival_id,
             artist_id=command.artist_id,
@@ -65,7 +65,10 @@ class ScheduleConcertUseCase(IScheduleConcertPort):
         )
         policy.ensure_no_conflict(
             new_concert,
-            self._concert_repo.list_for_festival(festival_id=command.festival_id, include_cancelled=False),
+            [
+                *self._concert_repo.list_for_festival(festival_id=command.festival_id, include_cancelled=False),
+                *self._concert_repo.list_for_artist(command.artist_id),
+            ],
         )
 
         return self._concert_repo.save(new_concert)

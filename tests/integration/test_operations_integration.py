@@ -200,3 +200,50 @@ def test_api_publish_notification_failure_does_not_crash(client, setup_festival_
     assert r.status_code == 200
     assert r.json()["status"] == "published"
     assert r.json()["notification_sent"] is False
+
+
+# =====================================================================
+# Tests Intégration : Dépublication, procédure explicite de R7
+# =====================================================================
+
+MOVED_SLOT = {"start_time": "2027-06-18T17:00:00", "end_time": "2027-06-18T18:00:00"}
+
+
+def test_api_unpublish_allows_modification_then_republication(client, setup_festival_and_concert):
+    fid = setup_festival_and_concert["festival_id"]
+    cid = setup_festival_and_concert["concert_id"]
+    assert client.post(f"/festivals/{fid}/publish").status_code == 200
+    assert client.patch(f"/concerts/{cid}/reschedule", json=MOVED_SLOT).status_code == 409
+
+    unpublished = client.post(f"/festivals/{fid}/unpublish")
+
+    assert unpublished.status_code == 200
+    assert unpublished.json()["status"] == "preparation"
+    assert unpublished.json()["notification_sent"] is True
+    assert client.patch(f"/concerts/{cid}/reschedule", json=MOVED_SLOT).status_code == 200
+    assert client.post(f"/festivals/{fid}/publish").json()["status"] == "published"
+
+
+def test_api_unpublish_festival_in_preparation_returns_400(client, setup_festival_and_concert):
+    fid = setup_festival_and_concert["festival_id"]
+
+    r = client.post(f"/festivals/{fid}/unpublish")
+
+    assert r.status_code == 400
+    assert client.get(f"/festivals/{fid}").json()["status"] == "preparation"
+
+
+def test_api_unpublish_unknown_festival_returns_404(client):
+    assert client.post("/festivals/99999/unpublish").status_code == 404
+
+
+def test_api_unpublish_notification_failure_still_reopens(client, setup_festival_and_concert, monkeypatch):
+    fid = setup_festival_and_concert["festival_id"]
+    assert client.post(f"/festivals/{fid}/publish").status_code == 200
+    monkeypatch.setattr(settings, "fail_notifications", True)
+
+    r = client.post(f"/festivals/{fid}/unpublish")
+
+    assert r.status_code == 200
+    assert r.json()["status"] == "preparation"
+    assert r.json()["notification_sent"] is False

@@ -10,12 +10,14 @@ from app.application.ports.inbound import (
     IPublishFestivalPort,
     IRescheduleConcertPort,
     IScheduleConcertPort,
+    IUnpublishFestivalPort,
     PublishFestivalResult,
     RescheduleConcertCommand,
     RescheduleConcertResult,
 )
 from app.application.use_cases.operations.declare_incident import DeclareIncidentUseCase
 from app.application.use_cases.operations.publish_festival import PublishFestivalUseCase
+from app.application.use_cases.operations.unpublish_festival import UnpublishFestivalUseCase
 from app.application.use_cases.scheduling.reschedule_concert import RescheduleConcertUseCase
 from app.application.use_cases.scheduling.schedule_concert import ScheduleConcertUseCase
 from app.domain.models.concert import Concert
@@ -32,9 +34,10 @@ from app.main import app
         (concerts.create_concert, IScheduleConcertPort, ScheduleConcertUseCase),
         (concerts.reschedule_concert, IRescheduleConcertPort, RescheduleConcertUseCase),
         (publication.publish_festival, IPublishFestivalPort, PublishFestivalUseCase),
+        (publication.unpublish_festival, IUnpublishFestivalPort, UnpublishFestivalUseCase),
         (incidents.create_incident, IDeclareIncidentPort, DeclareIncidentUseCase),
     ],
-    ids=["programmer", "deplacer", "publier", "declarer_incident"],
+    ids=["programmer", "deplacer", "publier", "depublier", "declarer_incident"],
 )
 def test_route_depends_on_the_port_implemented_by_the_use_case(route, port, use_case):
     assert get_type_hints(route, include_extras=True)["use_case"].__origin__ is port

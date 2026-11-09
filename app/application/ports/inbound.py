@@ -56,6 +56,16 @@ class IPublishFestivalPort(Protocol):
 
 
 @dataclass(frozen=True)
+class UnpublishFestivalResult:
+    festival: Festival
+    notification_sent: bool
+
+
+class IUnpublishFestivalPort(Protocol):
+    def execute(self, festival_id: int) -> UnpublishFestivalResult: ...
+
+
+@dataclass(frozen=True)
 class DeclareIncidentCommand:
     concert_id: int
     description: str

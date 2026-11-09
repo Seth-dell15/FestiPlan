@@ -25,6 +25,10 @@ class InMemoryConcertRepository(IConcertRepository):
         ]
         return sorted(concerts, key=lambda c: c.time_slot.start)
 
+    def list_for_artist(self, artist_id: int) -> list[Concert]:
+        concerts = [c for c in self._storage.values() if c.artist_id == artist_id and not c.is_cancelled]
+        return sorted(concerts, key=lambda c: c.time_slot.start)
+
     def save(self, concert: Concert) -> Concert:
         if concert.id is None:
             concert.id = self._auto_id

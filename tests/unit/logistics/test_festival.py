@@ -2,8 +2,8 @@ from datetime import datetime
 
 import pytest
 
-from app.domain.events.operation_events import FestivalPublishedEvent
-from app.domain.exceptions.operation_exceptions import FestivalAlreadyPublishedError
+from app.domain.events.operation_events import FestivalPublishedEvent, FestivalUnpublishedEvent
+from app.domain.exceptions.operation_exceptions import FestivalAlreadyPublishedError, FestivalNotPublishedError
 from app.domain.models.festival import Festival
 from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.festival_status import FestivalStatus
@@ -49,6 +49,22 @@ def test_publish_returns_the_festival_published_event():
 
     assert isinstance(event, FestivalPublishedEvent)
     assert (event.festival_id, event.festival_name) == (7, "Hellforge Open Air")
+
+
+def test_unpublish_moves_festival_back_to_preparation_and_returns_event():
+    festival = make_festival(id=7)
+    festival.publish()
+
+    event = festival.unpublish()
+
+    assert festival.status is FestivalStatus.PREPARATION
+    assert isinstance(event, FestivalUnpublishedEvent)
+    assert (event.festival_id, event.festival_name) == (7, "Hellforge Open Air")
+
+
+def test_unpublishing_a_festival_in_preparation_is_refused():
+    with pytest.raises(FestivalNotPublishedError):
+        make_festival().unpublish()
 
 
 def test_publishing_twice_is_refused():

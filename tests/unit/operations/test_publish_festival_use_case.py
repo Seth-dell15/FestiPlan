@@ -96,12 +96,16 @@ def test_publish_empty_schedule_is_refused(concerts):
         ([concert(time_slot=OUTSIDE_FESTIVAL)], "déborde des dates"),
         ([concert(artist_id=2, stage_id=2), concert(artist_id=1, stage_id=2)], "conflit de programmation"),
         ([concert(artist_id=2, stage_id=2), concert(artist_id=2, stage_id=1)], "conflit de programmation"),
+        (
+            [concert(artist_id=2, stage_id=2), Concert(festival_id=2, artist_id=2, stage_id=9, time_slot=SLOT)],
+            "conflit de programmation",
+        ),
         ([concert(artist_id=99)], "inconnu"),
         ([concert(stage_id=99)], "inconnu"),
         ([concert(stage_id=9)], "n'appartient pas"),
         ([concert(artist_id=1, stage_id=2)], "équipements requis"),
     ],
-    ids=["R6", "R2", "R3", "R4_artiste", "R4_scene", "R4_autre_festival", "R5"],
+    ids=["R6", "R2", "R3", "R3_autre_festival", "R4_artiste", "R4_scene", "R4_autre_festival", "R5"],
 )
 def test_publish_with_invalid_schedule_is_refused_and_stays_in_preparation(concerts, message):
     use_case, festivals = make_use_case([make_festival()], concerts)

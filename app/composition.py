@@ -24,6 +24,7 @@ from app.application.use_cases.operations.declare_incident import DeclareInciden
 from app.application.use_cases.operations.list_incidents import ListIncidentsUseCase
 from app.application.use_cases.operations.publish_festival import PublishFestivalUseCase
 from app.application.use_cases.operations.resolve_incident import ResolveIncidentUseCase
+from app.application.use_cases.operations.unpublish_festival import UnpublishFestivalUseCase
 from app.application.use_cases.scheduling.cancel_concert import CancelConcertUseCase
 from app.application.use_cases.scheduling.get_concert import GetConcertUseCase
 from app.application.use_cases.scheduling.get_schedule import GetFestivalScheduleUseCase
@@ -97,6 +98,10 @@ def publish_festival_use_case(db: DbSession) -> PublishFestivalUseCase:
         ArtistSqlRepository(db),
         EmailNotificationAdapter(),
     )
+
+
+def unpublish_festival_use_case(db: DbSession) -> UnpublishFestivalUseCase:
+    return UnpublishFestivalUseCase(FestivalSqlRepository(db), EmailNotificationAdapter())
 
 
 def declare_incident_use_case(db: DbSession) -> DeclareIncidentUseCase:

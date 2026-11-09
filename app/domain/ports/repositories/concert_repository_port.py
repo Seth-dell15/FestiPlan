@@ -16,6 +16,10 @@ class IConcertRepository(Protocol):
         """Récupère tous les concerts d'un festival, ordonnés par heure de début."""
         ...
 
+    def list_for_artist(self, artist_id: int) -> list[Concert]:
+        """Récupère les concerts actifs d'un artiste, tous festivals confondus (R3)."""
+        ...
+
     def save(self, concert: Concert) -> Concert:
         """Sauvegarde (création ou mise à jour) un concert et retourne l'entité persistée."""
         ...

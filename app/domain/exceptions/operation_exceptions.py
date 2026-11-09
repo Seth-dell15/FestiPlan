@@ -21,6 +21,11 @@ class FestivalAlreadyPublishedError(DomainException):
     pass
 
 
+class FestivalNotPublishedError(DomainException):
+    """Levée lorsqu'on tente de dépublier un festival qui n'est pas publié."""
+    pass
+
+
 class CannotPublishInvalidScheduleError(DomainException):
     """Levée lorsqu'on tente de publier un planning contenant des conflits ou non conforme (R8)."""
     pass

@@ -10,6 +10,7 @@ from app.domain.models.artist import Artist
 from app.domain.models.stage import Stage
 from app.domain.value_objects.equipment_set import EquipmentSet
 from app.domain.exceptions.scheduling_exceptions import (
+    ArtistAlreadyBookedError,
     CannotModifyPublishedFestivalError,
     ConcertAlreadyCancelledError,
     StageNotInFestivalError,
@@ -85,6 +86,40 @@ def test_schedule_accepts_artist_on_stage_with_required_equipment():
 def test_schedule_is_refused_on_published_festival():
     with pytest.raises(CannotModifyPublishedFestivalError):
         schedule(festival=PUBLISHED).execute(cmd())
+
+
+# --- R3 entre festivals ------------------------------------------------------------
+
+def booking_elsewhere(artist_id=20, status="scheduled"):
+    return Concert(id=5, festival_id=2, artist_id=artist_id, stage_id=900,
+                   time_slot=TimeSlot(datetime(2027, 6, 19, 10), datetime(2027, 6, 19, 11)), status=status)
+
+
+def test_schedule_is_refused_when_artist_plays_in_another_festival():
+    repo = InMemoryConcertRepository([booking_elsewhere()])
+    with pytest.raises(ArtistAlreadyBookedError):
+        schedule(repo).execute(cmd())
+    assert repo.list_for_festival(1, include_cancelled=True) == []
+
+
+@pytest.mark.parametrize("elsewhere", [
+    booking_elsewhere(artist_id=10),
+    booking_elsewhere(status="cancelled"),
+], ids=["autre_artiste", "concert_annule"])
+def test_schedule_is_accepted_when_the_booking_elsewhere_does_not_block(elsewhere):
+    assert schedule(InMemoryConcertRepository([elsewhere])).execute(cmd()).id is not None
+
+
+def test_reschedule_is_refused_when_artist_plays_in_another_festival():
+    moved = Concert(id=1, festival_id=1, artist_id=20, stage_id=200,
+                    time_slot=TimeSlot(datetime(2027, 6, 19, 14), datetime(2027, 6, 19, 15)))
+    repo = InMemoryConcertRepository([moved, booking_elsewhere()])
+    use_case = RescheduleConcertUseCase(repo, FakeFestivalQueryAdapter({1: OPEN}), FakeNotificationAdapter())
+
+    with pytest.raises(ArtistAlreadyBookedError):
+        use_case.execute(RescheduleConcertCommand(1, datetime(2027, 6, 19, 10), datetime(2027, 6, 19, 11)))
+
+    assert repo.get_by_id(1).time_slot.start == datetime(2027, 6, 19, 14)
 
 
 # --- Déplacer un concert annulé ---------------------------------------------------

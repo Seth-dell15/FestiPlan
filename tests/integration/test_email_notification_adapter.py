@@ -5,7 +5,7 @@ import pytest
 from app.adapters.secondary.notifications import email_notification_adapter as module
 from app.adapters.secondary.notifications.email_notification_adapter import EmailNotificationAdapter
 from app.domain.events.concert_events import ConcertRescheduledEvent
-from app.domain.events.operation_events import FestivalPublishedEvent
+from app.domain.events.operation_events import FestivalPublishedEvent, FestivalUnpublishedEvent
 from app.domain.value_objects.time_slot import TimeSlot
 
 NOW = datetime(2027, 6, 18, 12, 0, tzinfo=timezone.utc)
@@ -25,6 +25,16 @@ def test_festival_publication_email_names_the_festival_not_a_concert(sent_emails
 
     [email] = sent_emails
     assert email["subject"] == "Publication du festival #1"
+    assert "Hellforge" in email["body"]
+
+
+def test_festival_unpublication_email_names_the_festival(sent_emails):
+    EmailNotificationAdapter().notify_festival_unpublished(
+        FestivalUnpublishedEvent(festival_id=1, festival_name="Hellforge", unpublished_at=NOW)
+    )
+
+    [email] = sent_emails
+    assert email["subject"] == "Retrait du planning du festival #1"
     assert "Hellforge" in email["body"]
 
 

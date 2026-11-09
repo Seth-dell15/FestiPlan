@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from app.domain.events.concert_events import ConcertRescheduledEvent
-from app.domain.events.operation_events import FestivalPublishedEvent
+from app.domain.events.operation_events import FestivalPublishedEvent, FestivalUnpublishedEvent
 
 
 class INotificationSenderPort(Protocol):
@@ -11,4 +11,7 @@ class INotificationSenderPort(Protocol):
         ...
 
     def notify_festival_published(self, event: FestivalPublishedEvent) -> None:
+        ...
+
+    def notify_festival_unpublished(self, event: FestivalUnpublishedEvent) -> None:
         ...
