@@ -3,9 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import Base, engine
 from app import models  # noqa
-from app.api import festivals, concerts, incidents
-from app.adapters.primary.api.routes import artists, stages
-from app.adapters.primary.api.routes import festivals as logistics_festivals
+from app.adapters.primary.api.routes import artists, concerts, festivals, incidents, publication, stages
 from app.adapters.primary.security.security_headers import SecurityHeadersMiddleware
 from app.adapters.primary.security.error_handler import global_security_exception_handler
 
@@ -33,8 +31,8 @@ app.add_exception_handler(Exception, global_security_exception_handler)
 
 # 4. Inclusion des routeurs
 for router in (
-    logistics_festivals.router,
     festivals.router,
+    publication.router,
     artists.router,
     stages.router,
     concerts.router,

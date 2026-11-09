@@ -6,14 +6,14 @@ Aucune dépendance à FastAPI ni à SQLAlchemy : testable sans base de données.
 """
 from collections.abc import Iterable
 
+from app.domain.models.artist import Artist
 from app.domain.models.concert import Concert
+from app.domain.models.stage import Stage
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.ports.repositories.festival_repository_port import FestivalScheduleInfo
-from app.domain.ports.repositories.scheduling_catalog_port import ArtistScheduleInfo, StageScheduleInfo
 from app.domain.exceptions.scheduling_exceptions import (
     CannotModifyPublishedFestivalError,
     ConcertOutsideFestivalError,
-    MissingStageEquipmentError,
     StageNotInFestivalError,
 )
 
@@ -36,13 +36,11 @@ def ensure_within_festival(slot: TimeSlot, festival: FestivalScheduleInfo) -> No
         )
 
 
-def ensure_stage_can_host(festival_id: int, stage: StageScheduleInfo, artist: ArtistScheduleInfo) -> None:
-    """R4 (scène du bon festival) et R5 (équipements requis disponibles)."""
-    if stage.festival_id != festival_id:
+def ensure_stage_can_host(festival_id: int, stage: Stage, artist: Artist) -> None:
+    """R4 (scène du bon festival) et R5 (équipements requis, garantis par Stage)."""
+    if not stage.belongs_to(festival_id):
         raise StageNotInFestivalError(stage.id, festival_id)
-    missing = artist.required_equipment - stage.available_equipment
-    if missing:
-        raise MissingStageEquipmentError(stage.name, frozenset(missing))
+    stage.ensure_can_host(artist)
 
 
 def ensure_no_conflict(candidate: Concert, others: Iterable[Concert]) -> None:

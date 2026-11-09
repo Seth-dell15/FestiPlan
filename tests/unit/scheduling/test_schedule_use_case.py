@@ -14,16 +14,20 @@ from app.application.use_cases.scheduling.schedule_concert import (
 from app.application.use_cases.scheduling.cancel_concert import CancelConcertUseCase
 from app.application.use_cases.scheduling.get_schedule import GetFestivalScheduleUseCase
 from app.adapters.secondary.repositories.in_memory_concert_repository import InMemoryConcertRepository
-from app.adapters.secondary.repositories.in_memory_scheduling_catalog import InMemorySchedulingCatalog
-from app.domain.ports.repositories.scheduling_catalog_port import ArtistScheduleInfo, StageScheduleInfo
+from app.adapters.secondary.repositories.in_memory_artist_repository import InMemoryArtistRepository
+from app.adapters.secondary.repositories.in_memory_stage_repository import InMemoryStageRepository
+from app.domain.models.artist import Artist
+from app.domain.models.stage import Stage
 from tests.unit.scheduling.test_reschedule_use_case import FakeFestivalQueryAdapter
 
 
-def make_catalog() -> InMemorySchedulingCatalog:
+def make_catalog() -> dict:
     # Scène 100 (festival 1) et artistes 10 et 20 sans besoin technique particulier
-    return InMemorySchedulingCatalog(
-        stages=[StageScheduleInfo(id=100, festival_id=1, name="Mainstage")],
-        artists=[ArtistScheduleInfo(id=10, name="Iron Vow"), ArtistScheduleInfo(id=20, name="Crimson Engine")],
+    return dict(
+        stage_repository=InMemoryStageRepository([Stage(id=100, festival_id=1, name="Mainstage", capacity=1000)]),
+        artist_repository=InMemoryArtistRepository(
+            [Artist(id=10, name="Iron Vow", genre="Heavy"), Artist(id=20, name="Crimson Engine", genre="Thrash")]
+        ),
     )
 
 
@@ -43,7 +47,7 @@ def test_schedule_concert_success(festival_info):
     use_case = ScheduleConcertUseCase(
         concert_repository=repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
-        catalog_port=make_catalog(),
+        **make_catalog(),
     )
 
     cmd = ScheduleConcertCommand(
@@ -72,7 +76,7 @@ def test_schedule_concert_conflict_raises_stage_occupied(festival_info):
     use_case = ScheduleConcertUseCase(
         concert_repository=repo,
         festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
-        catalog_port=make_catalog(),
+        **make_catalog(),
     )
 
     cmd = ScheduleConcertCommand(

@@ -6,14 +6,16 @@ from app.domain.models.concert import Concert
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.services import scheduling_policy as policy
 from app.domain.ports.repositories.festival_repository_port import FestivalScheduleInfo
-from app.domain.ports.repositories.scheduling_catalog_port import ArtistScheduleInfo, StageScheduleInfo
+from app.domain.exceptions.logistics_exceptions import EquipmentMismatchError
+from app.domain.models.artist import Artist
+from app.domain.models.stage import Stage
+from app.domain.value_objects.equipment_set import EquipmentSet
 from app.domain.exceptions.scheduling_exceptions import (
     ArtistAlreadyBookedError,
     CannotModifyPublishedFestivalError,
     ConcertAlreadyCancelledError,
     ConcertOutsideFestivalError,
     InvalidTimeSlotError,
-    MissingStageEquipmentError,
     StageNotInFestivalError,
     StageOccupiedError,
 )
@@ -109,23 +111,24 @@ def test_r6_slot_on_festival_bounds_is_accepted():
 
 
 def test_r4_stage_of_another_festival_is_rejected():
-    stage = StageScheduleInfo(id=100, festival_id=2, name="Ailleurs")
+    stage = Stage(id=100, festival_id=2, name="Ailleurs", capacity=100)
+    artist = Artist(id=10, name="X", genre="Metal")
     with pytest.raises(StageNotInFestivalError):
-        policy.ensure_stage_can_host(1, stage, ArtistScheduleInfo(id=10, name="X"))
+        policy.ensure_stage_can_host(1, stage, artist)
 
 
 def test_r5_missing_equipment_is_listed():
-    stage = StageScheduleInfo(id=100, festival_id=1, name="Warzone", available_equipment=frozenset({"special_lighting"}))
-    artist = ArtistScheduleInfo(id=10, name="Iron Vow",
-                                required_equipment=frozenset({"large_rigging", "special_lighting"}))
-    with pytest.raises(MissingStageEquipmentError) as err:
+    stage = Stage(id=100, festival_id=1, name="Warzone", capacity=100, available_equipment=EquipmentSet.of(["special_lighting"]))
+    artist = Artist(id=10, name="Iron Vow", genre="Heavy",
+                    required_equipment=EquipmentSet.of(["large_rigging", "special_lighting"]))
+    with pytest.raises(EquipmentMismatchError) as err:
         policy.ensure_stage_can_host(1, stage, artist)
-    assert err.value.missing == frozenset({"large_rigging"})
+    assert str(err.value) == "La scène Warzone ne dispose pas des équipements requis : large_rigging"
 
 
 def test_r5_stage_with_all_equipment_is_accepted():
-    stage = StageScheduleInfo(id=100, festival_id=1, name="Main", available_equipment=frozenset({"large_rigging", "pyro"}))
-    artist = ArtistScheduleInfo(id=10, name="Iron Vow", required_equipment=frozenset({"large_rigging"}))
+    stage = Stage(id=100, festival_id=1, name="Main", capacity=100, available_equipment=EquipmentSet.of(["large_rigging", "pyro"]))
+    artist = Artist(id=10, name="Iron Vow", genre="Heavy", required_equipment=EquipmentSet.of(["large_rigging"]))
     policy.ensure_stage_can_host(1, stage, artist)
 
 

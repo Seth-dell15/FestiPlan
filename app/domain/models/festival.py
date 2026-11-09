@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.domain.exceptions.operation_exceptions import FestivalAlreadyPublishedError
 from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.festival_status import FestivalStatus
 
@@ -18,3 +19,8 @@ class Festival:
     @property
     def is_published(self) -> bool:
         return self.status is FestivalStatus.PUBLISHED
+
+    def publish(self) -> None:
+        if self.is_published:
+            raise FestivalAlreadyPublishedError(f"Le festival '{self.name}' est déjà publié.")
+        self.status = FestivalStatus.PUBLISHED

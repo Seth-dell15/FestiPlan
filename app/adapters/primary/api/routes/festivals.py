@@ -14,7 +14,7 @@ from app.application.use_cases.logistics.list_festivals import ListFestivalsUseC
 from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError
 from app.domain.exceptions.scheduling_exceptions import DomainException
 
-# La route de publication reste dans app/api/festivals.py (pôle opérations).
+# La route de publication est dans publication.py (pôle opérations).
 router = APIRouter(prefix="/festivals", tags=["festivals"])
 
 

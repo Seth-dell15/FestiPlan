@@ -1,6 +1,4 @@
-class DomainException(Exception):
-    """Exception de base du domaine."""
-    pass
+from app.domain.exceptions.scheduling_exceptions import DomainException
 
 
 class IncidentInvalidDescriptionError(DomainException):
@@ -15,11 +13,6 @@ class IncidentNotFoundError(DomainException):
 
 class IncidentAlreadyResolvedError(DomainException):
     """Levée lorsqu'on tente de résoudre un incident déjà résolu."""
-    pass
-
-
-class FestivalNotFoundError(DomainException):
-    """Levée lorsqu'un festival est introuvable."""
     pass
 
 

@@ -77,15 +77,6 @@ class StageNotInFestivalError(DomainException):
         super().__init__(f"La scène #{stage_id} n'appartient pas au festival #{festival_id}")
 
 
-class MissingStageEquipmentError(DomainException):
-    """R5 : les équipements requis par l'artiste doivent être disponibles sur la scène."""
-    def __init__(self, stage_name: str, missing: frozenset[str]):
-        super().__init__(
-            f"La scène {stage_name} ne dispose pas des équipements requis : {', '.join(sorted(missing))}"
-        )
-        self.missing = missing
-
-
 class ConcertAlreadyCancelledError(SchedulingConflictError, ValueError):
     """Un concert annulé ne peut être ni déplacé ni annulé à nouveau.
 

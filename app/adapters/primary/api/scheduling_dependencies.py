@@ -10,9 +10,10 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.adapters.secondary.repositories.artist_sql_repository import ArtistSqlRepository
 from app.adapters.secondary.repositories.concert_sql_repository import ConcertSqlRepository
 from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlQueryAdapter
-from app.adapters.secondary.repositories.scheduling_catalog_sql_adapter import SchedulingCatalogSqlAdapter
+from app.adapters.secondary.repositories.stage_sql_repository import StageSqlRepository
 from app.adapters.secondary.notifications.email_notification_adapter import EmailNotificationAdapter
 from app.application.use_cases.scheduling.schedule_concert import ScheduleConcertUseCase
 from app.application.use_cases.scheduling.reschedule_concert import RescheduleConcertUseCase
@@ -25,7 +26,7 @@ DbSession = Annotated[Session, Depends(get_db)]
 
 def schedule_concert_use_case(db: DbSession) -> ScheduleConcertUseCase:
     return ScheduleConcertUseCase(
-        ConcertSqlRepository(db), FestivalSqlQueryAdapter(db), SchedulingCatalogSqlAdapter(db)
+        ConcertSqlRepository(db), FestivalSqlQueryAdapter(db), StageSqlRepository(db), ArtistSqlRepository(db)
     )
 
 

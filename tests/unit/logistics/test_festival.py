@@ -1,5 +1,8 @@
 from datetime import datetime
 
+import pytest
+
+from app.domain.exceptions.operation_exceptions import FestivalAlreadyPublishedError
 from app.domain.models.festival import Festival
 from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.festival_status import FestivalStatus
@@ -29,3 +32,20 @@ def test_status_values_match_legacy_database_strings():
 def test_two_festivals_with_same_values_are_distinct_entities():
     first, second = make_festival(), make_festival()
     assert first != second
+
+
+def test_publish_moves_festival_from_preparation_to_published():
+    festival = make_festival()
+
+    festival.publish()
+
+    assert festival.status is FestivalStatus.PUBLISHED
+    assert festival.is_published
+
+
+def test_publishing_twice_is_refused():
+    festival = make_festival()
+    festival.publish()
+
+    with pytest.raises(FestivalAlreadyPublishedError):
+        festival.publish()

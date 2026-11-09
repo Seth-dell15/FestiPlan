@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from app.domain.models.festival import Festival
 from app.domain.ports.repositories.festival_repository_port import (
     FestivalScheduleInfo,
-    IFestivalCommandPort,
     IFestivalQueryPort,
     IFestivalRepository,
 )
@@ -51,8 +50,8 @@ def _to_entity(row: FestivalRow) -> Festival:
     )
 
 
-class FestivalSqlQueryAdapter(IFestivalQueryPort, IFestivalCommandPort):
-    """Adaptateur secondaire SQLAlchemy implémentant les ports de consultation et de commande du festival."""
+class FestivalSqlQueryAdapter(IFestivalQueryPort):
+    """Adaptateur secondaire SQLAlchemy implémentant le port de consultation du festival."""
 
     def __init__(self, db: Session):
         self._db = db
@@ -67,19 +66,4 @@ class FestivalSqlQueryAdapter(IFestivalQueryPort, IFestivalCommandPort):
             start_date=orm.start_date,
             end_date=orm.end_date,
             is_published=(orm.status == "published"),
-        )
-
-    def publish_festival(self, festival_id: int) -> FestivalScheduleInfo | None:
-        orm = self._db.query(FestivalRow).filter(FestivalRow.id == festival_id).first()
-        if orm is None:
-            return None
-        orm.status = "published"
-        self._db.commit()
-        self._db.refresh(orm)
-        return FestivalScheduleInfo(
-            id=orm.id,
-            name=orm.name,
-            start_date=orm.start_date,
-            end_date=orm.end_date,
-            is_published=True,
         )

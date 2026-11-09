@@ -5,11 +5,13 @@ import pytest
 from app.domain.models.concert import Concert
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.ports.repositories.festival_repository_port import FestivalScheduleInfo
-from app.domain.ports.repositories.scheduling_catalog_port import ArtistScheduleInfo, StageScheduleInfo
+from app.domain.exceptions.logistics_exceptions import EquipmentMismatchError
+from app.domain.models.artist import Artist
+from app.domain.models.stage import Stage
+from app.domain.value_objects.equipment_set import EquipmentSet
 from app.domain.exceptions.scheduling_exceptions import (
     CannotModifyPublishedFestivalError,
     ConcertAlreadyCancelledError,
-    MissingStageEquipmentError,
     StageNotInFestivalError,
     UnknownArtistError,
     UnknownFestivalError,
@@ -22,7 +24,8 @@ from app.application.use_cases.scheduling.reschedule_concert import (
 )
 from app.application.use_cases.scheduling.cancel_concert import CancelConcertUseCase
 from app.adapters.secondary.repositories.in_memory_concert_repository import InMemoryConcertRepository
-from app.adapters.secondary.repositories.in_memory_scheduling_catalog import InMemorySchedulingCatalog
+from app.adapters.secondary.repositories.in_memory_artist_repository import InMemoryArtistRepository
+from app.adapters.secondary.repositories.in_memory_stage_repository import InMemoryStageRepository
 from app.adapters.secondary.notifications.fake_notification_adapter import FakeNotificationAdapter
 from tests.unit.scheduling.test_reschedule_use_case import FakeFestivalQueryAdapter
 
@@ -30,22 +33,20 @@ OPEN = FestivalScheduleInfo(id=1, name="Hellforge", start_date=datetime(2027, 6,
                             end_date=datetime(2027, 6, 20, 23, 59), is_published=False)
 PUBLISHED = FestivalScheduleInfo(**{**OPEN.__dict__, "is_published": True})
 
-CATALOG = InMemorySchedulingCatalog(
-    stages=[
-        StageScheduleInfo(id=100, festival_id=1, name="Mainstage",
-                          available_equipment=frozenset({"large_rigging", "special_lighting"})),
-        StageScheduleInfo(id=200, festival_id=1, name="Warzone", available_equipment=frozenset({"special_lighting"})),
-        StageScheduleInfo(id=900, festival_id=2, name="Ailleurs"),
-    ],
-    artists=[
-        ArtistScheduleInfo(id=10, name="Iron Vow", required_equipment=frozenset({"large_rigging"})),
-        ArtistScheduleInfo(id=20, name="Concrete Reign"),
-    ],
-)
+STAGES = InMemoryStageRepository([
+    Stage(id=100, festival_id=1, name="Mainstage", capacity=1000,
+          available_equipment=EquipmentSet.of(["large_rigging", "special_lighting"])),
+    Stage(id=200, festival_id=1, name="Warzone", capacity=500, available_equipment=EquipmentSet.of(["special_lighting"])),
+    Stage(id=900, festival_id=2, name="Ailleurs", capacity=100),
+])
+ARTISTS = InMemoryArtistRepository([
+    Artist(id=10, name="Iron Vow", genre="Heavy", required_equipment=EquipmentSet.of(["large_rigging"])),
+    Artist(id=20, name="Concrete Reign", genre="Doom"),
+])
 
 
 def schedule(repo=None, festival=OPEN):
-    return ScheduleConcertUseCase(repo or InMemoryConcertRepository(), FakeFestivalQueryAdapter({1: festival}), CATALOG)
+    return ScheduleConcertUseCase(repo or InMemoryConcertRepository(), FakeFestivalQueryAdapter({1: festival}), STAGES, ARTISTS)
 
 
 def cmd(**overrides):
@@ -67,7 +68,7 @@ def existing_concert(status="scheduled"):
     ({"stage_id": 99}, UnknownStageError),
     ({"artist_id": 99}, UnknownArtistError),
     ({"stage_id": 900}, StageNotInFestivalError),
-    ({"artist_id": 10, "stage_id": 200}, MissingStageEquipmentError),
+    ({"artist_id": 10, "stage_id": 200}, EquipmentMismatchError),
 ])
 def test_schedule_rejects_invalid_references_and_nothing_is_saved(overrides, error):
     repo = InMemoryConcertRepository()

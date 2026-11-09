@@ -3,9 +3,10 @@ from datetime import datetime
 from app.domain.models.concert import Concert
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.services import scheduling_policy as policy
+from app.domain.ports.repositories.artist_repository_port import IArtistRepository
 from app.domain.ports.repositories.concert_repository_port import IConcertRepository
 from app.domain.ports.repositories.festival_repository_port import IFestivalQueryPort
-from app.domain.ports.repositories.scheduling_catalog_port import ISchedulingCatalogPort
+from app.domain.ports.repositories.stage_repository_port import IStageRepository
 from app.domain.exceptions.scheduling_exceptions import (
     UnknownArtistError,
     UnknownFestivalError,
@@ -36,11 +37,13 @@ class ScheduleConcertUseCase:
         self,
         concert_repository: IConcertRepository,
         festival_query_port: IFestivalQueryPort,
-        catalog_port: ISchedulingCatalogPort,
+        stage_repository: IStageRepository,
+        artist_repository: IArtistRepository,
     ):
         self._concert_repo = concert_repository
         self._festival_port = festival_query_port
-        self._catalog = catalog_port
+        self._stages = stage_repository
+        self._artists = artist_repository
 
     def execute(self, command: ScheduleConcertCommand) -> Concert:
         # R1 : le créneau valide lui-même ses bornes
@@ -56,10 +59,10 @@ class ScheduleConcertUseCase:
         policy.ensure_within_festival(time_slot, festival)
 
         # R4 : la scène et l'artiste doivent exister ; R4/R5 : scène du festival, équipements
-        stage = self._catalog.get_stage_info(command.stage_id)
+        stage = self._stages.get_by_id(command.stage_id)
         if stage is None:
             raise UnknownStageError(command.stage_id)
-        artist = self._catalog.get_artist_info(command.artist_id)
+        artist = self._artists.get_by_id(command.artist_id)
         if artist is None:
             raise UnknownArtistError(command.artist_id)
         policy.ensure_stage_can_host(command.festival_id, stage, artist)
