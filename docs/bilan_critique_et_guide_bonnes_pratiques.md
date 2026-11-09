@@ -31,6 +31,7 @@ L'objectif est double :
   * *Défaut 1 (Conflits de scène et d'artiste) :* Impossible de créer un chevauchement.
   * *Défaut 2 (Panne de notification) :* La persistance en base n'est plus compromise par une défaillance de messagerie réseau.
   * *Défaut 3 (Verrouillage du planning) :* Toute altération ordinaire d'un festival publié est formellement bloquée.
+* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Strategy/Policy, Factory Method, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`livrables_finaux.md`](livrables_finaux.md#38-patrons-de-conception-design-patterns-mobilisés--justifications-pourquoi)).
 
 ### Les Faiblesses et Dettes Techniques Résiduelles
 1. **Absence de gestion de la concurrence (Race Conditions) :**
