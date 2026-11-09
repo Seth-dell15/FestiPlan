@@ -18,14 +18,6 @@ class EquipmentSet:
     def of(cls, items: Iterable[str]) -> EquipmentSet:
         return cls(frozenset(items))
 
-    @classmethod
-    def from_csv(cls, raw: str | None) -> EquipmentSet:
-        # Format de stockage hérité de la base : "a,b,c".
-        return cls.of((raw or "").split(","))
-
-    def to_csv(self) -> str:
-        return ",".join(sorted(self.items))
-
     def covers(self, required: EquipmentSet) -> bool:
         return required.items <= self.items
 

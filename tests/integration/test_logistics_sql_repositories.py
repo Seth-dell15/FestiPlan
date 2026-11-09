@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.adapters.secondary.database import models  # noqa: F401  enregistre les tables dans Base.metadata
 from app.adapters.secondary.repositories.artist_sql_repository import ArtistSqlRepository
+from app.adapters.secondary.repositories.equipment_csv import equipment_from_csv, equipment_to_csv
 from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlRepository
 from app.adapters.secondary.repositories.stage_sql_repository import StageSqlRepository
 from app.adapters.secondary.database.session import Base
@@ -34,6 +35,23 @@ def make_festival():
         location="Clisson-sur-Rivière",
         period=FestivalPeriod(start=datetime(2027, 6, 18, 10, 0), end=datetime(2027, 6, 20, 23, 59)),
     )
+
+
+def test_from_csv_ignores_blanks_and_spaces():
+    assert equipment_from_csv(" large_rigging, ,special_lighting,") == EquipmentSet.of(
+        ["large_rigging", "special_lighting"]
+    )
+
+
+def test_from_csv_accepts_empty_or_none():
+    assert len(equipment_from_csv("")) == 0
+    assert len(equipment_from_csv(None)) == 0
+
+
+def test_csv_round_trip_is_stable():
+    equipment = EquipmentSet.of(["special_lighting", "large_rigging"])
+    assert equipment_to_csv(equipment) == "large_rigging,special_lighting"
+    assert equipment_from_csv(equipment_to_csv(equipment)) == equipment
 
 
 def test_festival_round_trip_keeps_period_and_status(session):
