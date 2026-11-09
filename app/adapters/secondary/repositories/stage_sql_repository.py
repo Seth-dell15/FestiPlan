@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 
 from app.domain.models.stage import Stage
 from app.domain.ports.repositories.stage_repository_port import IStageRepository
-from app.domain.value_objects.equipment_set import EquipmentSet
 from app.adapters.secondary.database.models import Stage as StageRow
+from app.adapters.secondary.repositories.equipment_csv import equipment_from_csv, equipment_to_csv
 
 
 class StageSqlRepository(IStageRepository):
@@ -28,7 +28,7 @@ class StageSqlRepository(IStageRepository):
         row.festival_id = stage.festival_id
         row.name = stage.name
         row.capacity = stage.capacity
-        row.available_equipment = stage.available_equipment.to_csv()
+        row.available_equipment = equipment_to_csv(stage.available_equipment)
         self._session.commit()
         stage.id = row.id
         return stage
@@ -40,5 +40,5 @@ def _to_entity(row: StageRow) -> Stage:
         festival_id=row.festival_id,
         name=row.name,
         capacity=row.capacity,
-        available_equipment=EquipmentSet.from_csv(row.available_equipment),
+        available_equipment=equipment_from_csv(row.available_equipment),
     )

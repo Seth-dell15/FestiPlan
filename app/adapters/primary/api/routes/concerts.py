@@ -8,6 +8,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.adapters.primary.api.schemas.common import EntityId
 from app.adapters.primary.api.schemas.concert_schemas import (
     ConcertCreate,
     ConcertRead,
@@ -63,7 +64,7 @@ def _to_http_error(exc: Exception) -> HTTPException:
 
 @router.get("", response_model=list[ConcertRead])
 def list_concerts(
-    festival_id: int,
+    festival_id: EntityId,
     use_case: Annotated[GetFestivalScheduleUseCase, Depends(deps.get_schedule_use_case)],
 ):
     return [_to_read_dto(c) for c in use_case.execute(festival_id=festival_id)]
@@ -71,7 +72,7 @@ def list_concerts(
 
 @router.get("/{concert_id}", response_model=ConcertRead)
 def get_concert(
-    concert_id: int,
+    concert_id: EntityId,
     use_case: Annotated[GetConcertUseCase, Depends(deps.get_concert_use_case)],
 ):
     try:
@@ -100,7 +101,7 @@ def create_concert(
 
 @router.patch("/{concert_id}/reschedule", response_model=ConcertRescheduleRead)
 def reschedule_concert(
-    concert_id: int,
+    concert_id: EntityId,
     payload: ConcertReschedule,
     use_case: Annotated[IRescheduleConcertPort, Depends(deps.reschedule_concert_use_case)],
 ):
@@ -122,7 +123,7 @@ def reschedule_concert(
 
 @router.post("/{concert_id}/cancel", response_model=ConcertRead)
 def cancel_concert(
-    concert_id: int,
+    concert_id: EntityId,
     use_case: Annotated[CancelConcertUseCase, Depends(deps.cancel_concert_use_case)],
 ):
     try:
@@ -133,7 +134,7 @@ def cancel_concert(
 
 @router.get("/schedule/{festival_id}", response_model=list[ConcertRead])
 def get_schedule(
-    festival_id: int,
+    festival_id: EntityId,
     use_case: Annotated[GetFestivalScheduleUseCase, Depends(deps.get_schedule_use_case)],
 ):
     return [_to_read_dto(c) for c in use_case.execute(festival_id)]

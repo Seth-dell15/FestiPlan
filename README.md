@@ -79,7 +79,7 @@ uvicorn app.main:app --reload
 
 ## 4. Exécution des Tests
 
-Le projet contient **252 tests automatisés** : domaine, cas d'usage, adaptateurs, non-régression et sécurité.
+Le projet contient **257 tests automatisés** : domaine, cas d'usage, adaptateurs, non-régression et sécurité.
 
 ```bash
 # Exécution de toute la suite de tests
@@ -137,9 +137,10 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 4. Pour rouvrir le planning, appelez `POST /festivals/1/unpublish`. Le déplacement est alors accepté, et une nouvelle publication repasse par tous les contrôles.
 
 ### Scénario 5 : Publication avec contrôle strict du planning (R8)
-1. Tentez de publier un festival dont le planning contient des conflits ou des concerts hors dates : l'API bloque la publication et renvoie **HTTP 400 Bad Request**.
-2. Sur un planning valide, `POST /festivals/1/publish` passe le statut à `"published"` et notifie les équipes.
-3. Publier un festival déjà publié renvoie **HTTP 409 Conflict**.
+1. Créez un festival sans concert via `POST /festivals`, puis tentez de le publier : l'API bloque la publication et renvoie **HTTP 400 Bad Request**.
+2. Les conflits et les concerts hors dates sont refusés dès la programmation, donc ce planning invalide ne peut pas être créé depuis Swagger. Le refus de sa publication (HTTP 400) est vérifié par le test `test_api_publish_with_schedule_conflict_refused_r8`.
+3. Sur un planning valide, `POST /festivals/1/publish` passe le statut à `"published"` et notifie les équipes.
+4. Publier un festival déjà publié renvoie **HTTP 409 Conflict**.
 
 ### Scénario 6 : Déclaration et résolution d'incidents (R10)
 1. Déclarez un incident via `POST /incidents` avec :

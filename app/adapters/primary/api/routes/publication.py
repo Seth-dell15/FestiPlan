@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.composition import publish_festival_use_case, unpublish_festival_use_case
+from app.adapters.primary.api.schemas.common import EntityId
 from app.adapters.primary.api.schemas.festival_schemas import FestivalPublishResponse, FestivalResponse
 from app.application.ports.inbound import (
     IPublishFestivalPort,
@@ -36,7 +37,10 @@ def _to_response(result: PublishFestivalResult | UnpublishFestivalResult) -> Fes
         409: {"description": "Festival déjà publié"},
     },
 )
-def publish_festival(festival_id: int, use_case: Annotated[IPublishFestivalPort, Depends(publish_festival_use_case)]):
+def publish_festival(
+    festival_id: EntityId,
+    use_case: Annotated[IPublishFestivalPort, Depends(publish_festival_use_case)],
+):
     try:
         result = use_case.execute(festival_id)
     except FestivalNotFoundError as exc:
@@ -54,7 +58,7 @@ def publish_festival(festival_id: int, use_case: Annotated[IPublishFestivalPort,
     responses={404: {"description": "Festival introuvable"}, 409: {"description": "Festival non publié"}},
 )
 def unpublish_festival(
-    festival_id: int,
+    festival_id: EntityId,
     use_case: Annotated[IUnpublishFestivalPort, Depends(unpublish_festival_use_case)],
 ):
     try:

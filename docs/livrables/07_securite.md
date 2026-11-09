@@ -112,13 +112,14 @@ Initialement amorcée sur le pôle Opérations, la démarche de sécurisation a 
 * **Menace :** Saturation mémoire ou disque par soumission de payloads textuels massifs (plusieurs dizaines de mégaoctets).
 * **Remédiation :**
   * Bornage strict `max_length=2000` sur les descriptions d'incidents, et de 80 à 120 caractères sur les noms, genres et lieux.
-* **Preuve par les tests :** `test_oversized_payload_rejected` valide le rejet immédiat avec code **HTTP 422** en cas de dépassement.
+  * Identifiants et capacités limités à l'entier 64 bits stocké par SQLite (`EntityId`), pour qu'une valeur démesurée soit un format invalide et non une erreur 500.
+* **Preuve par les tests :** `test_oversized_payload_rejected`, `test_too_large_id_in_url_is_rejected` et `test_too_large_int_in_body_is_rejected` valident le rejet immédiat avec code **HTTP 422** en cas de dépassement.
 
 ---
 
 ## 5. Bilan de la Couverture de Sécurité
 
-La sécurité du projet est validée par **17 tests automatisés directs** intégrés aux **252 tests globaux** :
+La sécurité du projet est validée par **22 tests automatisés directs** intégrés aux **257 tests globaux** :
 
 | # | Test | Fichier | Objectif de sécurité | Résultat |
 | :---: | :--- | :--- | :--- | :---: |
@@ -139,9 +140,14 @@ La sécurité du projet est validée par **17 tests automatisés directs** inté
 | 15 | `test_festival_text_fields_are_sanitized` | `tests/integration/` | Assainissement XSS des champs festivals (Dev 2). | **PASSED** |
 | 16 | `test_artist_text_fields_are_sanitized` | `tests/integration/` | Assainissement XSS des champs artistes (Dev 2). | **PASSED** |
 | 17 | `test_stage_name_is_sanitized` | `tests/integration/` | Assainissement XSS des champs scènes (Dev 2). | **PASSED** |
+| 18 | `test_input_sanitizer_keeps_legitimate_punctuation[Bonjour=1]` | `tests/security/` | Un `=` dans un mot ordinaire n'est pas pris pour un gestionnaire d'événement. | **PASSED** |
+| 19 | `test_input_sanitizer_removes_event_handlers` | `tests/security/` | Suppression des gestionnaires d'événements (`onerror=`). | **PASSED** |
+| 20 | `test_too_large_id_in_url_is_rejected` | `tests/security/` | Rejet HTTP 422 d'un identifiant hors limites dans l'URL. | **PASSED** |
+| 21 | `test_too_large_int_in_body_is_rejected` | `tests/security/` | Rejet HTTP 422 d'un entier hors limites dans le corps. | **PASSED** |
+| 22 | `test_largest_storable_id_is_simply_not_found` | `tests/security/` | Le plus grand identifiant stockable reste un simple 404. | **PASSED** |
 
 ---
 
 ## 6. Synthèse
 
-Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée par les 252 tests automatisés du projet.
+Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée par les 257 tests automatisés du projet.

@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.composition import create_stage_use_case, list_stages_use_case
+from app.adapters.primary.api.schemas.common import EntityId
 from app.adapters.primary.api.schemas.stage_schemas import StageCreateRequest, StageResponse
 from app.application.use_cases.logistics.create_stage import CreateStageCommand, CreateStageUseCase
 from app.application.use_cases.logistics.list_stages import ListStagesUseCase
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/stages", tags=["stages"])
 
 
 @router.get("", response_model=list[StageResponse])
-def list_stages(festival_id: int, use_case: Annotated[ListStagesUseCase, Depends(list_stages_use_case)]):
+def list_stages(festival_id: EntityId, use_case: Annotated[ListStagesUseCase, Depends(list_stages_use_case)]):
     return [StageResponse.from_entity(stage) for stage in use_case.execute(festival_id)]
 
 

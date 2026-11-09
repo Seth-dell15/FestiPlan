@@ -9,7 +9,7 @@ class InputSanitizer:
         re.compile(r"<\s*script[^>]*>.*?<\s*/\s*script\s*>", re.IGNORECASE | re.DOTALL),
         re.compile(r"<\s*iframe[^>]*>.*?<\s*/\s*iframe\s*>", re.IGNORECASE | re.DOTALL),
         re.compile(r"javascript\s*:", re.IGNORECASE),
-        re.compile(r"on\w+\s*=", re.IGNORECASE),  # onload=, onerror=, onclick=
+        re.compile(r"\bon\w+\s*=", re.IGNORECASE),  # onload=, onerror=, onclick=
     ]
 
     @classmethod
@@ -25,13 +25,3 @@ class InputSanitizer:
 
         # Seuls les chevrons ouvrent une balise : &, ' et " restent intacts pour ne pas altérer les noms.
         return cleaned.replace("<", "&lt;").replace(">", "&gt;")
-
-    @classmethod
-    def contains_xss_threat(cls, text: str) -> bool:
-        """Vérifie si une chaîne contient une tentative manifeste d'injection de script."""
-        if not text:
-            return False
-        for pattern in cls._XSS_PATTERNS:
-            if pattern.search(text):
-                return True
-        return "<script" in text.lower() or "onerror=" in text.lower() or "javascript:" in text.lower()

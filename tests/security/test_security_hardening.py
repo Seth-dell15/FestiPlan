@@ -85,6 +85,10 @@ def test_input_sanitizer_unit():
     assert "&lt;img" in cleaned_tag
 
 
+def test_input_sanitizer_removes_event_handlers():
+    assert "onerror" not in InputSanitizer.sanitize_text("<img src=x onerror=alert(1)>")
+
+
 def test_xss_injection_in_incident_description_is_sanitized(client):
     """Vérifie qu'une description d'incident contenant du code malveillant XSS est neutralisée à l'enregistrement."""
     # 1. Créer un festival et un concert
@@ -159,6 +163,54 @@ def test_oversized_payload_rejected(client):
     assert r.status_code == 422
 
 
+TOO_LARGE_INT = 2**63  # Un de plus que le plus grand entier stocké par SQLite
+
+
+def test_too_large_id_in_url_is_rejected(client):
+    """Un identifiant hors de la plage de la base est un format invalide, pas une panne serveur."""
+    slot = {"start_time": "2027-06-18T14:00:00", "end_time": "2027-06-18T15:00:00"}
+    calls = [
+        ("GET", f"/festivals/{TOO_LARGE_INT}"),
+        ("POST", f"/festivals/{TOO_LARGE_INT}/publish"),
+        ("POST", f"/festivals/{TOO_LARGE_INT}/unpublish"),
+        ("GET", f"/stages?festival_id={TOO_LARGE_INT}"),
+        ("GET", f"/concerts?festival_id={TOO_LARGE_INT}"),
+        ("GET", f"/concerts/schedule/{TOO_LARGE_INT}"),
+        ("GET", f"/concerts/{TOO_LARGE_INT}"),
+        ("PATCH", f"/concerts/{TOO_LARGE_INT}/reschedule"),
+        ("POST", f"/concerts/{TOO_LARGE_INT}/cancel"),
+        ("GET", f"/incidents?concert_id={TOO_LARGE_INT}"),
+        ("PATCH", f"/incidents/{TOO_LARGE_INT}/resolve"),
+    ]
+    for method, url in calls:
+        assert client.request(method, url, json=slot).status_code == 422, url
+
+
+def test_too_large_int_in_body_is_rejected(client):
+    concert = {
+        "festival_id": 1,
+        "artist_id": 1,
+        "stage_id": 1,
+        "start_time": "2027-06-18T14:00:00",
+        "end_time": "2027-06-18T15:00:00",
+    }
+    stage = {"festival_id": 1, "name": "Main", "capacity": 100}
+    calls = [
+        ("/concerts", {**concert, "festival_id": TOO_LARGE_INT}),
+        ("/concerts", {**concert, "artist_id": TOO_LARGE_INT}),
+        ("/concerts", {**concert, "stage_id": TOO_LARGE_INT}),
+        ("/incidents", {"concert_id": TOO_LARGE_INT, "description": "Panne son"}),
+        ("/stages", {**stage, "festival_id": TOO_LARGE_INT}),
+        ("/stages", {**stage, "capacity": TOO_LARGE_INT}),
+    ]
+    for url, payload in calls:
+        assert client.post(url, json=payload).status_code == 422, payload
+
+
+def test_largest_storable_id_is_simply_not_found(client):
+    assert client.get(f"/concerts/{TOO_LARGE_INT - 1}").status_code == 404
+
+
 # =====================================================================
 # 5. Tests Anti-Fuite d'Informations (Information Disclosure)
 # =====================================================================
@@ -189,7 +241,7 @@ def test_unhandled_exception_does_not_leak_system_paths(monkeypatch):
 
 
 
-@pytest.mark.parametrize("name", ["Guns N' Roses", "Rock & Metal", 'Le "Grand" Soir'])
+@pytest.mark.parametrize("name", ["Guns N' Roses", "Rock & Metal", 'Le "Grand" Soir', "Bonjour=1"])
 def test_input_sanitizer_keeps_legitimate_punctuation(name):
     assert InputSanitizer.sanitize_text(name) == name
 
