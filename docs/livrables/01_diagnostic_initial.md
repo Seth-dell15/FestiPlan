@@ -125,7 +125,7 @@ Dans `app/api/concerts.py:30-43` et `app/services/scheduling_service.py:44-55` :
 # Dans le contrôleur : accès direct à la base et règle métier dans la route
 concert = db.query(Concert).filter(Concert.id == concert_id).first()
 if payload.end_time <= payload.start_time:
-    raise HTTPException(status_code=400, detail="Invalid time slot")
+    raise HTTPException(status_code=400, detail="La date de fin doit être postérieure au début")
 
 # Dans le service : seule règle vérifiée, commit direct puis notification
 if payload.end_time <= payload.start_time:

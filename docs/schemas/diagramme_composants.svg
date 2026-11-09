@@ -240,9 +240,9 @@
 <text x="474" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Adaptateur de production</text>
 <rect x="636" y="911" width="30" height="16" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-dasharray="4 3"/>
 <text x="674" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Double de test</text>
-<line x1="36" y1="951" x2="86" y2="951" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<text x="96" y="955" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Dépendance</text>
-<line x1="236" y1="951" x2="286" y2="951" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
-<text x="296" y="955" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Réalisation : l&#x27;adaptateur implémente le port</text>
-<text x="640" y="955" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Toutes les dépendances de code pointent vers le cœur ; seul app/composition.py connaît les adaptateurs concrets.</text>
+<line x1="836" y1="919" x2="886" y2="919" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="896" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Dépendance</text>
+<line x1="1036" y1="919" x2="1086" y2="919" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<text x="1096" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Réalisation : l&#x27;adaptateur implémente le port</text>
+<text x="36" y="955" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Toutes les dépendances de code pointent vers le cœur ; seul app/composition.py connaît les adaptateurs concrets.</text>
 </svg>

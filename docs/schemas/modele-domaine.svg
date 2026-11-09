@@ -79,7 +79,7 @@
 <line x1="1341" y1="211" x2="1599" y2="211" stroke="#4a6fa5" stroke-opacity="0.45"/>
 <text x="1348" y="228" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">resolve()</text>
 <polyline points="510,275 510,301" fill="none" stroke="#333333" stroke-width="1.3" marker-start="url(#diamond)"/>
-<text x="520" y="293" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">1..*</text>
+<text x="520" y="293" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">0..*</text>
 <polyline points="380,151 320,151" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
 <polyline points="640,358 670,358 670,290 700,290" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
 <polyline points="590,449 590,481 1100,481 1100,215" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>

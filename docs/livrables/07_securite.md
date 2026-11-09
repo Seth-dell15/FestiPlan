@@ -89,7 +89,7 @@ Initialement amorcée sur le pôle Opérations, la démarche de sécurisation a 
 * **Remédiation :**
   * Le gestionnaire `global_security_exception_handler` capture les exceptions inattendues.
   * L'erreur est logguée avec son contexte côté serveur uniquement.
-  * Le client HTTP reçoit une réponse **HTTP 500** anonymisée : `{"detail": "Une erreur interne est survenue. Veuillez contacter l'administrateur."}`.
+  * Le client HTTP reçoit une réponse **HTTP 500** anonymisée : `{"detail": "Une erreur interne sécurisée est survenue. Aucun détail technique sensible n'est divulgué.", "status": "error"}`.
 * **Preuve par les tests :** `test_unhandled_exception_does_not_leak_system_paths` valide l'absence absolue de tout chemin de fichier système dans la réponse retournée au client.
 
 ---
@@ -111,14 +111,14 @@ Initialement amorcée sur le pôle Opérations, la démarche de sécurisation a 
 ### 4.5 Protection Anti-DoS par Dépassement de Capacité
 * **Menace :** Saturation mémoire ou disque par soumission de payloads textuels massifs (plusieurs dizaines de mégaoctets).
 * **Remédiation :**
-  * Bornage strict `max_length=2000` sur les descriptions d'incidents et `max_length=120` sur les noms et villes.
+  * Bornage strict `max_length=2000` sur les descriptions d'incidents, et de 80 à 120 caractères sur les noms, genres et lieux.
 * **Preuve par les tests :** `test_oversized_payload_rejected` valide le rejet immédiat avec code **HTTP 422** en cas de dépassement.
 
 ---
 
 ## 5. Bilan de la Couverture de Sécurité
 
-La sécurité du projet est validée par **17 tests automatisés directs** intégrés aux **251 tests globaux** :
+La sécurité du projet est validée par **17 tests automatisés directs** intégrés aux **252 tests globaux** :
 
 | # | Test | Fichier | Objectif de sécurité | Résultat |
 | :---: | :--- | :--- | :--- | :---: |
@@ -144,4 +144,4 @@ La sécurité du projet est validée par **17 tests automatisés directs** inté
 
 ## 6. Synthèse
 
-Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée par les 251 tests automatisés du projet.
+Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée par les 252 tests automatisés du projet.

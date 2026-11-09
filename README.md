@@ -79,7 +79,7 @@ uvicorn app.main:app --reload
 
 ## 4. Exécution des Tests
 
-Le projet contient **251 tests automatisés** : domaine, cas d'usage, adaptateurs, non-régression et sécurité.
+Le projet contient **252 tests automatisés** : domaine, cas d'usage, adaptateurs, non-régression et sécurité.
 
 ```bash
 # Exécution de toute la suite de tests

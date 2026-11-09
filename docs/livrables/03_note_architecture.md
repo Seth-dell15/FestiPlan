@@ -88,7 +88,7 @@ Version modifiable : [modele-domaine.drawio](../schemas/modele-domaine.drawio).
 
 ### Entités
 
-`Festival`, `Schedule`, `Concert`, `Stage`, `Artist` et `Incident` possèdent une identité et sont comparés par identifiant : deux concerts aux mêmes horaires restent distincts. Le planning `Schedule` est identifié par son festival.
+`Festival`, `Schedule`, `Concert`, `Stage`, `Artist` et `Incident` possèdent une identité : deux concerts aux mêmes horaires restent distincts, car les entités ne sont pas comparées par la valeur de leurs champs. Le planning `Schedule` est identifié par son festival.
 
 ### Objets-valeurs
 
@@ -116,11 +116,15 @@ Ce découpage garde deux coûts, décrits en section 8 : chaque modification cha
 
 ### Contextes métier
 
-Le code distingue trois sous-domaines : planification, référentiel et opérations. La planification, qui porte l'essentiel des règles (R1 à R8), est le sous-domaine cœur ; le référentiel et les incidents sont des sous-domaines de support. Ils partagent un seul modèle et une seule base. Séparer davantage ces contextes ajouterait des traductions sans besoin réel pour un monolithe de cette taille.
+Le code distingue trois sous-domaines : planification, référentiel et opérations. La planification, qui porte l'essentiel des règles (R1 à R8), est le sous-domaine cœur ; le référentiel et les incidents sont des sous-domaines de support. Ils partagent un seul modèle et une seule base, donc un seul contexte borné. Séparer davantage ces contextes ajouterait des traductions sans besoin réel pour un monolithe de cette taille.
 
-### Commande, cas d'usage, événement, réaction
+### Niveau de DDD retenu
 
-Pour un déplacement, `RescheduleConcertCommand` exprime la demande, `RescheduleConcertUseCase` l'orchestre, `ConcertRescheduledEvent` décrit le fait accompli, et `EmailNotificationAdapter` y réagit à travers `INotificationSenderPort`. `FestivalPublishedEvent` et `FestivalUnpublishedEvent` suivent le même principe.
+Le projet applique le DDD tactique (entités, objets-valeurs, agrégats, invariants, événements) là où les règles le justifient, c'est-à-dire sur le planning : R2, R3, R6 et R7 croisent plusieurs concerts, et une erreur y crée un planning incohérent. Le référentiel est proche d'un CRUD : ses entités restent simples et portent seulement quelques invariants. Côté stratégique, le projet se limite aux sous-domaines et au langage commun, car une cartographie de plusieurs contextes serait disproportionnée.
+
+### Commande, cas d'usage, résultat, événement, réaction
+
+Pour un déplacement, `RescheduleConcertCommand` exprime la demande, `RescheduleConcertUseCase` l'orchestre, `ConcertRescheduledEvent` décrit le fait accompli, et `EmailNotificationAdapter` y réagit à travers `INotificationSenderPort`. `RescheduleConcertResult` est ce que l'opération retourne : le concert déplacé et l'état de la notification. Une commande peut échouer, alors que l'événement n'est traité qu'une fois le fait enregistré. `FestivalPublishedEvent` et `FestivalUnpublishedEvent` suivent le même principe.
 
 ## 6. Correction des trois défauts
 
@@ -146,9 +150,9 @@ La règle retenue est le refus suivi d'une dépublication explicite. Programmer,
 
 ## 7. Stratégie de tests
 
-La suite compte 251 tests, tous au vert. Le détail est dans [06_strategie_de_tests.md](06_strategie_de_tests.md).
+La suite compte 252 tests, tous au vert. Le détail est dans [06_strategie_de_tests.md](06_strategie_de_tests.md).
 
-- **Domaine** : 94 tests, sans FastAPI ni SQLite.
+- **Domaine** : 95 tests, sans FastAPI ni SQLite.
 - **Cas d'usage** : 63 tests avec des doubles de test.
 - **Adaptateurs** : 51 tests sur les routes, SQLite et la notification.
 - **Non-régression** : 19 tests HTTP sur les défauts et les erreurs corrigées.
@@ -162,8 +166,8 @@ Les 4 tests HTTP des trois défauts échouent sur le code initial et passent sur
 - **Taille du planning** : chaque modification charge tous les concerts du festival. C'est le prix d'une racine qui garantit R2 et R3, acceptable pour quelques centaines de concerts.
 - **Notification** : l'envoi reste synchrone et n'est pas retenté. Une notification en échec est signalée mais perdue. Une table outbox et un worker seraient la suite logique.
 - **Validation de l'enregistrement** : chaque `save()` valide sa transaction. C'est suffisant ici, car chaque cas d'usage modifie un seul agrégat ; une opération sur plusieurs agrégats nécessiterait une unité de travail.
-- **Entités mutables** : les invariants d'entité sont vérifiés à la création et dans les méthodes métier, mais un attribut comme `Stage.capacity` reste modifiable directement. De même, `Concert.reschedule()` reste appelable hors du planning, mais aucun port ne permet alors d'enregistrer le résultat.
-- **État de publication** : il appartient à `Festival`. Le planning en lit une copie au chargement pour appliquer R7.
+- **Entités mutables** : les invariants d'entité sont vérifiés à la création et dans les méthodes métier, mais un attribut comme `Stage.capacity` reste modifiable directement. `Schedule.concerts` est un tuple en lecture seule, donc aucun concert n'entre dans le planning sans passer par sa racine. En revanche, un `Concert` obtenu du planning reste un objet modifiable : seule la convention impose de passer par `Schedule.reschedule_concert()`.
+- **État de publication** : il appartient à `Festival`, car la publication est une transition du festival entier, consultée aussi sans charger ses concerts. Le planning en lit une copie au chargement pour appliquer R7. En contrepartie, publier et déplacer touchent deux agrégats : c'est l'un des cas de concurrence décrits ci-dessus.
 - **Modification après publication** : il n'existe que la dépublication. Une procédure d'urgence ciblant un seul concert serait un ajout métier distinct.
 - **Emplacement des ports** : les ports sortants sont dans le domaine et les ports entrants dans l'application. Ils pourraient être regroupés sans changer le sens des dépendances.
 - **Schéma de base** : les tables sont créées par `create_all()`, sans migrations. Les équipements restent stockés en texte, convertis par `EquipmentSet`.
