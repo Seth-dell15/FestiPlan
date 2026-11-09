@@ -94,7 +94,7 @@ def create_concert(
     )
     try:
         return _to_read_dto(use_case.execute(cmd))
-    except (DomainException, ValueError) as exc:
+    except DomainException as exc:
         raise _to_http_error(exc)
 
 
@@ -111,7 +111,7 @@ def reschedule_concert(
     )
     try:
         result = use_case.execute(cmd)
-    except (DomainException, ValueError) as exc:
+    except DomainException as exc:
         raise _to_http_error(exc)
     # 200 : le déplacement est enregistré ; notification_sent indique si l'alerte est partie (Défaut 2)
     return ConcertRescheduleRead(
@@ -127,7 +127,7 @@ def cancel_concert(
 ):
     try:
         return _to_read_dto(use_case.execute(concert_id))
-    except (DomainException, ValueError) as exc:
+    except DomainException as exc:
         raise _to_http_error(exc)
 
 

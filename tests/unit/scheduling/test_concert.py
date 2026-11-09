@@ -6,6 +6,7 @@ from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.exceptions.scheduling_exceptions import (
     StageOccupiedError,
     ArtistAlreadyBookedError,
+    ConcertAlreadyCancelledError,
 )
 
 
@@ -51,7 +52,7 @@ def test_cannot_reschedule_cancelled_concert():
         end=datetime(2027, 6, 18, 21, 0),
     )
     
-    with pytest.raises(ValueError, match="Impossible de déplacer un concert annulé"):
+    with pytest.raises(ConcertAlreadyCancelledError, match="Impossible de déplacer un concert annulé"):
         concert.reschedule(new_slot)
 
 

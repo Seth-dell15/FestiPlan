@@ -101,9 +101,16 @@ def test_reschedule_emits_event_with_previous_and_new_slot():
 def test_accepted_concert_joins_the_schedule():
     planning = schedule()
     added = planning.add_concert(IRON_VOW, MAIN, slot(18, 19))
-    assert planning.concerts == [added]
+    assert planning.concerts == (added,)
     assert (added.festival_id, added.artist_id, added.stage_id) == (1, 10, 100)
     assert not added.is_cancelled
+
+
+def test_concerts_cannot_be_added_without_going_through_the_root():
+    planning = schedule(concert(1, 10, 100, slot(18, 19)))
+    with pytest.raises(AttributeError):
+        planning.concerts.append(concert(2, 20, 100, slot(18, 19)))
+    assert len(planning.concerts) == 1
 
 
 def test_r7_published_festival_is_locked():
@@ -141,7 +148,7 @@ def test_r4_stage_of_another_festival_is_rejected():
     planning = schedule()
     with pytest.raises(StageNotInFestivalError):
         planning.add_concert(IRON_VOW, elsewhere, slot(18, 19))
-    assert planning.concerts == []
+    assert planning.concerts == ()
 
 
 def test_r5_missing_equipment_is_listed():
@@ -219,7 +226,7 @@ def test_cancel_frees_the_slot_and_keeps_the_concert_in_the_schedule():
     planning = schedule(concert(1, 10, 100, slot(18, 19)))
     cancelled = planning.cancel_concert(1)
     assert cancelled.is_cancelled
-    assert planning.concerts == [cancelled]
+    assert planning.concerts == (cancelled,)
     planning.add_concert(ABYSS, MAIN, slot(18, 19))
 
 

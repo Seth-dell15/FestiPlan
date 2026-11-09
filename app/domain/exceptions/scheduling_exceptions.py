@@ -48,8 +48,6 @@ class ConcertNotFoundError(SchedulingNotFoundError):
         self.concert_id = concert_id
 
 
-# --- Ajouts Dev 1 : catégories d'erreurs utilisées par l'adaptateur HTTP -------------
-
 class UnknownFestivalError(SchedulingNotFoundError):
     """R4 : le festival référencé par le concert n'existe pas."""
     def __init__(self, festival_id: int):
@@ -77,10 +75,7 @@ class StageNotInFestivalError(DomainException):
         super().__init__(f"La scène #{stage_id} n'appartient pas au festival #{festival_id}")
 
 
-class ConcertAlreadyCancelledError(SchedulingConflictError, ValueError):
-    """Un concert annulé ne peut être ni déplacé ni annulé à nouveau.
-
-    Hérite aussi de ValueError pour rester compatible avec le code existant.
-    """
+class ConcertAlreadyCancelledError(SchedulingConflictError):
+    """Un concert annulé ne peut être ni déplacé ni annulé à nouveau."""
     def __init__(self, message: str = "Impossible de déplacer un concert annulé"):
         super().__init__(message)

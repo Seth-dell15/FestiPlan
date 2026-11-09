@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
-from dataclasses import dataclass, field, replace
+from dataclasses import replace
 
 from app.domain.events.concert_events import ConcertRescheduledEvent
 from app.domain.exceptions.logistics_exceptions import EquipmentMismatchError
@@ -22,7 +22,6 @@ from app.domain.value_objects.festival_period import FestivalPeriod
 from app.domain.value_objects.time_slot import TimeSlot
 
 
-@dataclass(eq=False)
 class Schedule:
     """Planning d'un festival : racine d'agrégat, seul point d'entrée pour modifier ses concerts.
 
@@ -30,18 +29,30 @@ class Schedule:
     l'état de publication sont ceux du festival, lus au chargement : R6 et R7 en ont besoin.
     """
 
-    festival_id: int
-    period: FestivalPeriod
-    is_published: bool = False
-    concerts: list[Concert] = field(default_factory=list)
+    def __init__(
+        self,
+        festival_id: int,
+        period: FestivalPeriod,
+        is_published: bool = False,
+        concerts: Iterable[Concert] = (),
+    ) -> None:
+        self.festival_id = festival_id
+        self.period = period
+        self.is_published = is_published
+        self._concerts = list(concerts)
+
+    @property
+    def concerts(self) -> tuple[Concert, ...]:
+        """Lecture seule : ajouter un concert passe par add_concert, qui applique les règles."""
+        return tuple(self._concerts)
 
     @property
     def active_concerts(self) -> list[Concert]:
         """Concerts non annulés, dans l'ordre chronologique."""
-        return sorted((c for c in self.concerts if not c.is_cancelled), key=lambda c: c.time_slot.start)
+        return sorted((c for c in self._concerts if not c.is_cancelled), key=lambda c: c.time_slot.start)
 
     def get_concert(self, concert_id: int) -> Concert:
-        for concert in self.concerts:
+        for concert in self._concerts:
             if concert.id == concert_id:
                 return concert
         raise ConcertNotFoundError(concert_id)
@@ -64,7 +75,7 @@ class Schedule:
             time_slot=time_slot,
         )
         self._ensure_no_conflict(concert, bookings_elsewhere)
-        self.concerts.append(concert)
+        self._concerts.append(concert)
         return concert
 
     def reschedule_concert(
@@ -152,5 +163,5 @@ class Schedule:
 
     def _ensure_no_conflict(self, candidate: Concert, bookings_elsewhere: Iterable[Concert]) -> None:
         """R2 (scène) et R3 (artiste, y compris dans un autre festival)."""
-        for other in (*self.concerts, *bookings_elsewhere):
+        for other in (*self._concerts, *bookings_elsewhere):
             candidate.check_conflict_with(other)

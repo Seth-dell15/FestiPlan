@@ -16,6 +16,7 @@ from app.domain.models.artist import Artist
 from app.domain.models.concert import Concert
 from app.domain.models.festival import Festival
 from app.domain.models.incident import Incident
+from app.domain.models.schedule import Schedule
 from app.domain.models.stage import Stage
 from app.domain.value_objects.concert_status import ConcertStatus
 from app.domain.value_objects.festival_period import FestivalPeriod
@@ -60,9 +61,8 @@ def make_concert(references, hour=18):
 def save_concert(session, concert):
     """Enregistre un concert par le planning de son festival, sans appliquer les règles (données de test)."""
     repository = ScheduleSqlRepository(session)
-    schedule = repository.get_by_festival_id(concert.festival_id)
-    schedule.concerts.append(concert)
-    repository.save(schedule)
+    current = repository.get_by_festival_id(concert.festival_id)
+    repository.save(Schedule(current.festival_id, current.period, current.is_published, [*current.concerts, concert]))
     return concert
 
 
