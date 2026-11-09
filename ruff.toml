@@ -1,0 +1,10 @@
+line-length = 120
+target-version = "py311"
+
+[lint]
+# Erreurs de style (pycodestyle) et code mort ou imports inutilisés (pyflakes).
+select = ["E", "F"]
+
+[lint.per-file-ignores]
+# Tests fournis avec le projet initial, conservés tels quels.
+"tests/test_*.py" = ["E701", "E702"]
