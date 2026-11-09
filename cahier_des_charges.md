@@ -194,7 +194,7 @@ graph TD
 
 ### Phase 4 : Intégration & Recette (Ensemble)
 - Vérification des 3 scénarios critiques énoncés dans le README :
-  1. Déplacement de concert sur un créneau occupé (doit renvoyer une erreur 400 documentée).
+  1. Déplacement de concert sur un créneau occupé (doit renvoyer une erreur 409 documentée).
   2. Publication du festival et protection contre les déplacements intempestifs.
   3. Comportement avec notification en échec (garantir la cohérence des transactions).
 - Exécution de la suite complète de tests unifiés.

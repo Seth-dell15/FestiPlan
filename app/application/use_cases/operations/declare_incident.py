@@ -28,7 +28,7 @@ class DeclareIncidentUseCase:
         # Vérifier que le concert existe
         concert = self.concert_repo.get_by_id(command.concert_id)
         if concert is None:
-            raise ConcertNotFoundError(f"Concert #{command.concert_id} introuvable.")
+            raise ConcertNotFoundError(command.concert_id)
 
         incident = Incident(
             concert_id=command.concert_id,

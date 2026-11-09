@@ -1,4 +1,3 @@
-import html
 import re
 
 
@@ -24,8 +23,8 @@ class InputSanitizer:
         for pattern in cls._XSS_PATTERNS:
             cleaned = pattern.sub("", cleaned)
 
-        # Échapper les caractères HTML réservés (<, >, &, ", ')
-        return html.escape(cleaned)
+        # Seuls les chevrons ouvrent une balise : &, ' et " restent intacts pour ne pas altérer les noms.
+        return cleaned.replace("<", "&lt;").replace(">", "&gt;")
 
     @classmethod
     def contains_xss_threat(cls, text: str) -> bool:

@@ -111,8 +111,8 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 3. L'API renvoie **HTTP 200 OK** et la date est mise à jour.
 
 ### Scénario 2 : Protection contre les conflits de programmation (Défaut 1 résolu)
-* **Conflit de scène (R2) :** Tentez de déplacer un concert sur le créneau d'un autre concert de la même scène (ex: 18h30 à 19h30 sur Mainstage) ➔ L'API renvoie **HTTP 400 Bad Request** (`"Conflit de scène"`).
-* **Conflit d'artiste (R3) :** Tentez de déplacer un concert pour faire jouer un artiste sur deux scènes différentes en même temps ➔ L'API renvoie **HTTP 400 Bad Request** (`"Conflit d'artiste"`).
+* **Conflit de scène (R2) :** Tentez de déplacer un concert sur le créneau d'un autre concert de la même scène (ex: 18h30 à 19h30 sur Mainstage) ➔ L'API renvoie **HTTP 409 Conflict** (`"Conflit de scène"`).
+* **Conflit d'artiste (R3) :** Tentez de déplacer un concert pour faire jouer un artiste sur deux scènes différentes en même temps ➔ L'API renvoie **HTTP 409 Conflict** (`"Conflit d'artiste"`).
 
 ### Scénario 3 : Résistance aux pannes de notification (Défaut 2 résolu)
 1. Activez la simulation de panne de notification dans votre fichier `.env` ou console :
@@ -125,7 +125,7 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 ### Scénario 4 : Verrouillage du festival publié (Défaut 3 résolu)
 1. Publiez le festival via `POST /festivals/1/publish`.
 2. Tentez ensuite de déplacer un concert via `PATCH /concerts/1/reschedule`.
-3. L'API refuse la modification et renvoie **HTTP 400 Bad Request** (`"Le festival a déjà été publié. Les modifications ordinaires du planning sont verrouillées."`).
+3. L'API refuse la modification et renvoie **HTTP 409 Conflict** (`"Le festival a déjà été publié. Les modifications ordinaires du planning sont verrouillées."`).
 
 ### Scénario 5 : Publication avec contrôle strict du planning (R8)
 1. Tentez de publier un festival dont le planning contient des conflits ou des concerts hors dates : l'API bloque la publication et renvoie **HTTP 400 Bad Request**.
@@ -139,7 +139,7 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
      "description": "Panne de retour son sur la scène principale"
    }
    ```
-2. Une description vide est immédiatement rejetée (**HTTP 400**).
+2. Une description vide est immédiatement rejetée (**HTTP 422**).
 3. Clôturez l'incident via `PATCH /incidents/{id}/resolve` ➔ son statut passe à `resolved: true`.
 
 ---

@@ -90,7 +90,7 @@ def test_api_create_incident_unknown_concert_returns_404(client):
         },
     )
     assert r.status_code == 404
-    assert "introuvable" in r.json()["detail"].lower()
+    assert r.json()["detail"] == "Concert avec l'identifiant 99999 introuvable"
 
 
 def test_api_create_incident_empty_description_refused_r10(client, setup_festival_and_concert):

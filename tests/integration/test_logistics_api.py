@@ -96,3 +96,16 @@ def test_stage_name_is_sanitized(client):
     body = client.post("/stages", json={"festival_id": festival_id, "name": f"{SCRIPT}Valley", "capacity": 8000}).json()
 
     assert body["name"] == "Valley"
+
+
+def test_punctuation_in_names_survives_creation_and_publication(client):
+    payload = {**FESTIVAL, "name": "Rock & Metal", "location": "L'Isle-d'Abeau"}
+
+    festival = client.post("/festivals", json=payload).json()
+    artist = client.post("/artists", json={"name": "Guns N' Roses", "genre": "Hard & Heavy"}).json()
+    published = client.post(f"/festivals/{festival['id']}/publish").json()
+
+    assert (festival["name"], festival["location"]) == ("Rock & Metal", "L'Isle-d'Abeau")
+    assert (artist["name"], artist["genre"]) == ("Guns N' Roses", "Hard & Heavy")
+    assert published["name"] == "Rock & Metal"
+    assert published["status"] == "published"

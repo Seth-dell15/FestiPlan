@@ -185,3 +185,13 @@ def test_unhandled_exception_does_not_leak_system_paths(monkeypatch):
     assert "detail" in r.json()
     assert "sécurisée" in r.json()["detail"].lower()
 
+
+
+@pytest.mark.parametrize("name", ["Guns N' Roses", "Rock & Metal", 'Le "Grand" Soir'])
+def test_input_sanitizer_keeps_legitimate_punctuation(name):
+    assert InputSanitizer.sanitize_text(name) == name
+
+
+def test_input_sanitizer_is_idempotent():
+    once = InputSanitizer.sanitize_text("<b>Iron Vow</b>")
+    assert InputSanitizer.sanitize_text(once) == once
