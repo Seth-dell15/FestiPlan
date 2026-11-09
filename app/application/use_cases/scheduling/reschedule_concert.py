@@ -1,6 +1,9 @@
-from dataclasses import dataclass
-from datetime import datetime
 import logging
+from app.application.ports.inbound import (
+    IRescheduleConcertPort,
+    RescheduleConcertCommand,
+    RescheduleConcertResult,
+)
 from app.domain.models.concert import Concert
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.services import scheduling_policy as policy
@@ -16,27 +19,7 @@ from app.domain.exceptions.scheduling_exceptions import (
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
-class RescheduleConcertCommand:
-    """Commande applicative pour déplacer un concert."""
-    concert_id: int
-    new_start: datetime
-    new_end: datetime
-
-
-@dataclass(frozen=True)
-class RescheduleConcertResult:
-    """Résultat du cas d'usage de déplacement.
-
-    Permet de distinguer clairement la réussite de l'opération métier
-    du statut de l'effet secondaire (notification).
-    """
-    concert: Concert
-    notification_sent: bool
-    notification_error: str | None = None
-
-
-class RescheduleConcertUseCase:
+class RescheduleConcertUseCase(IRescheduleConcertPort):
     """Cas d'usage : Déplacer un concert.
 
     Corrige le Défaut 1 en réappliquant les mêmes règles que la programmation

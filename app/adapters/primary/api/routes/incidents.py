@@ -8,10 +8,7 @@ from app.adapters.primary.api.operations_dependencies import (
     resolve_incident_use_case,
 )
 from app.schemas import IncidentCreate, IncidentRead
-from app.application.use_cases.operations.declare_incident import (
-    DeclareIncidentUseCase,
-    DeclareIncidentCommand,
-)
+from app.application.ports.inbound import DeclareIncidentCommand, IDeclareIncidentPort
 from app.application.use_cases.operations.list_incidents import ListIncidentsUseCase
 from app.application.use_cases.operations.resolve_incident import ResolveIncidentUseCase
 from app.domain.models.incident import Incident
@@ -43,7 +40,7 @@ def _to_read_dto(incident: Incident) -> IncidentRead:
 )
 def create_incident(
     payload: IncidentCreate,
-    use_case: Annotated[DeclareIncidentUseCase, Depends(declare_incident_use_case)],
+    use_case: Annotated[IDeclareIncidentPort, Depends(declare_incident_use_case)],
 ):
     command = DeclareIncidentCommand(
         concert_id=payload.concert_id,

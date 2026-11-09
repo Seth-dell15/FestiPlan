@@ -1,6 +1,6 @@
 import logging
-from dataclasses import dataclass
 
+from app.application.ports.inbound import IPublishFestivalPort, PublishFestivalResult
 from app.domain.models.concert import Concert
 from app.domain.models.festival import Festival
 from app.domain.services import scheduling_policy as policy
@@ -20,13 +20,7 @@ from app.domain.exceptions.scheduling_exceptions import (
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
-class PublishFestivalResult:
-    festival: Festival
-    notification_sent: bool
-
-
-class PublishFestivalUseCase:
+class PublishFestivalUseCase(IPublishFestivalPort):
     """Cas d'usage : Publication officielle du planning d'un festival.
 
     Invariants et règles garantis :

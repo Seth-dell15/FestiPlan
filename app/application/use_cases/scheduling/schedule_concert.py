@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from datetime import datetime
+from app.application.ports.inbound import IScheduleConcertPort, ScheduleConcertCommand
 from app.domain.models.concert import Concert
 from app.domain.value_objects.time_slot import TimeSlot
 from app.domain.services import scheduling_policy as policy
@@ -14,17 +13,7 @@ from app.domain.exceptions.scheduling_exceptions import (
 )
 
 
-@dataclass(frozen=True)
-class ScheduleConcertCommand:
-    """Commande pour programmer un nouveau concert."""
-    festival_id: int
-    artist_id: int
-    stage_id: int
-    start_time: datetime
-    end_time: datetime
-
-
-class ScheduleConcertUseCase:
+class ScheduleConcertUseCase(IScheduleConcertPort):
     """Cas d'usage : Programmer un concert.
 
     Vérifie, dans cet ordre : R1 (créneau), R4 (festival, scène et artiste existants,

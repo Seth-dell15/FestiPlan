@@ -17,12 +17,10 @@ from app.domain.exceptions.scheduling_exceptions import (
     SchedulingConflictError,
     SchedulingNotFoundError,
 )
-from app.application.use_cases.scheduling.reschedule_concert import (
-    RescheduleConcertUseCase,
+from app.application.ports.inbound import (
+    IRescheduleConcertPort,
+    IScheduleConcertPort,
     RescheduleConcertCommand,
-)
-from app.application.use_cases.scheduling.schedule_concert import (
-    ScheduleConcertUseCase,
     ScheduleConcertCommand,
 )
 from app.application.use_cases.scheduling.cancel_concert import CancelConcertUseCase
@@ -81,7 +79,7 @@ def get_concert(
 @router.post("", response_model=ConcertRead, status_code=status.HTTP_201_CREATED)
 def create_concert(
     payload: ConcertCreate,
-    use_case: Annotated[ScheduleConcertUseCase, Depends(deps.schedule_concert_use_case)],
+    use_case: Annotated[IScheduleConcertPort, Depends(deps.schedule_concert_use_case)],
 ):
     cmd = ScheduleConcertCommand(
         festival_id=payload.festival_id,
@@ -100,7 +98,7 @@ def create_concert(
 def reschedule_concert(
     concert_id: int,
     payload: ConcertReschedule,
-    use_case: Annotated[RescheduleConcertUseCase, Depends(deps.reschedule_concert_use_case)],
+    use_case: Annotated[IRescheduleConcertPort, Depends(deps.reschedule_concert_use_case)],
 ):
     cmd = RescheduleConcertCommand(
         concert_id=concert_id,

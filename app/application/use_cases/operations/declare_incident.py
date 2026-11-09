@@ -1,19 +1,12 @@
-from dataclasses import dataclass
 from datetime import datetime, timezone
+from app.application.ports.inbound import DeclareIncidentCommand, IDeclareIncidentPort
 from app.domain.models.incident import Incident
 from app.domain.ports.repositories.incident_repository_port import IIncidentRepository
 from app.domain.ports.repositories.concert_repository_port import IConcertRepository
 from app.domain.exceptions.scheduling_exceptions import ConcertNotFoundError
 
 
-@dataclass(frozen=True)
-class DeclareIncidentCommand:
-    concert_id: int
-    description: str
-    occurred_at: datetime | None = None
-
-
-class DeclareIncidentUseCase:
+class DeclareIncidentUseCase(IDeclareIncidentPort):
     """Cas d'usage : Signalement d'un incident survenu lors d'un concert (R10)."""
 
     def __init__(
