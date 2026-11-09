@@ -1,7 +1,5 @@
 # FestiPlan — API de Gestion de Festival (Architecture Hexagonale)
 
-[![CI](https://github.com/Seth-dell15/FestiPlan/actions/workflows/ci.yml/badge.svg)](https://github.com/Seth-dell15/FestiPlan/actions/workflows/ci.yml)
-
 API FastAPI de gestion de festival de musique (*Hellforge Open Air*), refactorisée selon les principes de l'**Architecture Hexagonale (Ports & Adapters)** et du **Domain-Driven Design (DDD)**.
 
 ---
