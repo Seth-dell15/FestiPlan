@@ -146,13 +146,13 @@ def test_api_publish_festival_nominal_success(client, setup_festival_and_concert
     assert data["status"] == "published"
 
 
-def test_api_publish_already_published_festival_returns_400(client, setup_festival_and_concert):
+def test_api_publish_already_published_festival_returns_409(client, setup_festival_and_concert):
     fid = setup_festival_and_concert["festival_id"]
     r1 = client.post(f"/festivals/{fid}/publish")
     assert r1.status_code == 200
 
     r2 = client.post(f"/festivals/{fid}/publish")
-    assert r2.status_code == 400
+    assert r2.status_code == 409
     assert "déjà publié" in r2.json()["detail"].lower()
 
 
@@ -224,12 +224,12 @@ def test_api_unpublish_allows_modification_then_republication(client, setup_fest
     assert client.post(f"/festivals/{fid}/publish").json()["status"] == "published"
 
 
-def test_api_unpublish_festival_in_preparation_returns_400(client, setup_festival_and_concert):
+def test_api_unpublish_festival_in_preparation_returns_409(client, setup_festival_and_concert):
     fid = setup_festival_and_concert["festival_id"]
 
     r = client.post(f"/festivals/{fid}/unpublish")
 
-    assert r.status_code == 400
+    assert r.status_code == 409
     assert client.get(f"/festivals/{fid}").json()["status"] == "preparation"
 
 
