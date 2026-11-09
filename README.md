@@ -111,7 +111,7 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 3. L'API renvoie **HTTP 200 OK** et la date est mise à jour.
 
 ### Scénario 2 : Protection contre les conflits de programmation (Défaut 1 résolu)
-* **Conflit de scène (R2) :** Tentez de déplacer un concert sur le créneau d'un autre concert de la même scène (ex: 18h30 à 19h30 sur Mainstage) ➔ L'API renvoie **HTTP 409 Conflict** (`"Conflit de scène"`).
+* **Conflit de scène (R2) :** Tentez de déplacer un concert sur le créneau d'un autre concert de la même scène (ex : concert n°1 déplacé le 18 juin de 19h45 à 20h15, pendant le concert n°2 sur Mainstage) ➔ L'API renvoie **HTTP 409 Conflict** (`"Conflit de scène"`).
 * **Conflit d'artiste (R3) :** Tentez de déplacer un concert pour faire jouer un artiste sur deux scènes différentes en même temps ➔ L'API renvoie **HTTP 409 Conflict** (`"Conflit d'artiste"`).
 
 ### Scénario 3 : Résistance aux pannes de notification (Défaut 2 résolu)

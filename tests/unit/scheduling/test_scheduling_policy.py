@@ -53,7 +53,8 @@ def test_contained_slot_overlaps():
 def test_timezone_aware_dates_are_normalized_to_naive_utc():
     paris = timezone(timedelta(hours=2))
     s = TimeSlot(datetime(2027, 6, 18, 20, tzinfo=paris), datetime(2027, 6, 18, 21, tzinfo=paris))
-    assert s.start == datetime(2027, 6, 18, 18) and s.start.tzinfo is None
+    assert s.start == datetime(2027, 6, 18, 18)
+    assert s.start.tzinfo is None
     # comparable aux dates naïves stockées en base, sans TypeError
     assert s.overlaps(slot(18, 19))
     assert s.is_within(FESTIVAL.start_date, FESTIVAL.end_date)
