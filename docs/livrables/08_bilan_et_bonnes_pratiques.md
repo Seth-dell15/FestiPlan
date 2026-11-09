@@ -20,12 +20,12 @@ Ce document dresse le bilan technique de FestiPlan : ses forces, ses limites res
 ### Points forts
 * **Domaine indépendant des frameworks :** Les entités (`Concert`, `Incident`) et objets-valeurs (`TimeSlot`) ne connaissent aucun framework. Aucune dépendance à FastAPI, Pydantic ou SQLAlchemy dans `app/domain/`.
 * **Inversion de dépendance (Ports & Adapters) :** Les cas d'usage dépendent de contrats abstraits (`typing.Protocol`), ce qui permet de remplacer la persistance SQLite par des dépôts en mémoire dans les tests.
-* **Pyramide de tests (252 tests) :**
-  * 95 tests unitaires de domaine sans framework.
+* **Pyramide de tests (257 tests) :**
+  * 92 tests unitaires de domaine sans framework.
   * 63 tests de cas d'usage avec des doubles de test.
-  * 51 tests d'adaptateurs avec FastAPI et SQLite.
+  * 54 tests d'adaptateurs avec FastAPI et SQLite.
   * 19 tests HTTP de non-régression.
-  * 14 tests de sécurité.
+  * 19 tests de sécurité.
   * 6 tests de l'API initiale et 4 tests du sens des dépendances.
 * **Résolution des 3 défauts initiaux, vérifiée par les tests :**
   * *Défaut 1 (Conflits de scène et d'artiste) :* Un déplacement ou une programmation en conflit est refusé, hors accès concurrents (voir ci-dessous).

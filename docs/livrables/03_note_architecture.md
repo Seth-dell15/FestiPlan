@@ -150,13 +150,13 @@ La règle retenue est le refus suivi d'une dépublication explicite. Programmer,
 
 ## 7. Stratégie de tests
 
-La suite compte 252 tests, tous au vert. Le détail est dans [06_strategie_de_tests.md](06_strategie_de_tests.md).
+La suite compte 257 tests, tous au vert. Le détail est dans [06_strategie_de_tests.md](06_strategie_de_tests.md).
 
-- **Domaine** : 95 tests, sans FastAPI ni SQLite.
+- **Domaine** : 92 tests, sans FastAPI ni SQLite.
 - **Cas d'usage** : 63 tests avec des doubles de test.
-- **Adaptateurs** : 51 tests sur les routes, SQLite et la notification.
+- **Adaptateurs** : 54 tests sur les routes, SQLite et la notification.
 - **Non-régression** : 19 tests HTTP sur les défauts et les erreurs corrigées.
-- **Autres** : 14 tests de sécurité, 6 tests de l'API initiale et 4 tests du sens des dépendances.
+- **Autres** : 19 tests de sécurité, 6 tests de l'API initiale et 4 tests du sens des dépendances.
 
 Les 4 tests HTTP des trois défauts échouent sur le code initial et passent sur le code livré.
 
@@ -170,7 +170,7 @@ Les 4 tests HTTP des trois défauts échouent sur le code initial et passent sur
 - **État de publication** : il appartient à `Festival`, car la publication est une transition du festival entier, consultée aussi sans charger ses concerts. Le planning en lit une copie au chargement pour appliquer R7. En contrepartie, publier et déplacer touchent deux agrégats : c'est l'un des cas de concurrence décrits ci-dessus.
 - **Modification après publication** : il n'existe que la dépublication. Une procédure d'urgence ciblant un seul concert serait un ajout métier distinct.
 - **Emplacement des ports** : les ports sortants sont dans le domaine et les ports entrants dans l'application. Ils pourraient être regroupés sans changer le sens des dépendances.
-- **Schéma de base** : les tables sont créées par `create_all()`, sans migrations. Les équipements restent stockés en texte, convertis par `EquipmentSet`.
+- **Schéma de base** : les tables sont créées par `create_all()`, sans migrations. Les équipements restent stockés en texte, convertis par l'adaptateur SQL (`equipment_csv.py`) : le format de stockage ne remonte pas dans le domaine.
 - **Hors périmètre** : l'API n'a ni authentification ni gestion des rôles.
 
 ## 9. Patrons de conception
