@@ -1,11 +1,12 @@
 from typing import Protocol
+
 from app.domain.models.concert import Concert
 
 
-class IConcertRepository(Protocol):
-    """Port sortant pour la persistance et la consultation des concerts.
-    
-    Définit le contrat d'accès aux données sans dépendance technique (SQLAlchemy, etc.).
+class IConcertQueryPort(Protocol):
+    """Port sortant de consultation des concerts.
+
+    Lecture seule : toute modification passe par le planning (IScheduleRepository).
     """
 
     def get_by_id(self, concert_id: int) -> Concert | None:
@@ -18,8 +19,4 @@ class IConcertRepository(Protocol):
 
     def list_for_artist(self, artist_id: int) -> list[Concert]:
         """Récupère les concerts actifs d'un artiste, tous festivals confondus (R3)."""
-        ...
-
-    def save(self, concert: Concert) -> Concert:
-        """Sauvegarde (création ou mise à jour) un concert et retourne l'entité persistée."""
         ...

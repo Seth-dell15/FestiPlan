@@ -1,4 +1,3 @@
-from datetime import datetime
 import pytest
 from app.config import settings
 
@@ -113,6 +112,7 @@ def test_integration_defect_1_stage_overlap_rejected(client, setup_festival_data
             "end_time": "2027-06-18T19:00:00",
         },
     )
+    assert r_a.status_code == 201
     # Concert B sur Mainstage : 21h - 22h
     r_b = client.post(
         "/concerts",

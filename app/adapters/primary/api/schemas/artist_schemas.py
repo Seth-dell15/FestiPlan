@@ -23,4 +23,9 @@ class ArtistResponse(BaseModel):
 
     @classmethod
     def from_entity(cls, artist: Artist) -> "ArtistResponse":
-        return cls(id=artist.id, name=artist.name, genre=artist.genre, required_equipment=list(artist.required_equipment))
+        return cls(
+            id=artist.id,
+            name=artist.name,
+            genre=artist.genre,
+            required_equipment=list(artist.required_equipment),
+        )

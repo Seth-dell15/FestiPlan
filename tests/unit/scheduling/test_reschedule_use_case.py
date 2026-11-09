@@ -1,8 +1,10 @@
 from datetime import datetime
 import pytest
 from app.domain.models.concert import Concert
+from app.domain.models.festival import Festival
+from app.domain.value_objects.festival_period import FestivalPeriod
+from app.domain.value_objects.festival_status import FestivalStatus
 from app.domain.value_objects.time_slot import TimeSlot
-from app.domain.ports.repositories.festival_repository_port import FestivalScheduleInfo, IFestivalQueryPort
 from app.domain.exceptions.scheduling_exceptions import (
     StageOccupiedError,
     ArtistAlreadyBookedError,
@@ -14,26 +16,32 @@ from app.application.use_cases.scheduling.reschedule_concert import (
     RescheduleConcertUseCase,
     RescheduleConcertCommand,
 )
-from app.adapters.secondary.repositories.in_memory_concert_repository import InMemoryConcertRepository
+from app.adapters.secondary.repositories.in_memory_concert_query_adapter import InMemoryConcertQueryAdapter
+from app.adapters.secondary.repositories.in_memory_festival_repository import InMemoryFestivalRepository
+from app.adapters.secondary.repositories.in_memory_schedule_repository import InMemoryScheduleRepository
 from app.adapters.secondary.notifications.fake_notification_adapter import FakeNotificationAdapter
 
 
-class FakeFestivalQueryAdapter(IFestivalQueryPort):
-    def __init__(self, festivals: dict[int, FestivalScheduleInfo] | None = None):
-        self.festivals = festivals or {}
-
-    def get_schedule_info(self, festival_id: int) -> FestivalScheduleInfo | None:
-        return self.festivals.get(festival_id)
-
-
-@pytest.fixture
-def festival_info():
-    return FestivalScheduleInfo(
+def make_festival(published: bool = False) -> Festival:
+    return Festival(
         id=1,
         name="Hellforge Open Air",
-        start_date=datetime(2027, 6, 18, 10, 0),
-        end_date=datetime(2027, 6, 20, 23, 59),
-        is_published=False,
+        location="Clisson",
+        period=FestivalPeriod(start=datetime(2027, 6, 18, 10, 0), end=datetime(2027, 6, 20, 23, 59)),
+        status=FestivalStatus.PUBLISHED if published else FestivalStatus.PREPARATION,
+    )
+
+
+def make_schedules(concert_repo: InMemoryConcertQueryAdapter, festival: Festival | None = None):
+    """Repository du planning branché sur les concerts en mémoire et sur un festival, ouvert par défaut."""
+    return InMemoryScheduleRepository(InMemoryFestivalRepository([festival or make_festival()]), concert_repo)
+
+
+def make_use_case(concert_repo, notifier=None, festival=None) -> RescheduleConcertUseCase:
+    return RescheduleConcertUseCase(
+        schedule_repository=make_schedules(concert_repo, festival),
+        concert_query=concert_repo,
+        notification_sender=notifier or FakeNotificationAdapter(),
     )
 
 
@@ -63,17 +71,12 @@ def concert_repo():
         stage_id=200,
         time_slot=TimeSlot(datetime(2027, 6, 19, 21, 0), datetime(2027, 6, 19, 22, 0)),
     )
-    return InMemoryConcertRepository([c1, c2, c3])
+    return InMemoryConcertQueryAdapter([c1, c2, c3])
 
 
-def test_reschedule_success(concert_repo, festival_info):
+def test_reschedule_success(concert_repo):
     notifier = FakeNotificationAdapter()
-    festival_adapter = FakeFestivalQueryAdapter({1: festival_info})
-    use_case = RescheduleConcertUseCase(
-        concert_repository=concert_repo,
-        festival_query_port=festival_adapter,
-        notification_sender=notifier,
-    )
+    use_case = make_use_case(concert_repo, notifier)
 
     cmd = RescheduleConcertCommand(
         concert_id=1,
@@ -89,13 +92,9 @@ def test_reschedule_success(concert_repo, festival_info):
     assert concert_repo.get_by_id(1).time_slot.start == datetime(2027, 6, 18, 14, 0)
 
 
-def test_defect_1_stage_conflict_refused(concert_repo, festival_info):
+def test_defect_1_stage_conflict_refused(concert_repo):
     """Vérification du Défaut 1 : un déplacement créant un conflit de scène est refusé."""
-    use_case = RescheduleConcertUseCase(
-        concert_repository=concert_repo,
-        festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
-        notification_sender=FakeNotificationAdapter(),
-    )
+    use_case = make_use_case(concert_repo)
 
     # Tentative de déplacer Concert 1 (sur Mainstage) pour chevaucher Concert 2 (19h30 - 20h30)
     cmd = RescheduleConcertCommand(
@@ -111,13 +110,9 @@ def test_defect_1_stage_conflict_refused(concert_repo, festival_info):
     assert concert_repo.get_by_id(1).time_slot.start == datetime(2027, 6, 18, 18, 0)
 
 
-def test_defect_1_artist_conflict_refused(concert_repo, festival_info):
+def test_defect_1_artist_conflict_refused(concert_repo):
     """Vérification du Défaut 1 : un artiste ne peut pas être déplacé sur un créneau où il joue déjà."""
-    use_case = RescheduleConcertUseCase(
-        concert_repository=concert_repo,
-        festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
-        notification_sender=FakeNotificationAdapter(),
-    )
+    use_case = make_use_case(concert_repo)
 
     # Déplacer Concert 1 (Artiste 10) sur le créneau du 19 juin 21h où l'Artiste 10 joue déjà (Concert 3)
     cmd = RescheduleConcertCommand(
@@ -129,15 +124,12 @@ def test_defect_1_artist_conflict_refused(concert_repo, festival_info):
     with pytest.raises(ArtistAlreadyBookedError):
         use_case.execute(cmd)
 
+    assert concert_repo.get_by_id(1).time_slot.start == datetime(2027, 6, 18, 18, 0)
 
-def test_defect_2_notification_failure_does_not_break_persistence(concert_repo, festival_info):
+
+def test_defect_2_notification_failure_does_not_break_persistence(concert_repo):
     """Vérification du Défaut 2 : l'échec de notification ne corrompt pas l'opération métier."""
-    failing_notifier = FakeNotificationAdapter(should_fail=True)
-    use_case = RescheduleConcertUseCase(
-        concert_repository=concert_repo,
-        festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
-        notification_sender=failing_notifier,
-    )
+    use_case = make_use_case(concert_repo, FakeNotificationAdapter(should_fail=True))
 
     cmd = RescheduleConcertCommand(
         concert_id=1,
@@ -156,18 +148,7 @@ def test_defect_2_notification_failure_does_not_break_persistence(concert_repo, 
 
 def test_defect_3_cannot_reschedule_published_festival(concert_repo):
     """Vérification du Défaut 3 : un festival publié refuse le déplacement ordinaire."""
-    published_festival = FestivalScheduleInfo(
-        id=1,
-        name="Hellforge Open Air",
-        start_date=datetime(2027, 6, 18, 10, 0),
-        end_date=datetime(2027, 6, 20, 23, 59),
-        is_published=True,  # Festival publié !
-    )
-    use_case = RescheduleConcertUseCase(
-        concert_repository=concert_repo,
-        festival_query_port=FakeFestivalQueryAdapter({1: published_festival}),
-        notification_sender=FakeNotificationAdapter(),
-    )
+    use_case = make_use_case(concert_repo, festival=make_festival(published=True))
 
     cmd = RescheduleConcertCommand(
         concert_id=1,
@@ -178,14 +159,12 @@ def test_defect_3_cannot_reschedule_published_festival(concert_repo):
     with pytest.raises(CannotModifyPublishedFestivalError):
         use_case.execute(cmd)
 
+    assert concert_repo.get_by_id(1).time_slot.start == datetime(2027, 6, 18, 18, 0)
 
-def test_reschedule_outside_festival_dates_refused(concert_repo, festival_info):
+
+def test_reschedule_outside_festival_dates_refused(concert_repo):
     """Règle R6 : le concert doit rester dans les dates du festival."""
-    use_case = RescheduleConcertUseCase(
-        concert_repository=concert_repo,
-        festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
-        notification_sender=FakeNotificationAdapter(),
-    )
+    use_case = make_use_case(concert_repo)
 
     # Déplacement au 25 juin (le festival finit le 20 juin)
     cmd = RescheduleConcertCommand(
@@ -198,12 +177,8 @@ def test_reschedule_outside_festival_dates_refused(concert_repo, festival_info):
         use_case.execute(cmd)
 
 
-def test_reschedule_nonexistent_concert_raises_not_found(concert_repo, festival_info):
-    use_case = RescheduleConcertUseCase(
-        concert_repository=concert_repo,
-        festival_query_port=FakeFestivalQueryAdapter({1: festival_info}),
-        notification_sender=FakeNotificationAdapter(),
-    )
+def test_reschedule_nonexistent_concert_raises_not_found(concert_repo):
+    use_case = make_use_case(concert_repo)
 
     cmd = RescheduleConcertCommand(
         concert_id=9999,

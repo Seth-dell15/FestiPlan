@@ -8,7 +8,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.adapters.primary.api.schemas.concert_schemas import ConcertCreate, ConcertRead, ConcertReschedule, ConcertRescheduleRead
+from app.adapters.primary.api.schemas.concert_schemas import (
+    ConcertCreate,
+    ConcertRead,
+    ConcertReschedule,
+    ConcertRescheduleRead,
+)
 from app import composition as deps
 from app.domain.models.concert import Concert
 from app.domain.exceptions.scheduling_exceptions import (

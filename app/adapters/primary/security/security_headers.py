@@ -24,7 +24,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # 5. Restriction des permissions du navigateur (caméra, micro, géolocalisation)
         response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
 
-        # 6. Content-Security-Policy (CSP) : autorise les scripts Swagger tout en bloquant les injections non autorisées
+        # 6. Content-Security-Policy (CSP) : autorise les scripts Swagger et bloque les autres sources
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
             "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "

@@ -6,9 +6,10 @@ from sqlalchemy.orm import sessionmaker
 
 from app.adapters.secondary.database import models  # noqa: F401  enregistre les tables dans Base.metadata
 from app.adapters.secondary.repositories.artist_sql_repository import ArtistSqlRepository
-from app.adapters.secondary.repositories.concert_sql_repository import ConcertSqlRepository
+from app.adapters.secondary.repositories.concert_sql_query_adapter import ConcertSqlQueryAdapter
 from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlRepository
 from app.adapters.secondary.repositories.incident_sql_repository import IncidentSqlRepository
+from app.adapters.secondary.repositories.schedule_sql_repository import ScheduleSqlRepository
 from app.adapters.secondary.repositories.stage_sql_repository import StageSqlRepository
 from app.adapters.secondary.database.session import Base
 from app.domain.models.artist import Artist
@@ -56,36 +57,68 @@ def make_concert(references, hour=18):
     )
 
 
-def test_concert_round_trip_keeps_time_slot_and_status(session, references):
-    repository = ConcertSqlRepository(session)
+def save_concert(session, concert):
+    """Enregistre un concert par le planning de son festival, sans appliquer les règles (données de test)."""
+    repository = ScheduleSqlRepository(session)
+    schedule = repository.get_by_festival_id(concert.festival_id)
+    schedule.concerts.append(concert)
+    repository.save(schedule)
+    return concert
 
-    saved = repository.save(make_concert(references))
-    loaded = repository.get_by_id(saved.id)
+
+def test_schedule_round_trip_keeps_period_publication_and_concerts(session, references):
+    repository = ScheduleSqlRepository(session)
+    festival_id = references[0]
+
+    saved = save_concert(session, make_concert(references))
+    schedule = repository.get_by_festival_id(festival_id)
+    loaded = schedule.get_concert(saved.id)
 
     assert saved.id is not None
+    assert schedule.period == FestivalPeriod(start=datetime(2027, 6, 18, 10), end=datetime(2027, 6, 20, 23))
+    assert schedule.is_published is False
     assert loaded.time_slot == TimeSlot(datetime(2027, 6, 18, 18), datetime(2027, 6, 18, 19))
     assert loaded.status is ConcertStatus.SCHEDULED
 
 
-def test_concert_save_updates_existing_row(session, references):
-    repository = ConcertSqlRepository(session)
-    concert = repository.save(make_concert(references))
+def test_schedule_save_updates_existing_row(session, references):
+    repository = ScheduleSqlRepository(session)
+    concert = save_concert(session, make_concert(references))
 
-    concert.cancel()
-    repository.save(concert)
+    schedule = repository.get_by_concert_id(concert.id)
+    schedule.cancel_concert(concert.id)
+    repository.save(schedule)
 
     assert session.query(ConcertRow).count() == 1
     assert session.get(ConcertRow, concert.id).status == "cancelled"
-    assert repository.get_by_id(concert.id).is_cancelled
+    assert ConcertSqlQueryAdapter(session).get_by_id(concert.id).is_cancelled
+
+
+def test_schedule_reflects_the_publication_of_its_festival(session, references):
+    festivals = FestivalSqlRepository(session)
+    festival = festivals.get_by_id(references[0])
+    festival.publish()
+    festivals.save(festival)
+
+    assert ScheduleSqlRepository(session).get_by_festival_id(festival.id).is_published is True
+
+
+def test_schedule_is_found_from_one_of_its_concerts(session, references):
+    concert = save_concert(session, make_concert(references))
+    repository = ScheduleSqlRepository(session)
+
+    assert repository.get_by_concert_id(concert.id).festival_id == references[0]
+    assert repository.get_by_concert_id(42) is None
+    assert repository.get_by_festival_id(42) is None
 
 
 def test_concerts_are_listed_chronologically_without_cancelled_by_default(session, references):
-    repository = ConcertSqlRepository(session)
-    late = repository.save(make_concert(references, hour=20))
-    early = repository.save(make_concert(references, hour=14))
+    repository = ConcertSqlQueryAdapter(session)
+    late = save_concert(session, make_concert(references, hour=20))
+    early = save_concert(session, make_concert(references, hour=14))
     cancelled = make_concert(references, hour=16)
     cancelled.cancel()
-    cancelled = repository.save(cancelled)
+    cancelled = save_concert(session, cancelled)
     festival_id = references[0]
 
     assert [c.id for c in repository.list_for_festival(festival_id)] == [early.id, late.id]
@@ -106,25 +139,25 @@ def test_concerts_of_an_artist_are_listed_across_festivals_without_cancelled(ses
         )
     )
     other_artist = ArtistSqlRepository(session).save(Artist(name="Abyss", genre="Doom"))
-    repository = ConcertSqlRepository(session)
-    late = repository.save(make_concert(references, hour=20))
+    repository = ConcertSqlQueryAdapter(session)
+    late = save_concert(session, make_concert(references, hour=20))
     elsewhere = make_concert(references, hour=14)
     elsewhere.festival_id = other_festival.id
-    elsewhere = repository.save(elsewhere)
+    elsewhere = save_concert(session, elsewhere)
     cancelled = make_concert(references, hour=16)
     cancelled.cancel()
-    repository.save(cancelled)
-    repository.save(make_concert((festival_id, other_artist.id, stage_id), hour=18))
+    save_concert(session, cancelled)
+    save_concert(session, make_concert((festival_id, other_artist.id, stage_id), hour=18))
 
     assert [c.id for c in repository.list_for_artist(artist_id)] == [elsewhere.id, late.id]
 
 
 def test_unknown_concert_is_none(session):
-    assert ConcertSqlRepository(session).get_by_id(42) is None
+    assert ConcertSqlQueryAdapter(session).get_by_id(42) is None
 
 
 def test_incident_round_trip_and_resolution(session, references):
-    concert = ConcertSqlRepository(session).save(make_concert(references))
+    concert = save_concert(session, make_concert(references))
     repository = IncidentSqlRepository(session)
     occurred_at = datetime(2027, 6, 18, 18, 30)
 
@@ -139,9 +172,8 @@ def test_incident_round_trip_and_resolution(session, references):
 
 
 def test_incidents_are_listed_most_recent_first_and_filtered_by_concert(session, references):
-    concerts = ConcertSqlRepository(session)
-    first_concert = concerts.save(make_concert(references, hour=14))
-    second_concert = concerts.save(make_concert(references, hour=16))
+    first_concert = save_concert(session, make_concert(references, hour=14))
+    second_concert = save_concert(session, make_concert(references, hour=16))
     repository = IncidentSqlRepository(session)
     older = repository.save(
         Incident(concert_id=first_concert.id, description="Ancien", occurred_at=datetime(2027, 6, 18, 14, 10))

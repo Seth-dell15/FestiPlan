@@ -9,9 +9,10 @@ from app.adapters.secondary.database import models  # noqa: F401  enregistre les
 from app.adapters.secondary.database.session import Base, engine, get_db
 from app.adapters.secondary.notifications.email_notification_adapter import EmailNotificationAdapter
 from app.adapters.secondary.repositories.artist_sql_repository import ArtistSqlRepository
-from app.adapters.secondary.repositories.concert_sql_repository import ConcertSqlRepository
-from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlQueryAdapter, FestivalSqlRepository
+from app.adapters.secondary.repositories.concert_sql_query_adapter import ConcertSqlQueryAdapter
+from app.adapters.secondary.repositories.festival_sql_repository import FestivalSqlRepository
 from app.adapters.secondary.repositories.incident_sql_repository import IncidentSqlRepository
+from app.adapters.secondary.repositories.schedule_sql_repository import ScheduleSqlRepository
 from app.adapters.secondary.repositories.stage_sql_repository import StageSqlRepository
 from app.application.use_cases.logistics.create_artist import CreateArtistUseCase
 from app.application.use_cases.logistics.create_festival import CreateFestivalUseCase
@@ -68,32 +69,33 @@ def list_stages_use_case(db: DbSession) -> ListStagesUseCase:
 
 def schedule_concert_use_case(db: DbSession) -> ScheduleConcertUseCase:
     return ScheduleConcertUseCase(
-        ConcertSqlRepository(db), FestivalSqlQueryAdapter(db), StageSqlRepository(db), ArtistSqlRepository(db)
+        ScheduleSqlRepository(db), ConcertSqlQueryAdapter(db), StageSqlRepository(db), ArtistSqlRepository(db)
     )
 
 
 def reschedule_concert_use_case(db: DbSession) -> RescheduleConcertUseCase:
     return RescheduleConcertUseCase(
-        ConcertSqlRepository(db), FestivalSqlQueryAdapter(db), EmailNotificationAdapter()
+        ScheduleSqlRepository(db), ConcertSqlQueryAdapter(db), EmailNotificationAdapter()
     )
 
 
 def cancel_concert_use_case(db: DbSession) -> CancelConcertUseCase:
-    return CancelConcertUseCase(ConcertSqlRepository(db), FestivalSqlQueryAdapter(db))
+    return CancelConcertUseCase(ScheduleSqlRepository(db))
 
 
 def get_schedule_use_case(db: DbSession) -> GetFestivalScheduleUseCase:
-    return GetFestivalScheduleUseCase(ConcertSqlRepository(db))
+    return GetFestivalScheduleUseCase(ConcertSqlQueryAdapter(db))
 
 
 def get_concert_use_case(db: DbSession) -> GetConcertUseCase:
-    return GetConcertUseCase(ConcertSqlRepository(db))
+    return GetConcertUseCase(ConcertSqlQueryAdapter(db))
 
 
 def publish_festival_use_case(db: DbSession) -> PublishFestivalUseCase:
     return PublishFestivalUseCase(
         FestivalSqlRepository(db),
-        ConcertSqlRepository(db),
+        ScheduleSqlRepository(db),
+        ConcertSqlQueryAdapter(db),
         StageSqlRepository(db),
         ArtistSqlRepository(db),
         EmailNotificationAdapter(),
@@ -105,7 +107,7 @@ def unpublish_festival_use_case(db: DbSession) -> UnpublishFestivalUseCase:
 
 
 def declare_incident_use_case(db: DbSession) -> DeclareIncidentUseCase:
-    return DeclareIncidentUseCase(IncidentSqlRepository(db), ConcertSqlRepository(db))
+    return DeclareIncidentUseCase(IncidentSqlRepository(db), ConcertSqlQueryAdapter(db))
 
 
 def list_incidents_use_case(db: DbSession) -> ListIncidentsUseCase:

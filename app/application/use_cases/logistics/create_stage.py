@@ -22,7 +22,7 @@ class CreateStageUseCase:
         self._festivals = festival_repository
 
     def execute(self, command: CreateStageCommand) -> Stage:
-        # L'existence du festival demande un repository, donc elle se vérifie ici ; la capacité est vérifiée par Stage.
+        # L'existence du festival demande un repository : elle se vérifie ici. La capacité l'est par Stage.
         if self._festivals.get_by_id(command.festival_id) is None:
             raise FestivalNotFoundError(command.festival_id)
         stage = Stage(

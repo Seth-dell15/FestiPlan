@@ -3,8 +3,9 @@ import pytest
 
 from app.adapters.secondary.notifications.fake_notification_adapter import FakeNotificationAdapter
 from app.adapters.secondary.repositories.in_memory_artist_repository import InMemoryArtistRepository
-from app.adapters.secondary.repositories.in_memory_concert_repository import InMemoryConcertRepository
+from app.adapters.secondary.repositories.in_memory_concert_query_adapter import InMemoryConcertQueryAdapter
 from app.adapters.secondary.repositories.in_memory_festival_repository import InMemoryFestivalRepository
+from app.adapters.secondary.repositories.in_memory_schedule_repository import InMemoryScheduleRepository
 from app.adapters.secondary.repositories.in_memory_stage_repository import InMemoryStageRepository
 from app.application.use_cases.operations.publish_festival import PublishFestivalUseCase
 from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError
@@ -39,9 +40,11 @@ def make_festival(status=FestivalStatus.PREPARATION):
 
 def make_use_case(festivals=(), concerts=(), notification=None):
     festival_repository = InMemoryFestivalRepository(list(festivals))
+    concert_store = InMemoryConcertQueryAdapter(list(concerts))
     use_case = PublishFestivalUseCase(
         festival_repository,
-        InMemoryConcertRepository(list(concerts)),
+        InMemoryScheduleRepository(festival_repository, concert_store),
+        concert_store,
         InMemoryStageRepository([
             Stage(id=1, festival_id=1, name="Mainstage", capacity=1000, available_equipment=EquipmentSet.of(["pyro"])),
             Stage(id=2, festival_id=1, name="Warzone", capacity=500),

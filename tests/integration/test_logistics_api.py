@@ -25,7 +25,12 @@ def test_create_stage_in_existing_festival(client):
 
     response = client.post(
         "/stages",
-        json={"festival_id": festival_id, "name": "Valley", "capacity": 8000, "available_equipment": ["special_lighting"]},
+        json={
+            "festival_id": festival_id,
+            "name": "Valley",
+            "capacity": 8000,
+            "available_equipment": ["special_lighting"],
+        },
     )
 
     assert response.status_code == 201

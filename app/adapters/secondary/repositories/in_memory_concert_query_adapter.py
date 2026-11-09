@@ -1,19 +1,26 @@
 from app.domain.models.concert import Concert
-from app.domain.ports.repositories.concert_repository_port import IConcertRepository
+from app.domain.ports.repositories.concert_query_port import IConcertQueryPort
 
 
-class InMemoryConcertRepository(IConcertRepository):
-    """Adaptateur secondaire en mémoire pour stocker les concerts sans base de données.
-    
-    Idéal pour les tests unitaires ultra-rapides et le développement isolé.
+class InMemoryConcertQueryAdapter(IConcertQueryPort):
+    """Adaptateur secondaire en mémoire pour consulter les concerts sans base de données.
+
+    Sert aussi de stockage à InMemoryScheduleRepository, qui y écrit par `add`.
     """
 
     def __init__(self, initial_concerts: list[Concert] | None = None):
         self._storage: dict[int, Concert] = {}
         self._auto_id: int = 1
-        if initial_concerts:
-            for concert in initial_concerts:
-                self.save(concert)
+        for concert in initial_concerts or []:
+            self.add(concert)
+
+    def add(self, concert: Concert) -> Concert:
+        """Hors port : alimente le stockage, pour les tests et pour le repository du planning."""
+        if concert.id is None:
+            concert.id = self._auto_id
+        self._auto_id = max(self._auto_id, concert.id + 1)
+        self._storage[concert.id] = concert
+        return concert
 
     def get_by_id(self, concert_id: int) -> Concert | None:
         return self._storage.get(concert_id)
@@ -28,10 +35,3 @@ class InMemoryConcertRepository(IConcertRepository):
     def list_for_artist(self, artist_id: int) -> list[Concert]:
         concerts = [c for c in self._storage.values() if c.artist_id == artist_id and not c.is_cancelled]
         return sorted(concerts, key=lambda c: c.time_slot.start)
-
-    def save(self, concert: Concert) -> Concert:
-        if concert.id is None:
-            concert.id = self._auto_id
-            self._auto_id += 1
-        self._storage[concert.id] = concert
-        return concert

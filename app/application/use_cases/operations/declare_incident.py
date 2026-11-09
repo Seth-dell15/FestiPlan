@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from app.application.ports.inbound import DeclareIncidentCommand, IDeclareIncidentPort
 from app.domain.models.incident import Incident
 from app.domain.ports.repositories.incident_repository_port import IIncidentRepository
-from app.domain.ports.repositories.concert_repository_port import IConcertRepository
+from app.domain.ports.repositories.concert_query_port import IConcertQueryPort
 from app.domain.exceptions.scheduling_exceptions import ConcertNotFoundError
 
 
@@ -12,7 +12,7 @@ class DeclareIncidentUseCase(IDeclareIncidentPort):
     def __init__(
         self,
         incident_repo: IIncidentRepository,
-        concert_repo: IConcertRepository,
+        concert_repo: IConcertQueryPort,
     ) -> None:
         self.incident_repo = incident_repo
         self.concert_repo = concert_repo

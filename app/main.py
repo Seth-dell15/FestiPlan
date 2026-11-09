@@ -26,11 +26,11 @@ app = FastAPI(
 # 1. En-têtes de sécurité HTTP (OWASP)
 app.add_middleware(SecurityHeadersMiddleware)
 
-# 2. Protection CORS explicite et contrôlée
+# 2. CORS ouvert pour la démonstration, sans cookies ni identifiants : l'API n'a pas d'authentification
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )

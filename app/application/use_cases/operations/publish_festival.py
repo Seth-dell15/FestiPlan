@@ -2,10 +2,10 @@ import logging
 
 from app.application.ports.inbound import IPublishFestivalPort, PublishFestivalResult
 from app.domain.models.festival import Festival
-from app.domain.services import scheduling_policy as policy
 from app.domain.ports.repositories.artist_repository_port import IArtistRepository
-from app.domain.ports.repositories.concert_repository_port import IConcertRepository
+from app.domain.ports.repositories.concert_query_port import IConcertQueryPort
 from app.domain.ports.repositories.festival_repository_port import IFestivalRepository
+from app.domain.ports.repositories.schedule_repository_port import IScheduleRepository
 from app.domain.ports.repositories.stage_repository_port import IStageRepository
 from app.domain.ports.services.notification_sender_port import INotificationSenderPort
 from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError
@@ -18,7 +18,8 @@ class PublishFestivalUseCase(IPublishFestivalPort):
 
     Invariants et règles garantis :
     - R8 : Le planning ne peut être publié que si ses concerts respectent les règles de
-      programmation (références R4, équipements R5, dates R6, conflits R2 et R3).
+      programmation (références R4, équipements R5, dates R6, conflits R2 et R3). C'est le
+      planning lui-même qui le vérifie.
     - La transition PREPARATION -> PUBLISHED est portée par l'entité Festival.
     - Défaut 2 : L'échec éventuel de la notification est capté et non bloquant.
     """
@@ -26,13 +27,15 @@ class PublishFestivalUseCase(IPublishFestivalPort):
     def __init__(
         self,
         festival_repository: IFestivalRepository,
-        concert_repository: IConcertRepository,
+        schedule_repository: IScheduleRepository,
+        concert_query: IConcertQueryPort,
         stage_repository: IStageRepository,
         artist_repository: IArtistRepository,
         notification_sender: INotificationSenderPort,
     ) -> None:
         self._festivals = festival_repository
-        self._concerts = concert_repository
+        self._schedules = schedule_repository
+        self._concerts = concert_query
         self._stages = stage_repository
         self._artists = artist_repository
         self._notification_sender = notification_sender
@@ -61,7 +64,10 @@ class PublishFestivalUseCase(IPublishFestivalPort):
         return PublishFestivalResult(festival=published, notification_sent=True)
 
     def _ensure_schedule_is_valid(self, festival: Festival) -> None:
-        concerts = self._concerts.list_for_festival(festival.id, include_cancelled=False)
+        schedule = self._schedules.get_by_festival_id(festival.id)
+        if schedule is None:
+            raise FestivalNotFoundError(festival.id)
+        concerts = schedule.active_concerts
         stages = {concert.stage_id: self._stages.get_by_id(concert.stage_id) for concert in concerts}
         artists = {concert.artist_id: self._artists.get_by_id(concert.artist_id) for concert in concerts}
         bookings_elsewhere = [
@@ -70,4 +76,4 @@ class PublishFestivalUseCase(IPublishFestivalPort):
             for booking in self._concerts.list_for_artist(artist_id)
             if booking.festival_id != festival.id
         ]
-        policy.ensure_publishable(festival, concerts, stages, artists, bookings_elsewhere)
+        schedule.ensure_publishable(stages, artists, bookings_elsewhere)

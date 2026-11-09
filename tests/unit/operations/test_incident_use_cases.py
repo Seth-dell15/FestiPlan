@@ -8,10 +8,9 @@ from app.domain.exceptions.scheduling_exceptions import ConcertNotFoundError
 from app.domain.exceptions.operation_exceptions import (
     IncidentNotFoundError,
     IncidentInvalidDescriptionError,
-    IncidentAlreadyResolvedError,
 )
-from app.adapters.secondary.repositories.in_memory_concert_repository import (
-    InMemoryConcertRepository,
+from app.adapters.secondary.repositories.in_memory_concert_query_adapter import (
+    InMemoryConcertQueryAdapter,
 )
 from app.adapters.secondary.repositories.in_memory_incident_repository import (
     InMemoryIncidentRepository,
@@ -43,7 +42,7 @@ def existing_concert():
 
 
 def test_declare_incident_with_unknown_concert_raises_error():
-    concert_repo = InMemoryConcertRepository()  # vide
+    concert_repo = InMemoryConcertQueryAdapter()  # vide
     incident_repo = InMemoryIncidentRepository()
     uc = DeclareIncidentUseCase(incident_repo, concert_repo)
 
@@ -52,7 +51,7 @@ def test_declare_incident_with_unknown_concert_raises_error():
 
 
 def test_declare_incident_with_empty_description_raises_r10_error(existing_concert):
-    concert_repo = InMemoryConcertRepository([existing_concert])
+    concert_repo = InMemoryConcertQueryAdapter([existing_concert])
     incident_repo = InMemoryIncidentRepository()
     uc = DeclareIncidentUseCase(incident_repo, concert_repo)
 
@@ -61,7 +60,7 @@ def test_declare_incident_with_empty_description_raises_r10_error(existing_conce
 
 
 def test_declare_incident_nominal_success(existing_concert):
-    concert_repo = InMemoryConcertRepository([existing_concert])
+    concert_repo = InMemoryConcertQueryAdapter([existing_concert])
     incident_repo = InMemoryIncidentRepository()
     uc = DeclareIncidentUseCase(incident_repo, concert_repo)
 
