@@ -187,7 +187,7 @@ Le dépôt legacy initial souffrait de trois carences structurelles :
 * **Application (`app/application/`) :** Contient les cas d'utilisation (`RescheduleConcertUseCase`, etc.). Coordonne les entités métier, appelle les ports abstraits et applique les règles transactionnelles et de synchronisation des événements.
 * **Ports (`app/domain/ports/`) :** Contrats d'interfaces (`typing.Protocol`) définissant les besoins du domaine applicatif (`IConcertRepository`, `IFestivalQueryPort`, `INotificationSenderPort`).
 * **Adaptateurs (`app/adapters/`) :**
-  * *Primaires (Driving) :* Routeur FastAPI [app/api/concerts.py](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/api/concerts.py) traduisant les requêtes JSON en commandes applicatives et les résultats en DTOs Pydantic.
+  * *Primaires (Driving) :* Routeur FastAPI [`app/api/concerts.py`](../app/api/concerts.py) traduisant les requêtes JSON en commandes applicatives et les résultats en DTOs Pydantic.
   * *Secondaires (Driven) :* `ConcertSqlRepository` (persistance relationnelle) et `EmailNotificationAdapter` (effets de bord).
 
 ---

