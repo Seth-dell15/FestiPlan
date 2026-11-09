@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 1165" width="1680" height="1165" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#4d4d4d" stroke-width="1.4"/></marker>
+<marker id="solid" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 Z" fill="#333333"/></marker>
+<marker id="diamond" viewBox="0 0 16 10" refX="1" refY="5" markerWidth="16" markerHeight="10" orient="auto"><path d="M1,5 L8,1 L15,5 L8,9 Z" fill="#333333"/></marker>
+</defs>
+<rect width="1680" height="1165" fill="#ffffff"/>
+<text x="40" y="30" font-size="18" font-weight="bold" fill="#1f2933" text-anchor="start">FestiPlan - modèle du domaine</text>
+<rect x="40" y="60" width="300" height="405" rx="9.0" fill="none" stroke="#4a6fa5" stroke-width="1.3" stroke-dasharray="8 4"/>
+<text x="52" y="80" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Aggregate Festival</text>
+<text x="52" y="96" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">dates et statut de publication</text>
+<rect x="360" y="60" width="300" height="405" rx="9.0" fill="none" stroke="#4a6fa5" stroke-width="1.3" stroke-dasharray="8 4"/>
+<text x="372" y="80" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Aggregate Schedule</text>
+<text x="372" y="96" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">planning : les concerts d'un festival</text>
+<rect x="680" y="60" width="300" height="405" rx="9.0" fill="none" stroke="#4a6fa5" stroke-width="1.3" stroke-dasharray="8 4"/>
+<text x="692" y="80" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Aggregate Stage</text>
+<text x="692" y="96" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">capacité et équipements</text>
+<rect x="1000" y="60" width="300" height="405" rx="9.0" fill="none" stroke="#4a6fa5" stroke-width="1.3" stroke-dasharray="8 4"/>
+<text x="1012" y="80" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Aggregate Artist</text>
+<text x="1012" y="96" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">partagé entre festivals</text>
+<rect x="1320" y="60" width="300" height="405" rx="9.0" fill="none" stroke="#4a6fa5" stroke-width="1.3" stroke-dasharray="8 4"/>
+<text x="1332" y="80" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Aggregate Incident</text>
+<text x="1332" y="96" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">cycle de vie propre</text>
+<rect x="60" y="110" width="260" height="170" rx="6.8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="2"/>
+<text x="68" y="129" font-size="12"><tspan font-weight="bold" fill="#1f2933">Festival</tspan><tspan dx="6" font-size="11" fill="#555555">racine</tspan></text>
+<line x1="61" y1="138" x2="319" y2="138" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="68" y="155" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">id</text>
+<text x="68" y="171" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">name, location</text>
+<text x="68" y="187" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">period : FestivalPeriod</text>
+<text x="68" y="203" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">status : FestivalStatus</text>
+<line x1="61" y1="211" x2="319" y2="211" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="68" y="228" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">publish()</text>
+<text x="68" y="244" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">unpublish()</text>
+<rect x="380" y="110" width="260" height="165" rx="6.6" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="2"/>
+<text x="388" y="129" font-size="12"><tspan font-weight="bold" fill="#1f2933">Schedule</tspan><tspan dx="6" font-size="11" fill="#555555">racine</tspan></text>
+<line x1="381" y1="138" x2="639" y2="138" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="388" y="155" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">festival_id → Festival</text>
+<text x="388" y="171" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">period : FestivalPeriod</text>
+<text x="388" y="187" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">is_published</text>
+<line x1="381" y1="195" x2="639" y2="195" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="388" y="212" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">add_concert(artist, stage, slot)</text>
+<text x="388" y="228" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">reschedule_concert(id, slot)</text>
+<text x="388" y="244" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">cancel_concert(id)</text>
+<text x="388" y="260" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">ensure_publishable()</text>
+<rect x="380" y="301" width="260" height="148" rx="5.9" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="388" y="320" font-size="12"><tspan font-weight="bold" fill="#1f2933">Concert</tspan><tspan dx="6" font-size="11" fill="#555555">entité interne</tspan></text>
+<line x1="381" y1="329" x2="639" y2="329" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="388" y="346" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">id</text>
+<text x="388" y="362" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">artist_id → Artist</text>
+<text x="388" y="378" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">stage_id → Stage</text>
+<text x="388" y="394" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">time_slot : TimeSlot</text>
+<text x="388" y="410" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">status : ConcertStatus</text>
+<line x1="381" y1="418" x2="639" y2="418" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="388" y="435" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">check_conflict_with(other)</text>
+<rect x="700" y="110" width="260" height="195" rx="7.8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="2"/>
+<text x="708" y="129" font-size="12"><tspan font-weight="bold" fill="#1f2933">Stage</tspan><tspan dx="6" font-size="11" fill="#555555">racine</tspan></text>
+<line x1="701" y1="138" x2="959" y2="138" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="708" y="155" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">id</text>
+<text x="708" y="171" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">festival_id → Festival</text>
+<text x="708" y="187" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">name, capacity</text>
+<text x="708" y="203" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">available_equipment : EquipmentSet</text>
+<line x1="701" y1="211" x2="959" y2="211" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="708" y="228" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">belongs_to(festival_id)</text>
+<text x="708" y="244" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">can_host(artist)</text>
+<text x="708" y="260" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">ensure_can_host(artist)</text>
+<rect x="1020" y="110" width="260" height="105" rx="4.2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="2"/>
+<text x="1028" y="129" font-size="12"><tspan font-weight="bold" fill="#1f2933">Artist</tspan><tspan dx="6" font-size="11" fill="#555555">racine</tspan></text>
+<line x1="1021" y1="138" x2="1279" y2="138" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="1028" y="155" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">id</text>
+<text x="1028" y="171" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">name, genre</text>
+<text x="1028" y="187" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">required_equipment : EquipmentSet</text>
+<rect x="1340" y="110" width="260" height="150" rx="6.0" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="2"/>
+<text x="1348" y="129" font-size="12"><tspan font-weight="bold" fill="#1f2933">Incident</tspan><tspan dx="6" font-size="11" fill="#555555">racine</tspan></text>
+<line x1="1341" y1="138" x2="1599" y2="138" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="1348" y="155" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">id</text>
+<text x="1348" y="171" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">concert_id → Concert</text>
+<text x="1348" y="187" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">description</text>
+<text x="1348" y="203" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">occurred_at, resolved</text>
+<line x1="1341" y1="211" x2="1599" y2="211" stroke="#4a6fa5" stroke-opacity="0.45"/>
+<text x="1348" y="228" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">resolve()</text>
+<polyline points="510,275 510,301" fill="none" stroke="#333333" stroke-width="1.3" marker-start="url(#diamond)"/>
+<text x="520" y="293" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">0..*</text>
+<polyline points="380,151 320,151" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="640,358 670,358 670,290 700,290" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="590,449 590,481 1100,481 1100,215" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1400,260 1400,497 450,497 450,449" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="900,110 900,48 294,48 294,110" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="40" y="520" width="1600" height="125" rx="0" fill="#fafafa" stroke="#dddddd" stroke-width="1"/>
+<text x="46" y="542" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Value objects</text>
+<text x="46" y="558" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">immuables, validés à la</text>
+<text x="46" y="572" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">création</text>
+<rect x="205" y="535" width="275" height="95" rx="3.8" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="213" y="554" font-size="12"><tspan font-weight="bold" fill="#1f2933">TimeSlot</tspan></text>
+<line x1="206" y1="563" x2="479" y2="563" stroke="#3c8d50" stroke-opacity="0.45"/>
+<text x="213" y="580" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">start, end</text>
+<text x="213" y="596" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">fin après début (R1) ; overlaps(),</text>
+<text x="213" y="610" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">is_within(), duration</text>
+<rect x="492" y="535" width="275" height="95" rx="3.8" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="500" y="554" font-size="12"><tspan font-weight="bold" fill="#1f2933">FestivalPeriod</tspan></text>
+<line x1="493" y1="563" x2="766" y2="563" stroke="#3c8d50" stroke-opacity="0.45"/>
+<text x="500" y="580" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">start, end</text>
+<text x="500" y="596" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">fin après début ; bornes utilisées pour R6</text>
+<rect x="779" y="535" width="275" height="95" rx="3.8" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="787" y="554" font-size="12"><tspan font-weight="bold" fill="#1f2933">EquipmentSet</tspan></text>
+<line x1="780" y1="563" x2="1053" y2="563" stroke="#3c8d50" stroke-opacity="0.45"/>
+<text x="787" y="580" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">items</text>
+<text x="787" y="596" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">remplace le CSV ; covers(), missing()</text>
+<rect x="1066" y="535" width="275" height="95" rx="3.8" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="1074" y="554" font-size="12"><tspan font-weight="bold" fill="#1f2933">FestivalStatus</tspan></text>
+<line x1="1067" y1="563" x2="1340" y2="563" stroke="#3c8d50" stroke-opacity="0.45"/>
+<text x="1074" y="580" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">PREPARATION, PUBLISHED</text>
+<text x="1074" y="596" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">remplace les chaînes libres</text>
+<rect x="1353" y="535" width="275" height="95" rx="3.8" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="1361" y="554" font-size="12"><tspan font-weight="bold" fill="#1f2933">ConcertStatus</tspan></text>
+<line x1="1354" y1="563" x2="1627" y2="563" stroke="#3c8d50" stroke-opacity="0.45"/>
+<text x="1361" y="580" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">SCHEDULED, CANCELLED</text>
+<text x="1361" y="596" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">annulé = ignoré par les conflits</text>
+<rect x="40" y="665" width="1600" height="175" rx="0" fill="#fafafa" stroke="#dddddd" stroke-width="1"/>
+<text x="46" y="687" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Invariants</text>
+<text x="46" y="703" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">où chaque règle est</text>
+<text x="46" y="717" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">garantie</text>
+<rect x="205" y="680" width="347" height="145" rx="8.7" fill="#ffffff" stroke="#bbbbbb" stroke-width="1.3"/>
+<text x="213" y="699" font-size="12"><tspan font-weight="bold" fill="#3c8d50">Value object</tspan></text>
+<line x1="206" y1="708" x2="551" y2="708" stroke="#bbbbbb" stroke-opacity="0.45"/>
+<text x="213" y="725" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">fin après début (TimeSlot)</text>
+<text x="213" y="741" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">durée non nulle (TimeSlot)</text>
+<text x="213" y="757" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">dates du festival cohérentes (FestivalPeriod)</text>
+<rect x="564" y="680" width="347" height="145" rx="8.7" fill="#ffffff" stroke="#bbbbbb" stroke-width="1.3"/>
+<text x="572" y="699" font-size="12"><tspan font-weight="bold" fill="#4a6fa5">Entité</tspan></text>
+<line x1="565" y1="708" x2="910" y2="708" stroke="#bbbbbb" stroke-opacity="0.45"/>
+<text x="572" y="725" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">capacité &gt; 0, R9 (Stage)</text>
+<text x="572" y="741" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">équipements disponibles, R5 (Stage)</text>
+<text x="572" y="757" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">description non vide, R10 (Incident)</text>
+<text x="572" y="773" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">transitions publish / unpublish (Festival)</text>
+<text x="572" y="789" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">concert annulé non modifiable (Concert)</text>
+<rect x="923" y="680" width="347" height="145" rx="8.7" fill="#ffffff" stroke="#bbbbbb" stroke-width="1.3"/>
+<text x="931" y="699" font-size="12"><tspan font-weight="bold" fill="#4a6fa5">Racine d'aggregate (Schedule)</tspan></text>
+<line x1="924" y1="708" x2="1269" y2="708" stroke="#bbbbbb" stroke-opacity="0.45"/>
+<text x="931" y="725" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">R2, R3 : scène et artiste libres sur le créneau</text>
+<text x="931" y="741" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">R4, R5 : scène du festival, équipements</text>
+<text x="931" y="757" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">R6 : concert dans la période du festival</text>
+<text x="931" y="773" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">R7 : planning publié non modifiable</text>
+<text x="931" y="789" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">R8 : planning publiable</text>
+<rect x="1282" y="680" width="347" height="145" rx="8.7" fill="#ffffff" stroke="#bbbbbb" stroke-width="1.3"/>
+<text x="1290" y="699" font-size="12"><tspan font-weight="bold" fill="#7a52a8">Use case</tspan></text>
+<line x1="1283" y1="708" x2="1628" y2="708" stroke="#bbbbbb" stroke-opacity="0.45"/>
+<text x="1290" y="725" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">festival, artiste, scène existants (R4)</text>
+<text x="1290" y="741" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">incident : concert existant (R10)</text>
+<text x="1290" y="757" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">charge le planning, puis la racine décide</text>
+<text x="1290" y="773" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">Pydantic : format des requêtes seulement</text>
+<rect x="40" y="860" width="1600" height="215" rx="0" fill="#fafafa" stroke="#dddddd" stroke-width="1"/>
+<text x="46" y="882" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Domain events</text>
+<text x="46" y="898" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">commande, use case,</text>
+<text x="46" y="912" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">événement, réaction</text>
+<text x="205" y="880" font-size="11" font-weight="bold" fill="#555555" text-anchor="start">Commande</text>
+<text x="565" y="880" font-size="11" font-weight="bold" fill="#555555" text-anchor="start">Use case</text>
+<text x="925" y="880" font-size="11" font-weight="bold" fill="#555555" text-anchor="start">Domain event</text>
+<text x="1285" y="880" font-size="11" font-weight="bold" fill="#555555" text-anchor="start">Mécanisme technique</text>
+<rect x="205" y="892" width="300" height="60" rx="4.8" fill="#ffffff" stroke="#888888" stroke-width="1.3"/>
+<text x="355.0" y="918.5" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">RescheduleConcert</text>
+<text x="355.0" y="934.5" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">concert_id, start, end</text>
+<rect x="565" y="892" width="300" height="60" rx="4.8" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="715.0" y="911.0" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">RescheduleConcertUseCase</text>
+<text x="715.0" y="927.0" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">charge le planning, qui vérifie ses règles,</text>
+<text x="715.0" y="942.0" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">puis l'enregistre</text>
+<rect x="925" y="892" width="300" height="60" rx="4.8" fill="#fdeedd" stroke="#d9822b" stroke-width="1.3"/>
+<text x="1075.0" y="918.5" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">ConcertRescheduled</text>
+<text x="1075.0" y="934.5" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">concert_id, ancien et nouveau créneau</text>
+<rect x="205" y="967" width="300" height="60" rx="4.8" fill="#ffffff" stroke="#888888" stroke-width="1.3"/>
+<text x="355.0" y="993.5" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">PublishFestival / UnpublishFestival</text>
+<text x="355.0" y="1009.5" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">festival_id</text>
+<rect x="565" y="967" width="300" height="60" rx="4.8" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="715.0" y="986.0" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">Publish / UnpublishFestivalUseCase</text>
+<text x="715.0" y="1002.0" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">publier : le planning vérifie R8</text>
+<text x="715.0" y="1017.0" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">retirer : rouvre le planning</text>
+<rect x="925" y="967" width="300" height="60" rx="4.8" fill="#fdeedd" stroke="#d9822b" stroke-width="1.3"/>
+<text x="1075.0" y="993.5" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">FestivalPublished / FestivalUnpublished</text>
+<text x="1075.0" y="1009.5" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">festival_id, festival_name, date</text>
+<rect x="1285" y="892" width="340" height="135" rx="10.8" fill="#f2f2f2" stroke="#555555" stroke-width="1.3"/>
+<text x="1455.0" y="948.5" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">INotificationSenderPort</text>
+<text x="1455.0" y="964.5" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">appelé par le use case après save()</text>
+<text x="1455.0" y="979.5" font-size="11" font-weight="normal" fill="#555555" text-anchor="middle">implémenté par EmailNotificationAdapter</text>
+<polyline points="505,922 565,922" fill="none" stroke="#333333" stroke-width="1.3" marker-end="url(#solid)"/>
+<polyline points="865,922 925,922" fill="none" stroke="#333333" stroke-width="1.3" marker-end="url(#solid)"/>
+<polyline points="1225,922 1285,922" fill="none" stroke="#333333" stroke-width="1.3" marker-end="url(#solid)"/>
+<polyline points="505,997 565,997" fill="none" stroke="#333333" stroke-width="1.3" marker-end="url(#solid)"/>
+<polyline points="865,997 925,997" fill="none" stroke="#333333" stroke-width="1.3" marker-end="url(#solid)"/>
+<polyline points="1225,997 1285,997" fill="none" stroke="#333333" stroke-width="1.3" marker-end="url(#solid)"/>
+<text x="205" y="1055" font-size="11" font-weight="normal" fill="#555555" text-anchor="start">L'événement est traité après l'enregistrement : si l'envoi échoue, la modification reste enregistrée et la réponse le signale (défaut 2).</text>
+<rect x="40" y="1095" width="1600" height="50" rx="3.0" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+<text x="60" y="1125" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">Légende</text>
+<rect x="160" y="1110" width="34" height="20" rx="3.0" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="2"/>
+<text x="204" y="1125" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">Racine d'aggregate</text>
+<rect x="365" y="1110" width="34" height="20" rx="3.0" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="409" y="1125" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">Entité interne</text>
+<rect x="570" y="1110" width="34" height="20" rx="3.0" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="614" y="1125" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">Value object</text>
+<rect x="775" y="1110" width="34" height="20" rx="3.0" fill="none" stroke="#4a6fa5" stroke-width="1.3" stroke-dasharray="8 4"/>
+<text x="819" y="1125" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">Frontière d'aggregate</text>
+<rect x="980" y="1110" width="34" height="20" rx="3.0" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="1024" y="1125" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">Use case</text>
+<rect x="1185" y="1110" width="34" height="20" rx="3.0" fill="#fdeedd" stroke="#d9822b" stroke-width="1.3"/>
+<text x="1229" y="1125" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">Domain event</text>
+<polyline points="1390,1120 1432,1120" fill="none" stroke="#4d4d4d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1442" y="1125" font-size="12" font-weight="normal" fill="#1f2933" text-anchor="start">Référence par identifiant</text>
+</svg>

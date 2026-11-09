@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 760" width="1060" height="760" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.4"/></marker>
+<marker id="solid" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 Z" fill="#333"/></marker>
+<marker id="diamond" viewBox="0 0 16 10" refX="1" refY="5" markerWidth="16" markerHeight="10" orient="auto"><path d="M1,5 L8,1 L15,5 L8,9 Z" fill="#333"/></marker>
+</defs>
+<rect width="1060" height="760" fill="#ffffff"/>
+<text x="20" y="34" font-size="19" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">FestiPlan : sécurité en profondeur</text>
+<rect x="25" y="60" width="1010" height="130" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="35" y="78" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Adaptateurs entrants</text>
+<rect x="25" y="240" width="1010" height="130" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="35" y="258" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Validation et assainissement (DTO)</text>
+<rect x="25" y="420" width="1010" height="130" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="35" y="438" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Cœur de domaine</text>
+<rect x="25" y="600" width="1010" height="130" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="35" y="618" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Adaptateurs sortants</text>
+<polyline points="530,190 530,240" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<polyline points="530,370 530,420" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<polyline points="530,550 530,600" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<rect x="45.0" y="100" width="310" height="72" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="200.0" y="133.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">SecurityHeadersMiddleware</text>
+<text x="200.0" y="149.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">En-têtes CSP, X-Frame-Options, nosniff</text>
+<rect x="375.0" y="100" width="310" height="72" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="530.0" y="133.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">CORSMiddleware</text>
+<text x="530.0" y="149.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">Origines et méthodes configurées</text>
+<rect x="705.0" y="100" width="310" height="72" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="860.0" y="133.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">global_security_exception_handler</text>
+<text x="860.0" y="149.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">Masque les traces d&#x27;exécution</text>
+<rect x="210.0" y="280" width="310" height="72" rx="3" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="365.0" y="313.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Schémas Pydantic</text>
+<text x="365.0" y="329.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">Typage strict, longueurs bornées</text>
+<rect x="540.0" y="280" width="310" height="72" rx="3" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="695.0" y="313.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">InputSanitizer</text>
+<text x="695.0" y="329.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">Neutralise les scripts, échappe le HTML</text>
+<rect x="375.0" y="460" width="310" height="72" rx="3" fill="#fdeedd" stroke="#d9822b" stroke-width="1.3"/>
+<text x="530.0" y="493.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Invariants métier</text>
+<text x="530.0" y="509.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">Règles R1 à R10</text>
+<rect x="375.0" y="640" width="310" height="72" rx="3" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="530.0" y="673.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Repositories SQLAlchemy</text>
+<text x="530.0" y="689.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">Requêtes paramétrées contre l&#x27;injection SQL</text>
+</svg>

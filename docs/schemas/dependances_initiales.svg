@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" width="1600" height="800" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.4"/></marker>
+<marker id="solid" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 Z" fill="#333"/></marker>
+<marker id="diamond" viewBox="0 0 16 10" refX="1" refY="5" markerWidth="16" markerHeight="10" orient="auto"><path d="M1,5 L8,1 L15,5 L8,9 Z" fill="#333"/></marker>
+</defs>
+<rect width="1600" height="800" fill="#ffffff"/>
+<text x="20" y="34" font-size="19" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">FestiPlan : dépendances du code initial</text>
+<rect x="20" y="60" width="1560" height="108" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="30" y="78" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Couche web : API</text>
+<rect x="20" y="265" width="1560" height="108" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="30" y="283" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Couche services</text>
+<rect x="225" y="490" width="1075" height="112" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="235" y="508" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Couche données et ORM</text>
+<rect x="110" y="680" width="690" height="100" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="120" y="698" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Effets secondaires et configuration</text>
+<polyline points="470,152 470,305" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="560,152 720,530" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="830,152 800,530" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="900,152 1090,530" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="470,357 380,530" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="420,331 210,331" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="590,340 1060,530" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="560,357 650,530" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1060,357 1060,410 150,410 150,357" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1120,357 1160,530" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="75,357 75,741 130,741" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="380,741 550,741" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="345,582 345,640 1160,640 1160,582" fill="none" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="420" y="100" width="170" height="52" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="505.0" y="131.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">api/concerts.py</text>
+<rect x="760" y="100" width="170" height="52" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="845.0" y="131.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">api/incidents.py</text>
+<rect x="1010" y="100" width="170" height="52" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="1095.0" y="131.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">api/festivals.py</text>
+<rect x="1200" y="100" width="170" height="52" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="1285.0" y="131.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">api/artists.py</text>
+<rect x="1390" y="100" width="170" height="52" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="1475.0" y="131.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">api/stages.py</text>
+<rect x="40" y="305" width="170" height="52" rx="3" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="125.0" y="336.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">NotificationService</text>
+<rect x="420" y="305" width="170" height="52" rx="3" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="505.0" y="336.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">SchedulingService</text>
+<rect x="1010" y="305" width="170" height="52" rx="3" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="1095.0" y="336.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">PublicationService</text>
+<rect x="1200" y="305" width="170" height="52" rx="3" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="1285.0" y="336.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">FestivalService</text>
+<rect x="1390" y="305" width="170" height="52" rx="3" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3"/>
+<text x="1475.0" y="336.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">StageService</text>
+<rect x="250" y="530" width="190" height="52" rx="3" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="345.0" y="561.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">ConcertRepository</text>
+<rect x="620" y="530" width="260" height="52" rx="3" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="750.0" y="553.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">app/models.py</text>
+<text x="750.0" y="569.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">modèles SQLAlchemy</text>
+<rect x="1050" y="530" width="220" height="52" rx="3" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3"/>
+<text x="1160.0" y="561.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Session SQLAlchemy</text>
+<rect x="130" y="715" width="250" height="52" rx="3" fill="#f2f2f2" stroke="#6b7280" stroke-width="1.3"/>
+<text x="255.0" y="746.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">app/utils/email_sender.py</text>
+<rect x="550" y="715" width="220" height="52" rx="3" fill="#f2f2f2" stroke="#6b7280" stroke-width="1.3"/>
+<text x="660.0" y="738.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">app/config.py</text>
+<text x="660.0" y="754.0" font-size="11" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">settings</text>
+<rect x="400.95" y="219" width="138.1" height="15" fill="#ffffff"/>
+<text x="470" y="230" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Instanciation directe</text>
+<rect x="551.4" y="214" width="83.19999999999999" height="15" fill="#ffffff"/>
+<text x="593" y="225" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">① db.query()</text>
+<rect x="735.75" y="299" width="162.5" height="15" fill="#ffffff"/>
+<text x="817" y="310" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">① db.query() sans service</text>
+<rect x="859.85" y="211" width="150.29999999999998" height="15" fill="#ffffff"/>
+<text x="935" y="222" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">db.add() et db.commit()</text>
+<rect x="362.0" y="429" width="132.0" height="15" fill="#ffffff"/>
+<text x="428" y="440" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Instanciation en dur</text>
+<rect x="242.9" y="308" width="144.2" height="15" fill="#ffffff"/>
+<text x="315" y="319" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">③ Instanciation en dur</text>
+<rect x="845.65" y="467" width="174.7" height="15" fill="#ffffff"/>
+<text x="933" y="478" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">② db.query() et db.commit()</text>
+<rect x="538.0" y="434" width="132.0" height="15" fill="#ffffff"/>
+<text x="604" y="445" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Manipulation directe</text>
+<rect x="617.9" y="399" width="144.2" height="15" fill="#ffffff"/>
+<text x="690" y="410" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">③ Instanciation en dur</text>
+<rect x="1053.65" y="439" width="174.7" height="15" fill="#ffffff"/>
+<text x="1141" y="450" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">② db.query() et db.commit()</text>
+<rect x="36.400000000000006" y="549" width="83.19999999999999" height="15" fill="#ffffff"/>
+<text x="78" y="560" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Appel direct</text>
+<rect x="414.25" y="718" width="101.5" height="15" fill="#ffffff"/>
+<text x="465" y="729" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Lecture directe</text>
+<rect x="690.1" y="629" width="119.8" height="15" fill="#ffffff"/>
+<text x="750" y="640" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Requêtes et commit</text>
+</svg>
