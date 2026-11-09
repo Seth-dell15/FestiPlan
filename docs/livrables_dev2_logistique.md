@@ -215,3 +215,4 @@ Le pôle comprend **36 tests automatisés dédiés**, exécutés dans le cadre d
 * **Tests d'intégration réelle (`tests/integration/`) :** 15 tests
   * `test_logistics_sql_repositories.py` : intégrité transactionnelle avec SQLite réel.
   * `test_logistics_api.py` : vérification des statuts HTTP (200, 201, 400, 404, 422) et assainissement XSS.
+
