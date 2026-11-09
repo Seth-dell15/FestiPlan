@@ -48,13 +48,13 @@ Version modifiable : [diagramme_sequence.drawio](../schemas/diagramme_sequence.d
 
 ## 3. Responsabilités de chaque couche
 
-- **Domaine (`app/domain`)** : entités, objets-valeurs, événements, exceptions métier et politique de programmation. Il n'importe ni FastAPI, ni SQLAlchemy, ni Pydantic.
+- **Domaine (`app/domain`)** : agrégats, entités, objets-valeurs, événements et exceptions métier. Il n'importe ni FastAPI, ni SQLAlchemy, ni Pydantic.
 - **Application (`app/application`)** : cas d'usage. Chacun charge les données par les ports, appelle le domaine, enregistre le résultat puis déclenche les effets de bord.
 - **Adaptateurs entrants (`app/adapters/primary`)** : routes FastAPI, schémas Pydantic et protections HTTP. Ils traduisent une requête en commande et une erreur métier en code HTTP.
 - **Adaptateurs sortants (`app/adapters/secondary`)** : persistance SQLAlchemy, doubles en mémoire et notification.
 - **Composition (`app/composition.py`)** : seul module qui crée les adaptateurs concrets et les injecte dans les cas d'usage.
 
-Une règle est placée au plus près de ce qu'elle protège. Un créneau invalide n'a pas de sens, donc `TimeSlot` le refuse à sa création. Un conflit compare plusieurs concerts, donc il relève de `Concert.check_conflict_with` et de `scheduling_policy`. Vérifier qu'un artiste existe nécessite un accès aux données, donc le cas d'usage s'en charge. Pydantic ne contrôle que le format des requêtes.
+Une règle est placée au plus près de ce qu'elle protège. Un créneau invalide n'a pas de sens, donc `TimeSlot` le refuse à sa création. Un conflit compare plusieurs concerts, donc il relève du planning `Schedule`, la racine qui les contient. Vérifier qu'un artiste existe nécessite un accès aux données, donc le cas d'usage s'en charge. Pydantic ne contrôle que le format des requêtes.
 
 Les codes HTTP suivent une règle unique. Le code 400 signale des données contraires à une règle métier, 404 une ressource absente, 409 un conflit avec l'état du planning, et 422 un format de requête invalide.
 
@@ -70,15 +70,15 @@ Les lectures simples, les créations du référentiel et l'annulation appellent 
 
 | Port | Production | Double de test |
 |---|---|---|
-| `IConcertRepository` | `ConcertSqlRepository` | `InMemoryConcertRepository` |
+| `IScheduleRepository` | `ScheduleSqlRepository` | `InMemoryScheduleRepository` |
+| `IConcertQueryPort` | `ConcertSqlQueryAdapter` | `InMemoryConcertQueryAdapter` |
 | `IFestivalRepository` | `FestivalSqlRepository` | `InMemoryFestivalRepository` |
-| `IFestivalQueryPort` | `FestivalSqlQueryAdapter` | Doublure locale aux tests |
 | `IStageRepository` | `StageSqlRepository` | `InMemoryStageRepository` |
 | `IArtistRepository` | `ArtistSqlRepository` | `InMemoryArtistRepository` |
 | `IIncidentRepository` | `IncidentSqlRepository` | `InMemoryIncidentRepository` |
 | `INotificationSenderPort` | `EmailNotificationAdapter` | `FakeNotificationAdapter` |
 
-Les repositories isolent le stockage et permettent de tester les cas d'usage sans base. `IFestivalQueryPort` fournit uniquement les dates et l'état de publication nécessaires à la programmation. `INotificationSenderPort` reçoit des événements métier, ce qui permet de simuler une panne sans réseau.
+Les repositories isolent le stockage et permettent de tester les cas d'usage sans base. `IScheduleRepository` charge et enregistre le planning entier en une transaction : c'est le seul chemin d'écriture des concerts. `IConcertQueryPort` est réservé à la lecture : consultation, incidents, et concerts d'un artiste dans les autres festivals. `INotificationSenderPort` reçoit des événements métier, ce qui permet de simuler une panne sans réseau.
 
 ## 5. Modèle métier
 
@@ -88,7 +88,7 @@ Version modifiable : [modele-domaine.drawio](../schemas/modele-domaine.drawio).
 
 ### Entités
 
-`Festival`, `Concert`, `Stage`, `Artist` et `Incident` possèdent une identité et sont comparés par identifiant : deux concerts aux mêmes horaires restent distincts.
+`Festival`, `Schedule`, `Concert`, `Stage`, `Artist` et `Incident` possèdent une identité et sont comparés par identifiant : deux concerts aux mêmes horaires restent distincts. Le planning `Schedule` est identifié par son festival.
 
 ### Objets-valeurs
 
@@ -101,20 +101,22 @@ Version modifiable : [modele-domaine.drawio](../schemas/modele-domaine.drawio).
 
 - **Objet-valeur** : R1 et cohérence des dates du festival.
 - **Entité** : R9 et R5 sur `Stage`, R10 sur `Incident`, transitions de `Festival` et interdiction de modifier un concert annulé.
-- **Politique de domaine** : R2 à R8 dans `scheduling_policy`, car ces règles croisent plusieurs agrégats.
-- **Cas d'usage** : existence des références (R4 et R10), car elle demande un accès aux données.
+- **Racine d'agrégat** : R2 à R8 dans `Schedule`, qui contient les concerts que ces règles comparent.
+- **Cas d'usage** : existence des références (R4 et R10) et chargement des concerts de l'artiste dans les autres festivals, car ils demandent un accès aux données.
 
 ### Agrégats
 
-Le modèle compte cinq agrégats, dont la racine est l'entité du même nom : `Festival`, `Concert`, `Stage`, `Artist` et `Incident`. Ils se référencent par identifiant.
+Le modèle compte cinq agrégats, qui se référencent par identifiant : `Schedule`, `Festival`, `Stage`, `Artist` et `Incident`. Le sujet demande de ne pas tout placer dans un seul agrégat, ni de créer un agrégat par classe : la frontière suit donc les règles à garantir.
 
-Un agrégat `Festival` contenant scènes et concerts aurait rendu les conflits vérifiables dans un seul objet, mais il aurait obligé à charger tout le planning pour la moindre modification et aurait augmenté les conflits d'écriture. `Artist` ne peut pas lui appartenir, car un artiste est partagé entre festivals.
+`Schedule`, le planning d'un festival, est la racine qui contient les concerts. R2, R3, R6 et R7 portent sur l'ensemble de ces concerts ; elles ne peuvent être garanties que par un objet qui les voit tous. Programmer, déplacer et annuler passent donc par `Schedule`, et il n'existe pas de repository de concert : `IScheduleRepository` enregistre le planning entier.
 
-Ce découpage a un coût : R2 et R3 ne sont pas garanties par une seule racine. La politique de domaine les vérifie à partir des concerts chargés par le cas d'usage, et la section 8 en décrit la limite.
+Les autres agrégats restent séparés, car aucune règle ne les lie dans la même transaction. Un agrégat `Festival` contenant aussi les scènes aurait obligé à charger tout le festival pour créer une scène, et `Artist` ne peut pas lui appartenir, car un artiste est partagé entre festivals. `Stage` et `Artist` sont passés en paramètre au planning pour R4 et R5.
+
+Ce découpage garde deux coûts, décrits en section 8 : chaque modification charge tous les concerts du festival, et R3 entre festivals croise deux plannings, donc le cas d'usage fournit à la racine les concerts de l'artiste ailleurs.
 
 ### Contextes métier
 
-Le code distingue trois sous-domaines : planification, référentiel et opérations. Ils partagent un seul modèle et une seule base. Séparer davantage ces contextes ajouterait des traductions sans besoin réel pour un monolithe de cette taille.
+Le code distingue trois sous-domaines : planification, référentiel et opérations. La planification, qui porte l'essentiel des règles (R1 à R8), est le sous-domaine cœur ; le référentiel et les incidents sont des sous-domaines de support. Ils partagent un seul modèle et une seule base. Séparer davantage ces contextes ajouterait des traductions sans besoin réel pour un monolithe de cette taille.
 
 ### Commande, cas d'usage, événement, réaction
 
@@ -126,7 +128,7 @@ Le détail des requêtes et des résultats, avant et après, figure dans [05_rep
 
 ### Défaut 1 : conflits de programmation
 
-`ScheduleConcertUseCase` et `RescheduleConcertUseCase` appliquent les mêmes fonctions de `scheduling_policy`. Le déplacement construit un concert candidat, le compare aux concerts actifs du festival et de l'artiste, puis seulement modifie le concert réel. Un conflit renvoie 409.
+`ScheduleConcertUseCase` et `RescheduleConcertUseCase` passent par la même racine `Schedule`, donc par les mêmes règles. Le déplacement vérifie les conflits sur une copie du concert, face aux autres concerts du planning et à ceux de l'artiste, puis seulement modifie le concert réel. Un conflit renvoie 409.
 
 R3 est contrôlée entre festivals, car un artiste ne peut pas être à deux endroits en même temps.
 
@@ -144,11 +146,11 @@ La règle retenue est le refus suivi d'une dépublication explicite. Programmer,
 
 ## 7. Stratégie de tests
 
-La suite compte 236 tests, tous au vert. Le détail est dans [06_strategie_de_tests.md](06_strategie_de_tests.md).
+La suite compte 251 tests, tous au vert. Le détail est dans [06_strategie_de_tests.md](06_strategie_de_tests.md).
 
-- **Domaine** : 81 tests, sans FastAPI ni SQLite.
+- **Domaine** : 94 tests, sans FastAPI ni SQLite.
 - **Cas d'usage** : 63 tests avec des doubles de test.
-- **Adaptateurs** : 49 tests sur les routes, SQLite et la notification.
+- **Adaptateurs** : 51 tests sur les routes, SQLite et la notification.
 - **Non-régression** : 19 tests HTTP sur les défauts et les erreurs corrigées.
 - **Autres** : 14 tests de sécurité, 6 tests de l'API initiale et 4 tests du sens des dépendances.
 
@@ -156,10 +158,12 @@ Les 4 tests HTTP des trois défauts échouent sur le code initial et passent sur
 
 ## 8. Limites et compromis
 
-- **Concurrence** : les conflits sont vérifiés puis enregistrés sans verrou ni contrainte en base. Deux requêtes simultanées peuvent donc créer un chevauchement. Un numéro de version ou une contrainte SQL le corrigerait.
+- **Concurrence** : les conflits sont vérifiés puis enregistrés sans verrou ni contrainte en base. Deux requêtes simultanées peuvent donc créer un chevauchement, ou déplacer un concert pendant une publication. Un numéro de version sur le planning, vérifié à l'enregistrement, le corrigerait : l'agrégat fournit l'endroit où le poser.
+- **Taille du planning** : chaque modification charge tous les concerts du festival. C'est le prix d'une racine qui garantit R2 et R3, acceptable pour quelques centaines de concerts.
 - **Notification** : l'envoi reste synchrone et n'est pas retenté. Une notification en échec est signalée mais perdue. Une table outbox et un worker seraient la suite logique.
 - **Validation de l'enregistrement** : chaque `save()` valide sa transaction. C'est suffisant ici, car chaque cas d'usage modifie un seul agrégat ; une opération sur plusieurs agrégats nécessiterait une unité de travail.
-- **Entités mutables** : les invariants d'entité sont vérifiés à la création et dans les méthodes métier, mais un attribut comme `Stage.capacity` reste modifiable directement.
+- **Entités mutables** : les invariants d'entité sont vérifiés à la création et dans les méthodes métier, mais un attribut comme `Stage.capacity` reste modifiable directement. De même, `Concert.reschedule()` reste appelable hors du planning, mais aucun port ne permet alors d'enregistrer le résultat.
+- **État de publication** : il appartient à `Festival`. Le planning en lit une copie au chargement pour appliquer R7.
 - **Modification après publication** : il n'existe que la dépublication. Une procédure d'urgence ciblant un seul concert serait un ajout métier distinct.
 - **Emplacement des ports** : les ports sortants sont dans le domaine et les ports entrants dans l'application. Ils pourraient être regroupés sans changer le sens des dépendances.
 - **Schéma de base** : les tables sont créées par `create_all()`, sans migrations. Les équipements restent stockés en texte, convertis par `EquipmentSet`.
@@ -172,7 +176,7 @@ Les 4 tests HTTP des trois défauts échouent sur le code initial et passent sur
 - **Value Object** : donne un sens et une validation aux créneaux, périodes et équipements.
 - **Domain Event** : décrit un fait accompli sans coupler le domaine à la notification.
 - **Command** : porte une intention métier indépendante du format HTTP.
-- **Domain Service** : `scheduling_policy` centralise les règles qui croisent plusieurs agrégats.
+- **Aggregate** : `Schedule` regroupe les concerts d'un festival et garantit leurs règles communes.
 - **Composition Root** : `app/composition.py` assemble les dépendances à un seul endroit.
 - **DTO** : les schémas Pydantic séparent le contrat de l'API du modèle métier.
 - **Middleware** : ajoute les en-têtes de sécurité sans toucher au cœur applicatif.

@@ -171,9 +171,9 @@ def out(a):
 L'application legacy souffre d'un **couplage direct à l'infrastructure** et d'une **absence de domaine métier autonome**.
 
 La cible hexagonale mise en place :
-1. **Domaine pur :** Objets-valeurs (`TimeSlot`), entités autonomes avec invariants (`Concert.check_conflict_with`), exceptions de domaine explicites, testables en mémoire sans framework.
-2. **Ports abstraits :** `IConcertRepository`, `IFestivalQueryPort`, `INotificationSenderPort`.
+1. **Domaine pur :** Objets-valeurs (`TimeSlot`), agrégat `Schedule` qui garantit les règles du planning, exceptions de domaine explicites, testables en mémoire sans framework.
+2. **Ports abstraits :** `IScheduleRepository`, `IConcertQueryPort`, `INotificationSenderPort`.
 3. **Cas d'usage applicatifs :** `RescheduleConcertUseCase` et `PublishFestivalUseCase` qui orchestrent les règles avant persistance et isolent les effets de bord (notifications tolérantes aux pannes).
-4. **Adaptateurs interchangeables :** `ConcertSqlRepository` et `InMemoryConcertRepository`.
+4. **Adaptateurs interchangeables :** `ScheduleSqlRepository` et `InMemoryScheduleRepository`.
 
 Les trois défauts ont été exécutés sur le code initial : les requêtes et les résultats figurent dans [05_reproduction_defauts.md](05_reproduction_defauts.md).

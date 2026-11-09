@@ -1,5 +1,8 @@
 # Cahier des Charges & Feuille de Route — FestiPlan
 
+> [!NOTE]
+> **Document de cadrage rédigé au lancement du projet.** Il décrit la cible prévue et la répartition du travail. Quelques choix ont évolué pendant la refactorisation : les concerts sont regroupés dans l'agrégat `Schedule` (planning), enregistré par `IScheduleRepository`, et `IConcertQueryPort` ne sert qu'à la lecture ; les exceptions sont rangées par pôle (`logistics_exceptions.py`, `operation_exceptions.py`, `scheduling_exceptions.py`), la base tient dans `database/models.py` et `database/session.py`, le double de notification s'appelle `FakeNotificationAdapter`, et le statut `CANCELLED` du festival n'a pas été retenu. L'architecture réellement livrée est décrite dans la [note d'architecture](docs/livrables/03_note_architecture.md).
+
 ## 1. Contexte & Objectifs
 
 ### 1.1 Présentation

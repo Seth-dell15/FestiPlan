@@ -3,7 +3,6 @@
 **Projet :** FestiPlan — Gestion de Festival de Musique  
 **Module :** Architecture Hexagonale & DDD — Ynov B3  
 **Document :** Rétrospective d'ingénierie, analyse comparative des architectures et Blueprint pour futurs projets  
-**Auteurs :** Équipe FestiPlan (Hugo Cabanes & trinôme)
 
 > [!NOTE]
 > **Lecture conseillée sur GitHub** : il est préférable de consulter ce document sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
@@ -24,10 +23,10 @@ L'objectif est double :
 ### Les Points Forts Remarquables
 * **Cœur de domaine 100% pur (DDD respecté) :** Les entités (`Concert`, `Incident`) et objets-valeurs (`TimeSlot`) sont totalement agnostiques de tout framework. Zéro dépendance à FastAPI, Pydantic ou SQLAlchemy dans `app/domain/`.
 * **Inversion de dépendance exemplaire (Ports & Adapters) :** L'application communique exclusivement avec des contrats abstraits (`typing.Protocol`), ce qui permet d'interchanger instantanément la persistance SQLite réelle avec des dépôts en mémoire.
-* **Pyramide de tests (236 tests) :**
-  * 81 tests unitaires de domaine sans framework.
+* **Pyramide de tests (251 tests) :**
+  * 94 tests unitaires de domaine sans framework.
   * 63 tests de cas d'usage avec des doubles de test.
-  * 49 tests d'adaptateurs avec FastAPI et SQLite.
+  * 51 tests d'adaptateurs avec FastAPI et SQLite.
   * 19 tests HTTP de non-régression.
   * 14 tests de sécurité.
   * 6 tests de l'API initiale et 4 tests du sens des dépendances.
@@ -35,7 +34,7 @@ L'objectif est double :
   * *Défaut 1 (Conflits de scène et d'artiste) :* Impossible de créer un chevauchement.
   * *Défaut 2 (Panne de notification) :* La persistance en base n'est plus compromise par une défaillance de messagerie réseau.
   * *Défaut 3 (Verrouillage du planning) :* Toute altération ordinaire d'un festival publié est formellement bloquée.
-* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Strategy/Policy, Factory Method, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`03_note_architecture.md`](03_note_architecture.md#9-patrons-de-conception)).
+* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Aggregate, Composition Root, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`03_note_architecture.md`](03_note_architecture.md#9-patrons-de-conception)).
 
 ### Les Faiblesses et Dettes Techniques Résiduelles
 1. **Absence de gestion de la concurrence (Race Conditions) :**
@@ -54,9 +53,9 @@ L'objectif est double :
 | Axe d'Amélioration | Conception Actuelle | Conception Supérieure ("State of the Art") | Bénéfice direct |
 | :--- | :--- | :--- | :--- |
 | **Gestion des Événements** | Notification appelée directement dans le Use Case (`notify_concert_rescheduled(event)`). | **Outbox Pattern** : L'événement `ConcertRescheduledEvent` est persisté dans une table `outbox` dans la même transaction SQL que le concert, puis un worker d'arrière-plan dépile les notifications. | Tolérance absolue aux pannes : zéro perte de message, temps de réponse HTTP quasi-instantané (< 15ms). |
-| **Gestion de la Concurrence** | Vérification en lecture puis écriture (`list_for_festival` puis `save`). | **Optimistic Locking** : Chaque concert ou festival porte un champ `version: int`. Le `UPDATE` SQL vérifie `WHERE id = :id AND version = :v`. | Élimination mathématique de toute possibilité de conflit horaire sous forte charge concurrente. |
+| **Gestion de la Concurrence** | Vérification en lecture puis écriture (`get_by_concert_id` puis `save`). | **Optimistic Locking** : Le planning (`Schedule`) porte un champ `version: int`. Le `UPDATE` SQL vérifie `WHERE id = :id AND version = :v`. | Élimination mathématique de toute possibilité de conflit horaire sous forte charge concurrente. |
 | **Migrations BDD** | `create_all()` automatique au démarrage. | **Alembic** avec fichiers de migrations versionnés dans Git (`alembic upgrade head`). | Capacité à faire évoluer le schéma de base de données en production sans perte de données. |
-| **Command / Query Responsibility** | Les Use Cases mélangent lecture et écriture (`get_schedule_info` + mise à jour). | **CQRS léger** : Séparer strictement les modèles de lecture (requêtes directes ultra-rapides sans charger d'entités complètes) des modèles d'écriture (commandes transactionnelles). | Code de lecture plus simple et performances de consultation décuplées. |
+| **Command / Query Responsibility** | Les lectures et les écritures partagent le même modèle (`Concert`). | **CQRS léger** : Séparer strictement les modèles de lecture (requêtes directes ultra-rapides sans charger d'entités complètes) des modèles d'écriture (commandes transactionnelles). | Code de lecture plus simple et performances de consultation décuplées. |
 
 ---
 

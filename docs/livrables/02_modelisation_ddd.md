@@ -1,7 +1,6 @@
 # Livrable Intermédiaire — Étape 2 : Modélisation Métier DDD (Domain-Driven Design)
 
 **Projet :** FestiPlan — Gestion d'un festival metal fictif (*Hellforge Open Air*)  
-**Auteur :** Hugo Cabanes (Développeur 1 — Planning & Scheduling)  
 **Contexte :** Module Architecture Hexagonale & DDD — Ynov B3  
 **Référence du sujet :** Consignes Étape 2 (p. 7-8 du sujet de synthèse)
 
@@ -45,7 +44,8 @@ Version modifiable : [modele_deplacement.drawio](../schemas/modele_deplacement.d
 
 Une entité possède un identifiant unique qui persiste même si l'ensemble de ses attributs change. Deux entités ayant exactement les mêmes valeurs restent distinctes si leurs identifiants diffèrent.
 
-- **`Concert`** ([concert.py](../../app/domain/models/concert.py)) : un même artiste peut jouer plusieurs concerts. Le concert a son propre cycle de vie, de programmé à annulé.
+- **`Schedule`** ([schedule.py](../../app/domain/models/schedule.py)) : planning d'un festival, identifié par ce festival. Il contient les concerts et constitue le seul point d'entrée pour les modifier.
+- **`Concert`** ([concert.py](../../app/domain/models/concert.py)) : un même artiste peut jouer plusieurs concerts. Le concert a son propre cycle de vie, de programmé à annulé, à l'intérieur du planning.
 - **`Festival`** : événement global, dont le planning passe de préparation à publié, et peut être retiré.
 - **`Artist`** : groupe invité, partagé entre festivals.
 - **`Stage`** : espace rattaché à un festival, avec sa capacité et ses équipements.
@@ -65,8 +65,38 @@ Un objet-valeur n'a pas d'identité propre. Il est défini uniquement par les va
   * `overlaps(other)` : calcul pur d'intersection temporelle (`start_a < end_b and start_b < end_a`).
   * `is_within(start_limit, end_limit)` : vérification d'inclusion dans une période.
 
-#### 2. L'Objet-Valeur `FestivalScheduleInfo` ([app/domain/ports/repositories/festival_repository_port.py](../../app/domain/ports/repositories/festival_repository_port.py))
-* Modèle de lecture immuable transmettant les bornes temporelles et le statut `is_published` du festival au cas d'usage sans exposer l'ORM.
+#### 2. L'Objet-Valeur `FestivalPeriod` ([app/domain/value_objects/festival_period.py](../../app/domain/value_objects/festival_period.py))
+* **Attributs :** `start: datetime`, `end: datetime`.
+* **Pourquoi est-ce un Value Object ?** Une période n'existe pas sans son festival et se compare par ses dates. Elle refuse à sa création une fin antérieure ou égale au début, et fournit les bornes utilisées par R6.
+
+#### 3. L'Objet-Valeur `EquipmentSet` ([app/domain/value_objects/equipment_set.py](../../app/domain/value_objects/equipment_set.py))
+* **Attributs :** `items: frozenset[str]`.
+* **Pourquoi est-ce un Value Object ?** Les besoins d'un artiste et la dotation d'une scène sont un même concept : un ensemble d'équipements, sans identité. Il remplace les chaînes CSV du code initial.
+* **Richesse comportementale :** `covers(required)` et `missing(required)` portent la règle R5, ce qui évite de la réécrire dans un service ou une route.
+
+#### 4. Les statuts `FestivalStatus` et `ConcertStatus` ([app/domain/value_objects/](../../app/domain/value_objects))
+* Énumérations fermées (`PREPARATION` / `PUBLISHED`, `SCHEDULED` / `CANCELLED`) qui remplacent les chaînes libres du code initial : un statut inconnu ne peut plus exister.
+
+---
+
+### 3.3 Le Langage Omniprésent (Ubiquitous Language)
+
+Le code reprend le vocabulaire du sujet, pour qu'un terme métier désigne la même chose dans la discussion, dans le modèle et dans les tests.
+
+| Terme du sujet | Nom dans le code |
+| :--- | :--- |
+| Festival | `Festival` |
+| Scène | `Stage` |
+| Artiste | `Artist` |
+| Concert | `Concert` |
+| Créneau | `TimeSlot` |
+| Période du festival | `FestivalPeriod` |
+| Besoins techniques, équipements | `EquipmentSet` |
+| Planning | `Schedule` |
+| Publication | `Festival.publish()` |
+| Incident | `Incident` |
+
+Les cas d'usage portent le nom de l'action métier : programmer (`ScheduleConcert`), déplacer (`RescheduleConcert`), annuler (`CancelConcert`), publier (`PublishFestival`), dépublier (`UnpublishFestival`), déclarer un incident (`DeclareIncident`).
 
 ---
 
@@ -78,11 +108,11 @@ DDD impose de placer chaque invariant **au plus près de la structure qui en a l
 
 - **R1, fin après début** : `TimeSlot.__post_init__`. Un créneau invalide ne peut pas exister.
 - **Concert annulé non modifiable** : `Concert.reschedule()` et `Concert.cancel()`. L'entité protège son cycle de vie.
-- **R2 et R3, conflits** : `Concert.check_conflict_with()`, appelée par `scheduling_policy.ensure_no_conflict()`. La règle compare plusieurs concerts.
-- **R4 et R5, scène adaptée** : `scheduling_policy.ensure_stage_can_host()`, `Stage.belongs_to()` et `Stage.ensure_can_host()`.
-- **R6, période du festival** : `scheduling_policy.ensure_within_festival()`. La règle confronte les agrégats `Festival` et `Concert`.
-- **R7, planning publié** : `scheduling_policy.ensure_festival_is_modifiable()`. La procédure explicite est `Festival.unpublish()`.
-- **R8, publication** : `scheduling_policy.ensure_publishable()`, appelée avant `Festival.publish()`.
+- **R2 et R3, conflits** : `Schedule.add_concert()` et `Schedule.reschedule_concert()`. La règle compare plusieurs concerts, donc elle appartient à la racine qui les contient ; la comparaison de deux concerts reste dans `Concert.check_conflict_with()`.
+- **R4 et R5, scène adaptée** : `Schedule.add_concert()`, qui s'appuie sur `Stage.belongs_to()` et `Stage.ensure_can_host()`.
+- **R6, période du festival** : `Schedule`, qui connaît la période de son festival.
+- **R7, planning publié** : `Schedule`, pour programmer, déplacer et annuler. La procédure explicite est `Festival.unpublish()`.
+- **R8, publication** : `Schedule.ensure_publishable()`, appelée avant `Festival.publish()`.
 - **R9, capacité** : `Stage.__post_init__`.
 - **R10, incident** : `Incident.__post_init__` pour la description, `DeclareIncidentUseCase` pour l'existence du concert.
 
@@ -94,21 +124,24 @@ Un **agrégat** regroupe des objets métier soumis à des règles de cohérence 
 
 ### Le choix de conception retenu
 
-Deux approches étaient possibles.
+Le sujet met en garde contre deux excès : placer tous les objets dans un seul agrégat, ou créer un agrégat par classe. Trois découpages ont été comparés.
 
-1. **Un agrégat géant `Festival`**, contenant scènes et concerts. Les conflits seraient vérifiables dans un seul objet, mais toute modification chargerait et verrouillerait le planning entier.
-2. **Des agrégats distincts référencés par identifiant**, solution retenue :
+1. **Un agrégat géant `Festival`**, contenant scènes, artistes et concerts. Tout serait vérifiable dans un seul objet, mais créer une scène chargerait et verrouillerait le festival entier, et `Artist` ne peut pas lui appartenir puisqu'un artiste est partagé entre festivals.
+2. **Un agrégat par entité**, chaque concert étant sa propre racine. C'est le plus simple à écrire, mais aucune racine ne peut alors garantir R2 et R3 : un concert ne connaît pas les autres. Les règles du planning sortiraient du modèle.
+3. **Cinq agrégats, dont un planning**, solution retenue :
+   - **`Schedule`** : planning d'un festival, racine qui contient les entités `Concert`. C'est le seul agrégat à plusieurs entités, car c'est le seul endroit où des objets doivent rester cohérents ensemble.
    - **`Festival`** : identité, période et cycle de publication.
-   - **`Concert`** : créneau et statut, avec les identifiants du festival, de l'artiste et de la scène.
    - **`Stage`** : capacité et équipements, rattachée à un festival.
    - **`Artist`** : besoins techniques, partagé entre festivals.
    - **`Incident`** : description et résolution, rattaché à un concert.
 
 ### Justification de la frontière
 
-- **Isolation** : un concert peut être déplacé ou annulé sans charger tout le festival.
-- **Cohérence entre agrégats** : `RescheduleConcertUseCase` charge les concerts du festival et de l'artiste, puis `scheduling_policy` applique R2 et R3 avant l'enregistrement.
-- **Limite assumée** : sans verrou en base, deux requêtes simultanées peuvent contourner ce contrôle. La [note d'architecture](03_note_architecture.md) détaille ce compromis.
+- **Les invariants décident de la frontière** : R2, R3, R6 et R7 portent sur l'ensemble des concerts d'un festival. Ces concerts sont donc dans le même agrégat, et `Schedule` les vérifie à chaque modification.
+- **Une seule porte d'entrée** : programmer, déplacer et annuler passent par `Schedule.add_concert()`, `reschedule_concert()` et `cancel_concert()`. Il n'existe pas de repository de concert : `IScheduleRepository` charge et enregistre le planning entier en une transaction, et `IConcertQueryPort` ne sert qu'à la lecture.
+- **Ce qui reste dehors** : `Stage` et `Artist` sont référencés par identifiant et passés en paramètre à `add_concert()` pour R4 et R5. La période et l'état de publication appartiennent à `Festival` ; le planning les lit au chargement.
+- **R3 entre festivals** : cette règle croise deux plannings. Le cas d'usage charge les concerts de l'artiste dans les autres festivals et les transmet à la racine, qui tranche.
+- **Coût assumé** : chaque modification charge tous les concerts du festival, ce qui reste raisonnable à l'échelle d'un festival. Sans verrou en base, deux requêtes simultanées peuvent encore contourner le contrôle. La [note d'architecture](03_note_architecture.md) détaille ces compromis.
 
 ---
 
@@ -124,9 +157,9 @@ Le sujet insiste particulièrement sur la distinction de quatre concepts dans le
               │
               ▼
 ┌────────────────────────────┐
-│ 2. Cas d'Utilisation       │  Orchestration et application des invariants
-│ RescheduleConcertUseCase   │  - Valide R1, R2, R3, R6, R7
-└─────────────┬──────────────┘  - Persiste le nouvel état via IConcertRepository
+│ 2. Cas d'Utilisation       │  Orchestration : charge le planning (Schedule),
+│ RescheduleConcertUseCase   │  qui valide R2, R3, R6 et R7
+└─────────────┬──────────────┘  - Persiste le planning via IScheduleRepository
               │
               ▼
 ┌────────────────────────────┐

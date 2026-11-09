@@ -1,5 +1,7 @@
 # FestiPlan — API de Gestion de Festival (Architecture Hexagonale)
 
+[![CI](https://github.com/Seth-dell15/FestiPlan/actions/workflows/ci.yml/badge.svg)](https://github.com/Seth-dell15/FestiPlan/actions/workflows/ci.yml)
+
 API FastAPI de gestion de festival de musique (*Hellforge Open Air*), refactorisée selon les principes de l'**Architecture Hexagonale (Ports & Adapters)** et du **Domain-Driven Design (DDD)**.
 
 ---
@@ -25,9 +27,8 @@ Le code sépare rigoureusement la logique métier pure des mécanismes technique
 app/
 ├── composition.py                  # Point de composition : crée et injecte les adaptateurs
 ├── domain/                         # Cœur métier sans framework
-│   ├── models/                     # Entités (Festival, Concert, Stage, Artist, Incident)
+│   ├── models/                     # Agrégat Schedule (planning) et entités (Festival, Concert, Stage, Artist, Incident)
 │   ├── value_objects/              # TimeSlot, FestivalPeriod, EquipmentSet, statuts
-│   ├── services/                   # scheduling_policy : règles du planning
 │   ├── events/                     # Événements de domaine
 │   ├── exceptions/                 # Exceptions métier
 │   └── ports/                      # Ports sortants (repositories, notification)
@@ -64,6 +65,9 @@ pip install -r requirements.txt
 python -m app.seed
 ```
 
+> [!WARNING]
+> `python -m app.seed` vide les tables de la base configurée avant de recharger le jeu de démonstration. À utiliser uniquement en développement.
+
 ### Lancement de l'API
 
 ```bash
@@ -77,7 +81,7 @@ uvicorn app.main:app --reload
 
 ## 4. Exécution des Tests
 
-Le projet contient **236 tests automatisés** : domaine, cas d'usage, adaptateurs, non-régression et sécurité.
+Le projet contient **251 tests automatisés** : domaine, cas d'usage, adaptateurs, non-régression et sécurité.
 
 ```bash
 # Exécution de toute la suite de tests
@@ -94,6 +98,9 @@ python -m pytest tests/unit/
 
 # Exécution des tests d'intégration avec l'API
 python -m pytest tests/integration/
+
+# Contrôle de la qualité du code (imports inutilisés, style)
+ruff check app tests
 ```
 
 ---
@@ -118,12 +125,12 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 * **Conflit d'artiste (R3) :** Tentez de déplacer un concert pour faire jouer un artiste sur deux scènes différentes en même temps ➔ L'API renvoie **HTTP 409 Conflict** (`"Conflit d'artiste"`).
 
 ### Scénario 3 : Résistance aux pannes de notification (Défaut 2 résolu)
-1. Activez la simulation de panne de notification dans votre fichier `.env` ou console :
-   ```bash
+1. Activez la simulation de panne de notification avant de lancer l'API, dans le fichier `.env` (`FESTIPLAN_FAIL_NOTIFICATIONS=true`) ou dans la console PowerShell :
+   ```powershell
    $env:FESTIPLAN_FAIL_NOTIFICATIONS="true"
    ```
 2. Déplacez un concert via `PATCH /concerts/1/reschedule` ou publiez un festival via `POST /festivals/1/publish`.
-3. Contrairement au code legacy qui crashait en HTTP 500, l'API renvoie **HTTP 200 OK** et la persistance est préservée.
+3. Contrairement au code legacy qui crashait en HTTP 500, l'API renvoie **HTTP 200 OK** avec `"notification_sent": false` : la modification est enregistrée, et le client sait que l'alerte n'est pas partie.
 
 ### Scénario 4 : Verrouillage du festival publié (Défaut 3 résolu)
 1. Publiez le festival via `POST /festivals/1/publish`.

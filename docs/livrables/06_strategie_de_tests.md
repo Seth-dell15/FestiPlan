@@ -2,30 +2,30 @@
 
 La suite vérifie d'abord les règles métier sans technologie, puis l'orchestration avec des doubles de test, et enfin l'assemblage réel avec HTTP et SQLite.
 
-Résultat au moment de la rédaction : **236 tests passent**, avec `python -m pytest`.
+Résultat au moment de la rédaction : **251 tests passent**, avec `python -m pytest`.
 
 ## Répartition
 
 | Niveau | Tests | Dépendances |
 |---|---:|---|
-| Domaine | 81 | Python seul |
+| Domaine | 94 | Python seul |
 | Cas d'usage | 63 | Doubles de test |
 | Sens des dépendances | 4 | Analyse du code |
-| Adaptateurs | 49 | FastAPI, SQLite |
+| Adaptateurs | 51 | FastAPI, SQLite |
 | Non-régression | 19 | FastAPI, SQLite |
 | Sécurité | 14 | FastAPI, SQLite |
 | API initiale | 6 | FastAPI, SQLite |
-| **Total** | **236** | |
+| **Total** | **251** | |
 
-## Domaine (81 tests)
+## Domaine (94 tests)
 
 Ces tests ne démarrent ni FastAPI ni SQLite.
 
-- [tests/unit/scheduling](../../tests/unit/scheduling) : `test_time_slot.py` (12), `test_concert.py` (12), `test_scheduling_policy.py` (18), `test_publishable_policy.py` (5).
+- [tests/unit/scheduling](../../tests/unit/scheduling) : `test_schedule.py` (29), `test_time_slot.py` (12), `test_concert.py` (12), `test_schedule_publishable.py` (7).
 - [tests/unit/logistics](../../tests/unit/logistics) : `test_festival.py` (8), `test_stage.py` (7), `test_equipment_set.py` (6), `test_festival_period.py` (4).
 - [tests/unit/operations](../../tests/unit/operations) : `test_incident.py` (9).
 
-Ils couvrent les créneaux invalides, les chevauchements, les invariants et les transitions d'état.
+Ils couvrent les créneaux invalides, les chevauchements, les invariants et les transitions d'état. `test_schedule.py` vérifie l'agrégat du planning : chaque règle refusée laisse le planning inchangé.
 
 ## Cas d'usage (63 tests)
 
@@ -41,10 +41,10 @@ Ils vérifient les décisions métier, les erreurs et les appels aux ports, nota
 
 [test_architecture.py](../../tests/unit/test_architecture.py) analyse les imports. Le domaine et l'application ne peuvent pas importer de framework ni d'adaptateur, et les adaptateurs entrants ne peuvent pas importer SQLAlchemy ni les adaptateurs sortants.
 
-## Adaptateurs (49 tests)
+## Adaptateurs (51 tests)
 
 - **Routes HTTP** : `test_logistics_api.py` (14), `test_operations_integration.py` (12), `test_inbound_ports.py` (7).
-- **Persistance SQLite** : `test_concert_incident_sql_repositories.py` (8), `test_logistics_sql_repositories.py` (5).
+- **Persistance SQLite** : `test_concert_incident_sql_repositories.py` (10), `test_logistics_sql_repositories.py` (5).
 - **Notification** : `test_email_notification_adapter.py` (3).
 
 ## Non-régression (19 tests)

@@ -24,45 +24,45 @@ Ce document indique où chaque règle du sujet est garantie et quels tests la pr
 
 ### R2 : pas de chevauchement sur une scène
 
-- **Où** : `Concert.check_conflict_with`, appelée par `scheduling_policy.ensure_no_conflict`
+- **Où** : `Schedule.add_concert` et `Schedule.reschedule_concert`, qui comparent le concert à tous ceux du planning avec `Concert.check_conflict_with`
 - **Refus** : `StageOccupiedError`, HTTP 409
 - **Tests** : `test_conflict_on_same_stage_raises_stage_occupied_error`, `test_defect_1_stage_conflict_refused`, `test_integration_defect_1_stage_overlap_rejected`
 
 ### R3 : pas de chevauchement pour un artiste
 
-- **Où** : `Concert.check_conflict_with`, avec les concerts du festival et ceux de l'artiste
+- **Où** : `Schedule`, avec les concerts du planning et ceux de l'artiste dans les autres festivals, fournis par le cas d'usage
 - **Refus** : `ArtistAlreadyBookedError`, HTTP 409
 - **Portée** : la règle s'applique aussi entre festivals
 - **Tests** : `test_conflict_with_same_artist_raises_artist_already_booked_error`, `test_defect_1_artist_conflict_refused`, `test_r3_artist_cannot_play_in_two_festivals_at_the_same_time`
 
 ### R4 : références existantes et scène du festival
 
-- **Où** : existence vérifiée par `ScheduleConcertUseCase`, appartenance par `scheduling_policy.ensure_stage_can_host` et `Stage.belongs_to`
+- **Où** : existence vérifiée par `ScheduleConcertUseCase`, appartenance par `Schedule.add_concert` et `Stage.belongs_to`
 - **Refus** : HTTP 404 pour une référence absente, HTTP 400 pour une scène d'un autre festival
 - **Tests** : `test_belongs_to_its_festival_only`, `test_r4_stage_of_another_festival_is_rejected`, `test_r4_unknown_reference_is_rejected`
 
 ### R5 : équipements disponibles
 
-- **Où** : `Stage.ensure_can_host` et `EquipmentSet.missing`
+- **Où** : `Stage.ensure_can_host` et `EquipmentSet.missing`, appelées par `Schedule.add_concert`
 - **Refus** : `EquipmentMismatchError`, HTTP 400
 - **Tests** : `test_cannot_host_artist_when_equipment_is_missing`, `test_r5_missing_equipment_is_listed`, `test_r5_stage_without_required_equipment_is_rejected`
 
 ### R6 : concert dans la période du festival
 
-- **Où** : `scheduling_policy.ensure_within_festival` et `TimeSlot.is_within`
+- **Où** : `Schedule`, pour programmer et déplacer, avec `TimeSlot.is_within`
 - **Refus** : `ConcertOutsideFestivalError`, HTTP 400
 - **Tests** : `test_time_slot_is_within`, `test_r6_slot_outside_festival_is_rejected`, `test_reschedule_outside_festival_dates_refused`
 
 ### R7 : planning publié protégé
 
-- **Où** : `scheduling_policy.ensure_festival_is_modifiable`, appelée pour programmer, déplacer et annuler
+- **Où** : `Schedule`, pour programmer, déplacer et annuler
 - **Refus** : `CannotModifyPublishedFestivalError`, HTTP 409
 - **Procédure explicite** : `Festival.unpublish()` et `POST /festivals/{id}/unpublish`
 - **Tests** : `test_r7_published_festival_is_locked`, `test_defect_3_cannot_reschedule_published_festival`, `test_r7_cancel_is_rejected_once_festival_is_published`, `test_api_unpublish_allows_modification_then_republication`
 
 ### R8 : publication d'un planning valide
 
-- **Où** : `scheduling_policy.ensure_publishable`, appelée par `PublishFestivalUseCase` avant `Festival.publish()`
+- **Où** : `Schedule.ensure_publishable`, appelée par `PublishFestivalUseCase` avant `Festival.publish()`
 - **Contrôles** : planning non vide, R2 à R6, et R3 entre festivals
 - **Refus** : `CannotPublishInvalidScheduleError`, HTTP 400
 - **Tests** : `test_empty_schedule_is_not_publishable`, `test_conflict_inside_the_festival_is_not_publishable`, `test_artist_booked_in_another_festival_is_not_publishable`, `test_api_publish_with_schedule_conflict_refused_r8`

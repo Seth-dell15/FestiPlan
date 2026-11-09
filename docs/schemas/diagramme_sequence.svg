@@ -1,193 +1,167 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1570 2234" width="1570" height="2234" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1380 2068" width="1380" height="2068" font-family="Segoe UI, Helvetica, Arial, sans-serif">
 <defs>
 <marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.4"/></marker>
 <marker id="solid" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 Z" fill="#333"/></marker>
-<marker id="diamond" viewBox="0 0 16 10" refX="1" refY="5" markerWidth="16" markerHeight="10" orient="auto"><path d="M1,5 L8,1 L15,5 L8,9 Z" fill="#333"/></marker>
 </defs>
-<rect width="1570" height="2234" fill="#ffffff"/>
+<rect width="1380" height="2068" fill="#ffffff"/>
 <text x="20" y="34" font-size="19" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">FestiPlan : diagramme UML de séquence, déplacer un concert</text>
-<rect x="65" y="364" width="470" height="94" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M65,364 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="87" y="378" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
-<text x="127" y="379" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Concert absent]</text>
-<rect x="65" y="492" width="470" height="94" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M65,492 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="87" y="506" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
-<text x="127" y="507" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Concert annulé]</text>
-<rect x="65" y="656" width="1040" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M65,656 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="87" y="670" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
-<text x="127" y="671" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R1 : fin avant ou égale au début]</text>
-<rect x="65" y="892" width="470" height="94" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M65,892 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="87" y="906" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
-<text x="127" y="907" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Festival absent]</text>
-<rect x="65" y="1056" width="1230" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M65,1056 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="87" y="1070" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
-<text x="127" y="1071" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R7 : planning publié]</text>
-<rect x="65" y="1256" width="1230" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M65,1256 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="87" y="1270" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
-<text x="127" y="1271" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R6 : créneau hors du festival]</text>
-<rect x="65" y="1528" width="1230" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M65,1528 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="87" y="1542" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
-<text x="127" y="1543" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R2 ou R3 : scène ou artiste occupé]</text>
-<rect x="255" y="1908" width="1230" height="230" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
-<path d="M255,1908 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
-<text x="277" y="1922" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">alt</text>
-<text x="317" y="1923" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Envoi réussi]</text>
-<line x1="255" y1="2008" x2="1485" y2="2008" stroke="#7a52a8" stroke-dasharray="6 4"/>
-<text x="317" y="2023" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Panne de notification]</text>
-<line x1="110" y1="112" x2="110" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
+<rect x="65" y="350" width="470" height="94" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
+<path d="M65,350 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
+<text x="87" y="364" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
+<text x="127" y="365" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R1 : fin avant ou égale au début]</text>
+<rect x="65" y="568" width="470" height="94" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
+<path d="M65,568 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
+<text x="87" y="582" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
+<text x="127" y="583" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Concert absent]</text>
+<rect x="65" y="858" width="1040" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
+<path d="M65,858 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
+<text x="87" y="872" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
+<text x="127" y="873" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Concert annulé]</text>
+<rect x="65" y="1026" width="1040" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
+<path d="M65,1026 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
+<text x="87" y="1040" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
+<text x="127" y="1041" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R7 : planning publié]</text>
+<rect x="65" y="1194" width="1040" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
+<path d="M65,1194 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
+<text x="87" y="1208" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
+<text x="127" y="1209" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R6 : créneau hors du festival]</text>
+<rect x="65" y="1362" width="1040" height="130" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
+<path d="M65,1362 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
+<text x="87" y="1376" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">break</text>
+<text x="127" y="1377" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[R2 ou R3 : scène ou artiste occupé]</text>
+<rect x="255" y="1742" width="1040" height="230" fill="none" stroke="#7a52a8" stroke-width="1.1"/>
+<path d="M255,1742 h52 v12 l-8,8 h-44 Z" fill="#ede4f7" stroke="#7a52a8"/>
+<text x="277" y="1756" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">alt</text>
+<text x="317" y="1757" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Envoi réussi]</text>
+<line x1="255" y1="1842" x2="1295" y2="1842" stroke="#7a52a8" stroke-dasharray="6 4"/>
+<text x="317" y="1857" font-size="11" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">[Panne de notification]</text>
+<line x1="110" y1="112" x2="110" y2="2048" stroke="#9aa5b1" stroke-dasharray="5 4"/>
 <circle cx="110" cy="66" r="9" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.4"/><path d="M110,75 v18 M97,82 h26 M110,93 l-11,12 M110,93 l11,12" fill="none" stroke="#4a6fa5" stroke-width="1.4"/>
 <text x="110" y="122" font-size="12" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Client HTTP</text>
-<line x1="300" y1="112" x2="300" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
+<line x1="300" y1="112" x2="300" y2="2048" stroke="#9aa5b1" stroke-dasharray="5 4"/>
 <rect x="215" y="66" width="170" height="46" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
-<text x="300" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Route PATCH reschedule</text>
-<line x1="490" y1="112" x2="490" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
+<text x="300" y="94" font-size="11.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Route PATCH reschedule</text>
+<line x1="490" y1="112" x2="490" y2="2048" stroke="#9aa5b1" stroke-dasharray="5 4"/>
 <rect x="405" y="66" width="170" height="46" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
 <text x="490" y="94" font-size="11.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">RescheduleConcertUseCase</text>
-<line x1="680" y1="112" x2="680" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
+<line x1="680" y1="112" x2="680" y2="2048" stroke="#9aa5b1" stroke-dasharray="5 4"/>
 <rect x="595" y="66" width="170" height="46" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
-<text x="680" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IConcertRepository</text>
-<line x1="870" y1="112" x2="870" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
+<text x="680" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IScheduleRepository</text>
+<line x1="870" y1="112" x2="870" y2="2048" stroke="#9aa5b1" stroke-dasharray="5 4"/>
 <rect x="785" y="66" width="170" height="46" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
-<text x="870" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IFestivalQueryPort</text>
-<line x1="1060" y1="112" x2="1060" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
+<text x="870" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IConcertQueryPort</text>
+<line x1="1060" y1="112" x2="1060" y2="2048" stroke="#9aa5b1" stroke-dasharray="5 4"/>
 <rect x="975" y="66" width="170" height="46" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
-<text x="1060" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Concert et TimeSlot</text>
-<line x1="1250" y1="112" x2="1250" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
+<text x="1060" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Schedule (agrégat)</text>
+<line x1="1250" y1="112" x2="1250" y2="2048" stroke="#9aa5b1" stroke-dasharray="5 4"/>
 <rect x="1165" y="66" width="170" height="46" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
-<text x="1250" y="94" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">scheduling_policy</text>
-<line x1="1440" y1="112" x2="1440" y2="2214" stroke="#9aa5b1" stroke-dasharray="5 4"/>
-<rect x="1355" y="66" width="170" height="46" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
-<text x="1440" y="94" font-size="11.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">INotificationSenderPort</text>
+<text x="1250" y="94" font-size="11.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">INotificationSenderPort</text>
 <line x1="110" y1="186" x2="300" y2="186" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="96.30000000000001" y="168" width="217.39999999999998" height="15" fill="#ffffff"/>
+<rect x="96.3" y="168" width="217.4" height="15" fill="#ffffff"/>
 <text x="205.0" y="179" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">1. PATCH /concerts/{id}/reschedule</text>
 <line x1="300" y1="258" x2="490" y2="258" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
 <rect x="280.2" y="240" width="229.6" height="15" fill="#ffffff"/>
 <text x="395.0" y="251" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">2. execute(RescheduleConcertCommand)</text>
-<line x1="490" y1="294" x2="680" y2="294" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="506.8" y="276" width="156.39999999999998" height="15" fill="#ffffff"/>
-<text x="585.0" y="287" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">3. get_by_id(concert_id)</text>
-<line x1="680" y1="330" x2="490" y2="330" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="525.1" y="312" width="119.8" height="15" fill="#ffffff"/>
-<text x="585.0" y="323" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">4. concert ou None</text>
-<line x1="490" y1="406" x2="300" y2="406" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="319.85" y="388" width="150.29999999999998" height="15" fill="#ffffff"/>
-<text x="395.0" y="399" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">5. ConcertNotFoundError</text>
-<line x1="300" y1="442" x2="110" y2="442" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="181.7" y="424" width="46.599999999999994" height="15" fill="#ffffff"/>
-<text x="205.0" y="435" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">6. 404</text>
-<line x1="490" y1="534" x2="300" y2="534" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="295.45" y="516" width="199.1" height="15" fill="#ffffff"/>
-<text x="395.0" y="527" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">7. ConcertAlreadyCancelledError</text>
-<line x1="300" y1="570" x2="110" y2="570" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="181.7" y="552" width="46.599999999999994" height="15" fill="#ffffff"/>
-<text x="205.0" y="563" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">8. 409</text>
-<line x1="490" y1="622" x2="1060" y2="622" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="675.45" y="604" width="199.1" height="15" fill="#ffffff"/>
-<text x="775.0" y="615" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">9. TimeSlot(new_start, new_end)</text>
-<line x1="1060" y1="698" x2="490" y2="698" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="696.8" y="680" width="156.39999999999998" height="15" fill="#ffffff"/>
-<text x="775.0" y="691" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">10. InvalidTimeSlotError</text>
-<line x1="490" y1="734" x2="300" y2="734" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="338.15" y="716" width="113.69999999999999" height="15" fill="#ffffff"/>
-<text x="395.0" y="727" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">11. erreur métier</text>
-<line x1="300" y1="770" x2="110" y2="770" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="178.65" y="752" width="52.699999999999996" height="15" fill="#ffffff"/>
-<text x="205.0" y="763" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">12. 400</text>
-<line x1="490" y1="822" x2="870" y2="822" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="571.3" y="804" width="217.39999999999998" height="15" fill="#ffffff"/>
-<text x="680.0" y="815" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">13. get_schedule_info(festival_id)</text>
-<line x1="870" y1="858" x2="490" y2="858" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="577.4" y="840" width="205.2" height="15" fill="#ffffff"/>
-<text x="680.0" y="851" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">14. FestivalScheduleInfo ou None</text>
-<line x1="490" y1="934" x2="300" y2="934" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="316.8" y="916" width="156.39999999999998" height="15" fill="#ffffff"/>
-<text x="395.0" y="927" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">15. UnknownFestivalError</text>
-<line x1="300" y1="970" x2="110" y2="970" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="178.65" y="952" width="52.699999999999996" height="15" fill="#ffffff"/>
-<text x="205.0" y="963" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">16. 404</text>
-<line x1="490" y1="1022" x2="1250" y2="1022" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="733.85" y="1004" width="272.3" height="15" fill="#ffffff"/>
-<text x="870.0" y="1015" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">17. ensure_festival_is_modifiable(festival)</text>
-<line x1="1250" y1="1098" x2="490" y2="1098" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="749.1" y="1080" width="241.79999999999998" height="15" fill="#ffffff"/>
-<text x="870.0" y="1091" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">18. CannotModifyPublishedFestivalError</text>
-<line x1="490" y1="1134" x2="300" y2="1134" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="338.15" y="1116" width="113.69999999999999" height="15" fill="#ffffff"/>
-<text x="395.0" y="1127" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">19. erreur métier</text>
-<line x1="300" y1="1170" x2="110" y2="1170" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="178.65" y="1152" width="52.699999999999996" height="15" fill="#ffffff"/>
-<text x="205.0" y="1163" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">20. 409</text>
-<line x1="490" y1="1222" x2="1250" y2="1222" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="724.7" y="1204" width="290.59999999999997" height="15" fill="#ffffff"/>
-<text x="870.0" y="1215" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">21. ensure_within_festival(new_slot, festival)</text>
-<line x1="1250" y1="1298" x2="490" y2="1298" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="770.45" y="1280" width="199.1" height="15" fill="#ffffff"/>
-<text x="870.0" y="1291" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">22. ConcertOutsideFestivalError</text>
-<line x1="490" y1="1334" x2="300" y2="1334" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="338.15" y="1316" width="113.69999999999999" height="15" fill="#ffffff"/>
-<text x="395.0" y="1327" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">23. erreur métier</text>
-<line x1="300" y1="1370" x2="110" y2="1370" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="178.65" y="1352" width="52.699999999999996" height="15" fill="#ffffff"/>
-<text x="205.0" y="1363" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">24. 400</text>
-<line x1="490" y1="1422" x2="680" y2="1422" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="445.8" y="1404" width="278.4" height="15" fill="#ffffff"/>
-<text x="585.0" y="1415" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">25. list_for_festival() et list_for_artist()</text>
-<line x1="680" y1="1458" x2="490" y2="1458" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="500.7" y="1440" width="168.6" height="15" fill="#ffffff"/>
-<text x="585.0" y="1451" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">26. autres concerts actifs</text>
-<line x1="490" y1="1494" x2="1250" y2="1494" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="743.0" y="1476" width="254.0" height="15" fill="#ffffff"/>
-<text x="870.0" y="1487" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">27. ensure_no_conflict(candidat, autres)</text>
-<line x1="1250" y1="1570" x2="490" y2="1570" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="712.5" y="1552" width="315.0" height="15" fill="#ffffff"/>
-<text x="870.0" y="1563" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">28. StageOccupiedError ou ArtistAlreadyBookedError</text>
-<line x1="490" y1="1606" x2="300" y2="1606" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="338.15" y="1588" width="113.69999999999999" height="15" fill="#ffffff"/>
-<text x="395.0" y="1599" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">29. erreur métier</text>
-<line x1="300" y1="1642" x2="110" y2="1642" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="178.65" y="1624" width="52.699999999999996" height="15" fill="#ffffff"/>
-<text x="205.0" y="1635" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">30. 409</text>
-<line x1="490" y1="1694" x2="1060" y2="1694" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="672.4" y="1676" width="205.2" height="15" fill="#ffffff"/>
-<text x="775.0" y="1687" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">31. concert.reschedule(new_slot)</text>
-<line x1="1060" y1="1730" x2="490" y2="1730" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="687.65" y="1712" width="174.7" height="15" fill="#ffffff"/>
-<text x="775.0" y="1723" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">32. ConcertRescheduledEvent</text>
-<line x1="490" y1="1766" x2="680" y2="1766" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="528.15" y="1748" width="113.69999999999999" height="15" fill="#ffffff"/>
-<text x="585.0" y="1759" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">33. save(concert)</text>
-<line x1="680" y1="1838" x2="490" y2="1838" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="512.9" y="1820" width="144.2" height="15" fill="#ffffff"/>
-<text x="585.0" y="1831" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">34. concert enregistré</text>
-<line x1="490" y1="1874" x2="1440" y2="1874" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
-<rect x="847.15" y="1856" width="235.7" height="15" fill="#ffffff"/>
-<text x="965.0" y="1867" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">35. notify_concert_rescheduled(event)</text>
-<line x1="1440" y1="1950" x2="490" y2="1950" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="914.25" y="1932" width="101.5" height="15" fill="#ffffff"/>
-<text x="965.0" y="1943" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">36. fin normale</text>
-<line x1="490" y1="1986" x2="300" y2="1986" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="286.3" y="1968" width="217.39999999999998" height="15" fill="#ffffff"/>
-<text x="395.0" y="1979" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">37. Result(notification_sent=true)</text>
-<line x1="1440" y1="2050" x2="490" y2="2050" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="920.35" y="2032" width="89.3" height="15" fill="#ffffff"/>
-<text x="965.0" y="2043" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">38. exception</text>
-<line x1="490" y1="2122" x2="300" y2="2122" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="283.25" y="2104" width="223.5" height="15" fill="#ffffff"/>
-<text x="395.0" y="2115" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">39. Result(notification_sent=false)</text>
-<line x1="300" y1="2174" x2="110" y2="2174" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
-<rect x="108.5" y="2156" width="193.0" height="15" fill="#ffffff"/>
-<text x="205.0" y="2167" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">40. 200 avec notification_sent</text>
-<rect x="176.60000000000002" y="200" width="246.79999999999998" height="28" fill="#fff2cc" stroke="#d6b656"/>
-<text x="300.0" y="218" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Pydantic valide le format, sinon 422</text>
-<rect x="395.45000000000005" y="1780" width="379.09999999999997" height="28" fill="#fff2cc" stroke="#d6b656"/>
-<text x="585.0" y="1798" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">La modification est validée ici, avant tout effet de bord</text>
-<rect x="357.15" y="2064" width="265.7" height="28" fill="#fff2cc" stroke="#d6b656"/>
-<text x="490.0" y="2082" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Panne journalisée, déplacement conservé</text>
+<line x1="490" y1="388" x2="300" y2="388" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="319.9" y="370" width="150.3" height="15" fill="#ffffff"/>
+<text x="395.0" y="381" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">4. InvalidTimeSlotError</text>
+<line x1="300" y1="424" x2="110" y2="424" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="181.7" y="406" width="46.6" height="15" fill="#ffffff"/>
+<text x="205.0" y="417" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">5. 400</text>
+<line x1="490" y1="494" x2="680" y2="494" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<rect x="482.4" y="476" width="205.2" height="15" fill="#ffffff"/>
+<text x="585.0" y="487" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">6. get_by_concert_id(concert_id)</text>
+<line x1="680" y1="530" x2="490" y2="530" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="522.0" y="512" width="125.9" height="15" fill="#ffffff"/>
+<text x="585.0" y="523" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">7. planning ou None</text>
+<line x1="490" y1="606" x2="300" y2="606" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="319.9" y="588" width="150.3" height="15" fill="#ffffff"/>
+<text x="395.0" y="599" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">8. ConcertNotFoundError</text>
+<line x1="300" y1="642" x2="110" y2="642" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="181.7" y="624" width="46.6" height="15" fill="#ffffff"/>
+<text x="205.0" y="635" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">9. 404</text>
+<line x1="490" y1="712" x2="870" y2="712" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<rect x="583.5" y="694" width="193.0" height="15" fill="#ffffff"/>
+<text x="680.0" y="705" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">10. list_for_artist(artist_id)</text>
+<line x1="870" y1="748" x2="490" y2="748" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="598.8" y="730" width="162.5" height="15" fill="#ffffff"/>
+<text x="680.0" y="741" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">11. concerts de l'artiste</text>
+<line x1="490" y1="820" x2="1060" y2="820" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<rect x="602.2" y="802" width="345.5" height="15" fill="#ffffff"/>
+<text x="775.0" y="813" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">12. reschedule_concert(id, new_slot, concerts ailleurs)</text>
+<line x1="1060" y1="896" x2="490" y2="896" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="672.4" y="878" width="205.2" height="15" fill="#ffffff"/>
+<text x="775.0" y="889" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">13. ConcertAlreadyCancelledError</text>
+<line x1="490" y1="932" x2="300" y2="932" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="338.1" y="914" width="113.7" height="15" fill="#ffffff"/>
+<text x="395.0" y="925" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">14. erreur métier</text>
+<line x1="300" y1="968" x2="110" y2="968" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="178.7" y="950" width="52.7" height="15" fill="#ffffff"/>
+<text x="205.0" y="961" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">15. 409</text>
+<line x1="1060" y1="1064" x2="490" y2="1064" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="654.1" y="1046" width="241.8" height="15" fill="#ffffff"/>
+<text x="775.0" y="1057" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">16. CannotModifyPublishedFestivalError</text>
+<line x1="490" y1="1100" x2="300" y2="1100" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="338.1" y="1082" width="113.7" height="15" fill="#ffffff"/>
+<text x="395.0" y="1093" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">17. erreur métier</text>
+<line x1="300" y1="1136" x2="110" y2="1136" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="178.7" y="1118" width="52.7" height="15" fill="#ffffff"/>
+<text x="205.0" y="1129" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">18. 409</text>
+<line x1="1060" y1="1232" x2="490" y2="1232" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="675.5" y="1214" width="199.1" height="15" fill="#ffffff"/>
+<text x="775.0" y="1225" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">19. ConcertOutsideFestivalError</text>
+<line x1="490" y1="1268" x2="300" y2="1268" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="338.1" y="1250" width="113.7" height="15" fill="#ffffff"/>
+<text x="395.0" y="1261" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">20. erreur métier</text>
+<line x1="300" y1="1304" x2="110" y2="1304" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="178.7" y="1286" width="52.7" height="15" fill="#ffffff"/>
+<text x="205.0" y="1297" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">21. 400</text>
+<line x1="1060" y1="1400" x2="490" y2="1400" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="617.5" y="1382" width="315.0" height="15" fill="#ffffff"/>
+<text x="775.0" y="1393" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">22. StageOccupiedError ou ArtistAlreadyBookedError</text>
+<line x1="490" y1="1436" x2="300" y2="1436" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="338.1" y="1418" width="113.7" height="15" fill="#ffffff"/>
+<text x="395.0" y="1429" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">23. erreur métier</text>
+<line x1="300" y1="1472" x2="110" y2="1472" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="178.7" y="1454" width="52.7" height="15" fill="#ffffff"/>
+<text x="205.0" y="1465" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">24. 409</text>
+<line x1="1060" y1="1564" x2="490" y2="1564" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="687.6" y="1546" width="174.7" height="15" fill="#ffffff"/>
+<text x="775.0" y="1557" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">25. ConcertRescheduledEvent</text>
+<line x1="490" y1="1600" x2="680" y2="1600" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<rect x="525.1" y="1582" width="119.8" height="15" fill="#ffffff"/>
+<text x="585.0" y="1593" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">26. save(planning)</text>
+<line x1="680" y1="1672" x2="490" y2="1672" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="509.9" y="1654" width="150.3" height="15" fill="#ffffff"/>
+<text x="585.0" y="1665" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">27. planning enregistré</text>
+<line x1="490" y1="1708" x2="1250" y2="1708" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<rect x="752.1" y="1690" width="235.7" height="15" fill="#ffffff"/>
+<text x="870.0" y="1701" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">28. notify_concert_rescheduled(event)</text>
+<line x1="1250" y1="1784" x2="490" y2="1784" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="819.2" y="1766" width="101.5" height="15" fill="#ffffff"/>
+<text x="870.0" y="1777" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">29. fin normale</text>
+<line x1="490" y1="1820" x2="300" y2="1820" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="286.3" y="1802" width="217.4" height="15" fill="#ffffff"/>
+<text x="395.0" y="1813" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">30. Result(notification_sent=true)</text>
+<line x1="1250" y1="1884" x2="490" y2="1884" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="825.4" y="1866" width="89.3" height="15" fill="#ffffff"/>
+<text x="870.0" y="1877" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">31. exception</text>
+<line x1="490" y1="1956" x2="300" y2="1956" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="283.2" y="1938" width="223.5" height="15" fill="#ffffff"/>
+<text x="395.0" y="1949" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">32. Result(notification_sent=false)</text>
+<line x1="300" y1="2008" x2="110" y2="2008" stroke="#333" stroke-width="1.25" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="108.5" y="1990" width="193.0" height="15" fill="#ffffff"/>
+<text x="205.0" y="2001" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">33. 200 avec notification_sent</text>
+<polyline points="490,294 536,294 536,316 490,316" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<text x="546" y="309" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">3. TimeSlot(new_start, new_end)</text>
+<rect x="173.6" y="200" width="252.9" height="28" fill="#fff2cc" stroke="#d6b656"/>
+<text x="300" y="218" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Pydantic valide le format, sinon 422</text>
+<rect x="483.4" y="762" width="393.2" height="28" fill="#fff2cc" stroke="#d6b656"/>
+<text x="680" y="780" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Le cas d'usage garde les concerts des autres festivals (R3)</text>
+<rect x="661.2" y="1506" width="417.6" height="28" fill="#fff2cc" stroke="#d6b656"/>
+<text x="870" y="1524" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Le concert n'est modifié qu'une fois toutes les règles validées</text>
+<rect x="394.5" y="1614" width="381.0" height="28" fill="#fff2cc" stroke="#d6b656"/>
+<text x="585" y="1632" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">La modification est validée ici, avant tout effet de bord</text>
+<rect x="354.4" y="1898" width="271.2" height="28" fill="#fff2cc" stroke="#d6b656"/>
+<text x="490" y="1916" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Panne journalisée, déplacement conservé</text>
 </svg>

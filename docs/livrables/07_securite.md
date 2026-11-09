@@ -3,7 +3,7 @@
 **Projet :** FestiPlan — API de Gestion de Festival  
 **Contexte :** Renforcement de la sécurité applicative (Sécurité en Profondeur dans l'Architecture Hexagonale)  
 **Pôles contributeurs :** Initialement conçu par Développeur 3 (Opérations), puis étendu et généralisé par Développeur 2 (Logistique) et Développeur 1 (Planification)  
-**Référence des menaces :** OWASP Top 10 API Security Risks  
+**Référence des menaces :** OWASP Top 10 (2021)  
 
 > [!NOTE]
 > **Lecture conseillée sur GitHub** : il est préférable de consulter ce document sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
@@ -33,7 +33,7 @@ Version modifiable : [securite_en_couches.drawio](../schemas/securite_en_couches
 
 ### Organisation des Composants de Sécurité
 * **`app/adapters/primary/security/security_headers.py`** : Middleware injectant automatiquement les en-têtes HTTP de sécurité recommandés par l'OWASP sur toutes les réponses de l'application.
-* **`app/adapters/primary/security/sanitizer.py`** : Composant `InputSanitizer` éliminant les balises exécutables `<script>` et convertissant les caractères réservés (`<`, `>`, `"`, `'`, `&`) en entités HTML inoffensives.
+* **`app/adapters/primary/security/sanitizer.py`** : Composant `InputSanitizer` éliminant les balises exécutables `<script>` et convertissant les chevrons `<` et `>` en entités HTML inoffensives. Les caractères `&`, `'` et `"` sont conservés pour ne pas altérer les noms légitimes (ex. *Guns N' Roses*).
 * **`app/adapters/primary/security/error_handler.py`** : Gestionnaire global d'exceptions captant tout crash imprévu, consignant l'erreur en log privé et masquant totalement la stack trace au client HTTP.
 
 ---
@@ -58,7 +58,7 @@ Initialement amorcée sur le pôle Opérations, la démarche de sécurisation a 
   - `test_stage_name_is_sanitized`
 
 ### 3.3 Pôle Planification (Développeur 1)
-* **Robustesse temporelle et normalisation UTC :** Prise en charge des dates avec timezone UTC sans plantage serveur (`timezone_aware_dates_do_not_crash`).
+* **Robustesse temporelle et normalisation UTC :** Prise en charge des dates avec timezone UTC sans plantage serveur (`test_timezone_aware_dates_do_not_crash`).
 * **Statuts HTTP sécurisés et cohérents :** Rejet d'une tentative de déplacement d'un concert annulé avec un code **HTTP 409 Conflict** propre (au lieu d'un crash 500 interne).
 * **Validation stricte des références :** Rejet immédiat de toute tentative d'injection d'identifiants orphelins (festival, scène, artiste).
 
@@ -78,13 +78,13 @@ Initialement amorcée sur le pôle Opérations, la démarche de sécurisation a 
 ### 4.2 Protection contre les Injections XSS (Cross-Site Scripting)
 * **Menace :** Injection de scripts malveillants (`<script>alert(1)</script>`, `<img src=x onerror=... />`) stockés en base puis réaffichés dans le navigateur d'un organisateur ou festivalier.
 * **Remédiation :**
-  * Le composant `InputSanitizer.clean_text()` est branché via des `@field_validator` sur tous les DTOs textuels (`IncidentCreate`, `FestivalCreateSchema`, `ArtistCreateSchema`, `StageCreateSchema`).
-  * Les balises `<script>` sont éradiquées et les caractères spéciaux convertis en entités HTML (`&lt;`, `&gt;`).
+  * Le composant `InputSanitizer.sanitize_text()` est branché via des `@field_validator` sur tous les DTOs textuels (`IncidentCreate`, `FestivalCreateRequest`, `ArtistCreateRequest`, `StageCreateRequest`).
+  * Les balises `<script>` sont éradiquées et les chevrons convertis en entités HTML (`&lt;`, `&gt;`).
 * **Preuve par les tests :** 4 tests automatisés dédiés valident que l'injection de scripts sur les incidents, festivals, artistes et scènes est systématiquement neutralisée.
 
 ---
 
-### 4.3 Prévention des Fuites d'Informations (OWASP A05 — Information Disclosure)
+### 4.3 Prévention des Fuites d'Informations (OWASP A05 — Security Misconfiguration)
 * **Menace :** En cas d'erreur inattendue (panne SQLite, bug, indisponibilité système), renvoi de la stack trace complète dévoilant l'arborescence des disques de la machine hôte (`C:\Users\...`), les requêtes SQL internes et la configuration.
 * **Remédiation :**
   * Le gestionnaire `global_security_exception_handler` capture les exceptions inattendues.
@@ -118,7 +118,7 @@ Initialement amorcée sur le pôle Opérations, la démarche de sécurisation a 
 
 ## 5. Bilan de la Couverture de Sécurité
 
-La sécurité du projet est validée par **17 tests automatisés directs** intégrés aux **236 tests globaux** :
+La sécurité du projet est validée par **17 tests automatisés directs** intégrés aux **251 tests globaux** :
 
 | # | Test | Fichier | Objectif de sécurité | Résultat |
 | :---: | :--- | :--- | :--- | :---: |
@@ -144,4 +144,4 @@ La sécurité du projet est validée par **17 tests automatisés directs** inté
 
 ## 6. Synthèse
 
-Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée par les 236 tests automatisés du projet.
+Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée par les 251 tests automatisés du projet.
