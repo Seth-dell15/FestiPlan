@@ -1,7 +1,7 @@
 # Livrable Intermédiaire — Étape 1 : Diagnostic de l'Architecture Initiale (Legacy)
 
 **Projet :** FestiPlan — Gestion d'un festival metal fictif (*Hellforge Open Air*)  
-**Auteurs :** Hugo Cabanes (Développeur 1 — Planning & Scheduling) & Ewan Senergous (Développeur 2 — Référentiel & Logistique)  
+**Auteurs :** Hugo Cabanes (Développeur 1 — Planning & Scheduling), Ewan Senergous (Développeur 2 — Référentiel & Logistique) & Yarkin Oner (Développeur 3 — Cycle de vie, Publication, Incidents & Notifications)  
 **Contexte :** Module Architecture Hexagonale & DDD — Ynov B3  
 **Dépôt de référence :** Commit initial `3a5aa55`, avant refactorisation  
 **Schéma Draw.io associé :** [architecture-initiale.drawio](../schemas/architecture-initiale.drawio) (les repères ①, ② et ③ ci-dessous renvoient à ses flèches)
@@ -27,9 +27,13 @@ L'application initiale suit une organisation apparemment en couches (contrôleur
 ## 2. Graphe des dépendances et couplage technique
 
 ### Schémas d'Architecture Initiale
-Le couplage initial est documenté sous deux formes complémentaires :
-* Le schéma Draw.io téléchargeable : **[architecture-initiale.drawio](../schemas/architecture-initiale.drawio)**.
-* Le diagramme ci-dessous, matérialisant les dépendances illégitimes :
+Le couplage initial est présenté par deux schémas complémentaires. Le premier donne la vue d'ensemble, avec les repères ①, ② et ③ en rouge.
+
+![Architecture initiale](../schemas/architecture-initiale.svg)
+
+Version modifiable : [architecture-initiale.drawio](../schemas/architecture-initiale.drawio).
+
+Le second détaille les dépendances illégitimes, flèche par flèche.
 
 ![Dépendances du code initial](../schemas/dependances_initiales.svg)
 

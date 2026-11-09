@@ -79,7 +79,9 @@ Les repositories isolent le stockage et permettent de tester les cas d'usage san
 
 ## 5. Modèle métier
 
-Le schéma complet est [modele-domaine.drawio](../schemas/modele-domaine.drawio).
+![Modèle du domaine](../schemas/modele-domaine.svg)
+
+Version modifiable : [modele-domaine.drawio](../schemas/modele-domaine.drawio).
 
 ### Entités
 

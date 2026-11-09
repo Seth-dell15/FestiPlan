@@ -22,7 +22,13 @@ Pour structurer ce domaine et protéger nos règles métier, nous appliquons les
 
 ## 2. Modélisation Conceptuelle du Domaine
 
-Ce diagramme détaille le déplacement d'un concert. Le modèle complet, avec les cinq agrégats, est dans [modele-domaine.drawio](../schemas/modele-domaine.drawio).
+Le modèle complet présente les cinq agrégats, les objets-valeurs, les invariants et les événements de domaine.
+
+![Modèle du domaine](../schemas/modele-domaine.svg)
+
+Version modifiable : [modele-domaine.drawio](../schemas/modele-domaine.drawio).
+
+Le schéma suivant détaille le déplacement d'un concert.
 
 ![Modèle du déplacement d'un concert](../schemas/modele_deplacement.svg)
 

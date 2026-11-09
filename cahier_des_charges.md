@@ -100,7 +100,7 @@ tests/
 
 ## 4. Répartition des Rôles & Tâches (Équipe de 3)
 
-### 👤 Développeur 1 : Cœur Planification & Programmation (Scheduling / Concerts)
+### 👤 Développeur 1 (Hugo Cabanes) : Cœur Planification & Programmation (Scheduling / Concerts)
 * **Domaine :**
   * Entité `Concert`.
   * Value Object `TimeSlot` (gestion début/fin, calcul de durée, détection de chevauchement `overlaps`).
@@ -121,7 +121,7 @@ tests/
 
 ---
 
-### 👤 Développeur 2 : Référentiel & Logistique (Festivals, Artistes, Scènes)
+### 👤 Développeur 2 (Ewan Senergous) : Référentiel & Logistique (Festivals, Artistes, Scènes)
 * **Domaine :**
   * Entités `Festival`, `Artist`, `Stage`.
   * Typage propre des équipements (`set[str]` ou Value Object `EquipmentSet`) au lieu de chaînes de caractères brutes.
@@ -142,7 +142,7 @@ tests/
 
 ---
 
-### 👤 Développeur 3 : Cycle de vie, Publication, Incidents & Notifications
+### 👤 Développeur 3 (Yarkin Oner) : Cycle de vie, Publication, Incidents & Notifications
 * **Domaine :**
   * Cycle de vie du festival (Statut `FestivalStatus` : `PREPARATION`, `PUBLISHED`, `CANCELLED`).
   * Entité `Incident` (signalement, horodatage, statut résolu ou non).
