@@ -71,3 +71,28 @@ def test_publish_route_still_works_on_a_new_festival(client):
 
     assert response.status_code == 200
     assert client.get(f"/festivals/{festival_id}").json()["status"] == "published"
+
+
+SCRIPT = "<script>alert(1)</script>"
+
+
+def test_festival_text_fields_are_sanitized(client):
+    payload = {**FESTIVAL, "name": f"{SCRIPT}Hellforge", "location": f"{SCRIPT}Clisson"}
+
+    body = client.post("/festivals", json=payload).json()
+
+    assert (body["name"], body["location"]) == ("Hellforge", "Clisson")
+
+
+def test_artist_text_fields_are_sanitized(client):
+    body = client.post("/artists", json={"name": f"{SCRIPT}Iron Vow", "genre": f"{SCRIPT}Heavy metal"}).json()
+
+    assert (body["name"], body["genre"]) == ("Iron Vow", "Heavy metal")
+
+
+def test_stage_name_is_sanitized(client):
+    festival_id = create_festival(client)
+
+    body = client.post("/stages", json={"festival_id": festival_id, "name": f"{SCRIPT}Valley", "capacity": 8000}).json()
+
+    assert body["name"] == "Valley"

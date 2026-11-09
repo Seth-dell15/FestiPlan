@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
+from app.adapters.primary.security.sanitizer import InputSanitizer
 from app.domain.models.stage import Stage
 
 
@@ -9,6 +10,11 @@ class StageCreateRequest(BaseModel):
     # Contrôle de format côté HTTP ; la règle métier reste garantie par Stage.
     capacity: int = Field(gt=0)
     available_equipment: list[str] = []
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def sanitize_name(cls, value: str) -> str:
+        return InputSanitizer.sanitize_text(value) if isinstance(value, str) else value
 
 
 class StageResponse(BaseModel):
