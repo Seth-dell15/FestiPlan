@@ -1,117 +1,66 @@
-# Stratégie de Tests & Pyramide Globale — FestiPlan
+# Stratégie de tests — FestiPlan
 
-Ce document détaille la démarche de test exhaustive mise en place dans le cadre de la refactorisation hexagonale unifiée des trois pôles : **Développeur 1 (Planification)**, **Développeur 2 (Logistique & Référentiel)** et **Développeur 3 (Opérations & Publication)**, en réponse aux exigences de l'Étape 6 du sujet ("Mettre en place une stratégie de tests").
+La suite vérifie d'abord les règles métier sans technologie, puis l'orchestration avec des doubles de test, et enfin l'assemblage réel avec HTTP et SQLite.
 
----
+Résultat au moment de la rédaction : **236 tests passent**, avec `python -m pytest`.
 
-## 1. Pourquoi cette stratégie de tests ?
+## Répartition
 
-Dans le dépôt initial ("legacy"), la logique métier était fortement couplée à SQLAlchemy et FastAPI, ce qui rendait les tests unitaires impossibles sans démarrer une base de données. De plus, plusieurs failles critiques n'étaient couvertes par aucun test (déplacement sans contrôle de conflits, crash 500 lors d'un échec de notification, modification de festivals publiés).
+| Niveau | Tests | Dépendances |
+|---|---:|---|
+| Domaine | 81 | Python seul |
+| Cas d'usage | 63 | Doubles de test |
+| Sens des dépendances | 4 | Analyse du code |
+| Adaptateurs | 49 | FastAPI, SQLite |
+| Non-régression | 19 | FastAPI, SQLite |
+| Sécurité | 14 | FastAPI, SQLite |
+| API initiale | 6 | FastAPI, SQLite |
+| **Total** | **236** | |
 
-Notre stratégie poursuit 4 objectifs clés :
-1. **Prouver la non-régression :** valider formellement la correction des défauts 1, 2 et 3 décrits dans le sujet.
-2. **Tester le domaine en isolation pure :** exécuter la totalité des règles métier en une fraction de seconde, sans dépendance externe (ni SQLite, ni réseau, ni FastAPI).
-3. **Valider les interactions des cas d'usage :** vérifier l'orchestration des ports et des entités via des doubles de tests (`InMemoryRepository` et fakes de notification).
-4. **Garantir l'intégrité de bout en bout et la sécurité :** s'assurer que les routes HTTP, les adaptateurs SQLAlchemy et le middleware de sécurité OWASP fonctionnent harmonieusement.
+## Domaine (81 tests)
 
----
+Ces tests ne démarrent ni FastAPI ni SQLite.
 
-## 2. La Pyramide de Tests adoptée
+- [tests/unit/scheduling](../tests/unit/scheduling) : `test_time_slot.py` (12), `test_concert.py` (12), `test_scheduling_policy.py` (18), `test_publishable_policy.py` (5).
+- [tests/unit/logistics](../tests/unit/logistics) : `test_festival.py` (8), `test_stage.py` (7), `test_equipment_set.py` (6), `test_festival_period.py` (4).
+- [tests/unit/operations](../tests/unit/operations) : `test_incident.py` (9).
 
-```text
-               ▲
-              / \     Tests de Sécurité & Hardening OWASP (10 tests)
-             /   \    - test_security_hardening.py (Injections SQL, XSS, Headers, DoS, Info Leak)
-            /─────\
-           /       \  Tests d'Intégration & E2E (API + SQLite) (44 tests)
-          /         \ - test_scheduling_integration.py & test_scheduling_regressions.py (18 tests)
-         /           \- test_operations_integration.py (8 tests)
-        /             \- test_logistics_api.py & test_logistics_sql_repositories.py (15 tests)
-       /               \- Tests API legacy initiaux (6 tests)
-      /─────────────────\
-     /                   \ Tests Applicatifs des Cas d'Usage (48 tests)
-    /                     \- Scheduling: reschedule, schedule, catalog & rules (30 tests)
-   /                       \- Operations: publish & incidents (13 tests)
-  /                         \- Logistics: festival, artist & stage use cases (12 tests)
- /───────────────────────────\ Repositories In-Memory & doubles de tests
-|                             | Tests Unitaires Purs du Domaine (57 tests)
-|                             | - Scheduling: TimeSlot, Concert, SchedulingPolicy (38 tests)
-|                             | - Logistics: Stage (R9, R5), Festival, EquipmentSet, Period (21 tests)
-|                             | - Operations: Incident (R10) (8 tests)
-|                             | - 100% Python pur (dataclasses, 0 I/O)
-```
+Ils couvrent les créneaux invalides, les chevauchements, les invariants et les transitions d'état.
 
-**Bilan d'exécution global :** **169 tests automatisés exécutés en ~3.8 secondes (100% au vert)**.
+## Cas d'usage (63 tests)
 
----
+Ces tests utilisent des repositories en mémoire et des fausses notifications.
 
-## 3. Cartographie Détaillée des Tests
+- **Planification** : `test_scheduling_use_cases_rules.py` (15), `test_reschedule_use_case.py` (7), `test_schedule_use_case.py` (5).
+- **Opérations** : `test_publish_festival_use_case.py` (14), `test_incident_use_cases.py` (6), `test_unpublish_festival_use_case.py` (4).
+- **Référentiel** : `test_festival_use_cases.py` (5), `test_stage_use_cases.py` (4), `test_artist_use_cases.py` (3).
 
-### A. Tests Unitaires du Domaine (57 tests)
-* **Scheduling (`tests/unit/scheduling/`) :**
-  - `test_time_slot.py` (12 tests) : bornes chronologiques (**R1**), durée, intersection temporelle (`overlaps`), inclusion (**R6**).
-  - `test_concert.py` (8 tests) : conflits de scène (**R2**), conflits d'artiste (**R3**), cycle de vie d'annulation.
-  - `test_scheduling_policy.py` (18 tests) : vérification centralisée des règles de programmation (**R2, R3, R4, R5, R6, R7**).
-* **Logistics (`tests/unit/logistics/`) :**
-  - `test_stage.py` (7 tests) : validation de capacité strictement positive (**R9**), appartenance au festival (**R4**), adéquation du matériel (**R5**).
-  - `test_equipment_set.py` (6 tests) : calcul ensembliste immuable (`frozenset`), inclusion (`covers`), matériel manquant (`missing`).
-  - `test_festival_period.py` (2 tests) : invariant chronologique du festival (`start < end`).
-  - `test_festival.py` (3 tests) : statut et cycle de publication.
-* **Operations (`tests/unit/operations/`) :**
-  - `test_incident.py` (8 tests) : invariant de description non vide (**R10**), horodatage, cycle de résolution.
+Ils vérifient les décisions métier, les erreurs et les appels aux ports, notamment l'absence de notification après un refus.
 
-### B. Tests Applicatifs des Cas d'Usage (48 tests)
-* **Scheduling :**
-  - `test_reschedule_use_case.py` (7 tests) : cas nominal, détection de conflits (**Défaut 1**), résilience à la panne de notification (**Défaut 2**), verrouillage si festival publié (**Défaut 3 & R7**).
-  - `test_schedule_use_case.py` (5 tests) : programmation initiale et gestion d'erreurs.
-  - `test_scheduling_use_cases_rules.py` (11 tests) : règles métier combinées.
-* **Operations :**
-  - `test_publish_festival_use_case.py` (7 tests) : intégrité complète du planning avant publication (**R8**), résilience notification (**Défaut 2**).
-  - `test_incident_use_cases.py` (6 tests) : déclaration, résolution et consultation d'incidents.
-* **Logistics :**
-  - `test_festival_use_cases.py` (5 tests) : création et consultation de festivals.
-  - `test_stage_use_cases.py` (4 tests) : création de scène avec contrôle festival (**R4**) et capacité (**R9**).
-  - `test_artist_use_cases.py` (3 tests) : création et listage des artistes.
+## Sens des dépendances (4 tests)
 
-### C. Tests d'Intégration & E2E (44 tests)
-* **Scheduling & Regressions :**
-  - `test_scheduling_integration.py` (6 tests) : cycle complet HTTP FastAPI -> SQLite -> Notification.
-  - `test_scheduling_regressions.py` (12 tests) : validation stricte des scénarios du sujet.
-* **Operations :**
-  - `test_operations_integration.py` (8 tests) : publication et incidents via l'API.
-* **Logistics :**
-  - `test_logistics_api.py` (10 tests) : endpoints `/festivals`, `/artists`, `/stages` et protection XSS.
-  - `test_logistics_sql_repositories.py` (5 tests) : validation du mapping ORM et conversion CSV <-> `EquipmentSet`.
-* **Legacy API :** 6 tests historiques validant la compatibilité ascendante.
+[test_architecture.py](../tests/unit/test_architecture.py) analyse les imports. Le domaine et l'application ne peuvent pas importer de framework ni d'adaptateur, et les adaptateurs entrants ne peuvent pas importer SQLAlchemy ni les adaptateurs sortants.
 
-### D. Tests de Cybersécurité & Hardening OWASP (10 tests)
-* `test_security_headers_present_on_endpoints` : présence des en-têtes OWASP (`nosniff`, `DENY`, CSP).
-* `test_sqli_in_query_parameters_fails_safe` : immunité aux injections SQL.
-* `test_xss_payload_in_incident_description_sanitized` : assainissement automatique du payload malveillant.
-* `test_information_disclosure_stack_trace_masked` : masquage des erreurs 500 et des chemins système.
-* `test_dos_large_payload_rejected` : rejet immédiat des charges utiles excessives (**HTTP 422**).
+## Adaptateurs (49 tests)
 
----
+- **Routes HTTP** : `test_logistics_api.py` (14), `test_operations_integration.py` (12), `test_inbound_ports.py` (7).
+- **Persistance SQLite** : `test_concert_incident_sql_repositories.py` (8), `test_logistics_sql_repositories.py` (5).
+- **Notification** : `test_email_notification_adapter.py` (3).
 
-## 4. Choix de Conception Justifiés
+## Non-régression (19 tests)
 
-### A. Découplage In-Memory vs SQLAlchemy
-* **Le choix :** Chaque pôle a développé une double implémentation de ses ports de persistance (`InMemory` et `SQL`).
-* **Bénéfice :**
-  - Les tests unitaires du domaine et applicatifs s'exécutent en **moins de 0.8 seconde**.
-  - Remplacement possible de la base sans modifier une seule ligne du domaine.
+- [test_scheduling_integration.py](../tests/integration/test_scheduling_integration.py) (6) : parcours HTTP, dont les trois défauts du sujet.
+- [test_scheduling_regressions.py](../tests/integration/test_scheduling_regressions.py) (13) : erreurs corrigées pendant la refactorisation, comme une scène d'un autre festival, un concert annulé ou un fuseau horaire.
 
-### B. Traitement du Défaut 2 (Notification en échec)
-* **Problème legacy :** `db.commit()` était suivi de `send_email()`. Si l'email échouait, une exception non gérée provoquait une réponse 500 post-persistance.
-* **Choix retenu :** Découplage via `INotificationSenderPort`. Si la notification échoue, l'incident est loggué sans interrompre la requête. L'API répond **HTTP 200 OK** car l'opération métier a été persistée avec succès.
+Les 4 tests HTTP des défauts échouent sur le code initial et passent sur le code livré. La comparaison est décrite dans [reproduction_defauts.md](reproduction_defauts.md).
 
----
+## Autres tests
 
-## 5. Bilan d'Exécution Global
+- [tests/security](../tests/security) (14) : en-têtes HTTP, injections, XSS, charges trop volumineuses et masquage des erreurs.
+- `tests/test_*_api.py`, `test_publication.py` et `test_scheduling.py` (6) : tests fournis avec le projet initial, conservés pour vérifier le comportement de départ.
 
-```text
-======================= 169 passed, 1 warning in 3.80s ========================
-```
-* **169 tests exécutés avec succès** (100% au vert).
-* **Temps total : ~3.8 secondes.**
-* **Couverture des règles métier :** R1 à R10 et défauts 1 à 3 intégralement couverts.
+## Choix retenus
+
+- **Doubles en mémoire plutôt que mocks** : ils exécutent réellement les contrats des ports et rendent les tests lisibles.
+- **Base SQLite dans les tests d'adaptateurs** : le mapping entre entités et tables doit être vérifié avec une vraie base.
+- **Couverture ciblée** : la priorité porte sur les règles métier, les erreurs et les défauts, pas sur chaque ligne de code.

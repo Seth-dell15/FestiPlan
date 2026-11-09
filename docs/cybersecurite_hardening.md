@@ -24,34 +24,9 @@ Dans l'état initial (legacy), plusieurs faiblesses techniques laissaient entrev
 
 Dans notre architecture, la cybersécurité n'est pas reléguée dans un coin isolé : elle applique le principe de **Défense en Profondeur** à chaque frontière hexagonale :
 
-> [!NOTE]
-> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+![Sécurité en profondeur par couche](securite_en_couches.svg)
 
-```mermaid
-flowchart TD
-    subgraph Primary_Adapters ["1. Adaptateurs Entrants (Driving Adapters)"]
-        H["SecurityHeadersMiddleware<br><i>OWASP Headers: CSP, X-Frame-Options, HSTS, nosniff</i>"]
-        C["CORSMiddleware<br><i>Contrôle strict des origines et méthodes autorisées</i>"]
-        EH["global_security_exception_handler<br><i>Masquage des stack traces & logs sécurisés internes</i>"]
-    end
-
-    subgraph Input_Validation ["2. Validation & Assainissement (DTOs)"]
-        P["Pydantic Schemas (Tous les pôles)<br><i>Typage strict, bornage des longueurs (max_length)</i>"]
-        S["InputSanitizer<br><i>Éradication des &lt;script&gt; et échappement HTML systématique</i>"]
-    end
-
-    subgraph Domain_Core ["3. Cœur de Domaine DDD"]
-        I["Invariants Métier<br><i>Vérification des règles R1 à R10 (données non vides, créneaux valides)</i>"]
-    end
-
-    subgraph Secondary_Adapters ["4. Adaptateurs Sortants (Driven Adapters)"]
-        ORM["SQLAlchemy ORM Repositories<br><i>Requêtes 100% paramétrées (Protection Anti-SQLi)</i>"]
-    end
-
-    Primary_Adapters --> Input_Validation
-    Input_Validation --> Domain_Core
-    Domain_Core --> Secondary_Adapters
-```
+Version modifiable : [securite_en_couches.drawio](securite_en_couches.drawio).
 
 ### Organisation des Composants de Sécurité
 * **`app/adapters/primary/security/security_headers.py`** : Middleware injectant automatiquement les en-têtes HTTP de sécurité recommandés par l'OWASP sur toutes les réponses de l'application.
@@ -140,7 +115,7 @@ Initialement amorcée sur le pôle Opérations, la démarche de sécurisation a 
 
 ## 5. Bilan de la Couverture de Sécurité
 
-La sécurité du projet est validée par **13 tests automatisés directs** intégrés aux **169 tests globaux** :
+La sécurité du projet est validée par **17 tests automatisés directs** intégrés aux **236 tests globaux** :
 
 | # | Test | Fichier | Objectif de sécurité | Résultat |
 | :---: | :--- | :--- | :--- | :---: |
@@ -154,12 +129,16 @@ La sécurité du projet est validée par **13 tests automatisés directs** inté
 | 8 | `test_xss_injection_in_incident_description_is_sanitized` | `tests/security/` | Élimination des scripts XSS dans les incidents (Dev 3). | **PASSED** |
 | 9 | `test_oversized_payload_rejected` | `tests/security/` | Rejet HTTP 422 des charges surdimensionnées (Anti-DoS). | **PASSED** |
 | 10 | `test_unhandled_exception_does_not_leak_system_paths` | `tests/security/` | Masquage des chemins système et stack traces lors d'un crash 500. | **PASSED** |
-| 11 | `test_festival_text_fields_are_sanitized` | `tests/integration/` | Assainissement XSS des champs festivals (Dev 2). | **PASSED** |
-| 12 | `test_artist_text_fields_are_sanitized` | `tests/integration/` | Assainissement XSS des champs artistes (Dev 2). | **PASSED** |
-| 13 | `test_stage_name_is_sanitized` | `tests/integration/` | Assainissement XSS des champs scènes (Dev 2). | **PASSED** |
+| 11 | `test_input_sanitizer_keeps_legitimate_punctuation[Guns N' Roses]` | `tests/security/` | Conservation de la ponctuation légitime. | **PASSED** |
+| 12 | `test_input_sanitizer_keeps_legitimate_punctuation[Rock & Metal]` | `tests/security/` | Conservation de la ponctuation légitime. | **PASSED** |
+| 13 | `test_input_sanitizer_keeps_legitimate_punctuation[Le "Grand" Soir]` | `tests/security/` | Conservation de la ponctuation légitime. | **PASSED** |
+| 14 | `test_input_sanitizer_is_idempotent` | `tests/security/` | Un double assainissement ne modifie plus le texte. | **PASSED** |
+| 15 | `test_festival_text_fields_are_sanitized` | `tests/integration/` | Assainissement XSS des champs festivals (Dev 2). | **PASSED** |
+| 16 | `test_artist_text_fields_are_sanitized` | `tests/integration/` | Assainissement XSS des champs artistes (Dev 2). | **PASSED** |
+| 17 | `test_stage_name_is_sanitized` | `tests/integration/` | Assainissement XSS des champs scènes (Dev 2). | **PASSED** |
 
 ---
 
 ## 6. Synthèse
 
-Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée en continu par les 169 tests automatisés du projet.
+Le durcissement de sécurité n'est plus limité au seul périmètre initial du Développeur 3 : il s'agit désormais d'une **démarche globale et transversale**, intégrée dans tous les schémas d'entrée des trois développeurs, protégée par l'architecture hexagonale et vérifiée par les 236 tests automatisés du projet.

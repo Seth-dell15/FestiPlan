@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1270 190" width="1270" height="190" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.4"/></marker>
+<marker id="solid" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 Z" fill="#333"/></marker>
+<marker id="diamond" viewBox="0 0 16 10" refX="1" refY="5" markerWidth="16" markerHeight="10" orient="auto"><path d="M1,5 L8,1 L15,5 L8,9 Z" fill="#333"/></marker>
+</defs>
+<rect width="1270" height="190" fill="#ffffff"/>
+<text x="20" y="34" font-size="19" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">FestiPlan : feuille de route</text>
+<polyline points="235,117 275,117" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<polyline points="480,117 520,117" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<polyline points="725,117 765,117" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<polyline points="970,117 1010,117" fill="none" stroke="#333" stroke-width="1.25" marker-end="url(#solid)"/>
+<rect x="30" y="75" width="205" height="84" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="132.5" y="106.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Phase 0</text>
+<text x="132.5" y="122.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Socle commun et</text>
+<text x="132.5" y="138.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">structure des dossiers</text>
+<rect x="275" y="75" width="205" height="84" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="377.5" y="106.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Phase 1</text>
+<text x="377.5" y="122.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Domaine pur et</text>
+<text x="377.5" y="138.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">tests unitaires</text>
+<rect x="520" y="75" width="205" height="84" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="622.5" y="106.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Phase 2</text>
+<text x="622.5" y="122.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Ports d&#x27;entrée/sortie</text>
+<text x="622.5" y="138.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">et cas d&#x27;usage</text>
+<rect x="765" y="75" width="205" height="84" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="867.5" y="106.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Phase 3</text>
+<text x="867.5" y="122.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Adaptateurs BDD</text>
+<text x="867.5" y="138.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">et API FastAPI</text>
+<rect x="1010" y="75" width="205" height="84" rx="3" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3"/>
+<text x="1112.5" y="106.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Phase 4</text>
+<text x="1112.5" y="122.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">Validation des 3 scénarios</text>
+<text x="1112.5" y="138.0" font-size="11" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="middle">legacy et intégration</text>
+</svg>

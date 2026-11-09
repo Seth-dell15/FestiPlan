@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1580 1000" width="1580" height="1000" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.4"/></marker>
+<marker id="tri" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="13" markerHeight="13" orient="auto"><path d="M1,1 L13,7 L1,13 Z" fill="#fff" stroke="#333" stroke-width="1.4"/></marker>
+</defs>
+<rect width="1580" height="1000" fill="#ffffff"/>
+<text x="20" y="34" font-size="20" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">FestiPlan : diagramme UML de composants</text>
+<text x="20" y="54" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">Architecture réellement implémentée, branche feat/logistics-domain-usecases</text>
+<rect x="20" y="190" width="255" height="660" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="30" y="207" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Adaptateurs entrants</text>
+<text x="30" y="221" font-size="10.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">app/adapters/primary</text>
+<rect x="300" y="170" width="780" height="695" rx="4" fill="#fbfcfe" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="310" y="187" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Cœur applicatif</text>
+<text x="432.0" y="187" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">aucune dépendance à FastAPI ni SQLAlchemy</text>
+<rect x="320" y="215" width="185" height="190" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="330" y="232" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Ports entrants</text>
+<text x="330" y="246" font-size="10.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">app/application/ports</text>
+<rect x="565" y="215" width="250" height="425" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="575" y="232" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Cas d&#x27;usage</text>
+<text x="575" y="246" font-size="10.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">app/application/use_cases</text>
+<rect x="320" y="680" width="495" height="170" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="330" y="697" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Domaine</text>
+<text x="391.2" y="697" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">app/domain</text>
+<rect x="850" y="190" width="215" height="660" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="860" y="207" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Ports sortants</text>
+<text x="860" y="221" font-size="10.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">app/domain/ports</text>
+<rect x="1125" y="190" width="240" height="660" rx="4" fill="none" stroke="#7b8794" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="1135" y="207" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Adaptateurs sortants</text>
+<text x="1135" y="221" font-size="10.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">app/adapters/secondary</text>
+<polyline points="1137,243 1052,243" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,285 1052,285" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,331 1052,331" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,373 1052,373" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,419 1052,419" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,507 1052,507" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,549 1052,549" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,595 1052,595" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,637 1052,637" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,683 1052,683" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,725 1052,725" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,771 1052,771" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1137,813 1052,813" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="1353,243 1425,243" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1353,331 1425,331" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1353,419 1425,419" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1353,507 1425,507" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1353,595 1425,595" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1353,683 1425,683" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1353,771 1425,771" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="190,130 190,245" fill="none" stroke="#333" stroke-width="1.2"  marker-end="url(#open)"/>
+<polyline points="235,245 235,100 520,100" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="255,310 332,310" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="255,440 565,440" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="147,470 147,510" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="565,310 493,310" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<polyline points="690,135 690,215" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="900,100 1245,100 1245,190" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="803,310 850,310" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="803,440 850,440" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="803,570 850,570" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="690,640 690,680" fill="none" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<rect x="40" y="70" width="170" height="60" rx="2" fill="#ffffff" stroke="#555555" stroke-width="1.3" />
+<text x="125.0" y="88.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«acteur»</text>
+<text x="125.0" y="104.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Client HTTP</text>
+<text x="125.0" y="120.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Swagger, TestClient</text>
+<rect x="520" y="65" width="380" height="70" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="513" y="77" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="513" y="91" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="714.0" y="80.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="714.0" y="96.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Point de composition</text>
+<text x="714.0" y="112.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">app/composition.py : crée les adaptateurs</text>
+<text x="714.0" y="128.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">et les injecte dans les cas d&#x27;usage</text>
+<rect x="40" y="245" width="215" height="225" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="33" y="257" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="33" y="271" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="151.5" y="281.5" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="151.5" y="297.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">API HTTP FastAPI</text>
+<text x="151.5" y="313.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">routes/concerts.py</text>
+<text x="151.5" y="329.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">routes/festivals.py</text>
+<text x="151.5" y="345.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">routes/publication.py</text>
+<text x="151.5" y="361.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">routes/artists.py</text>
+<text x="151.5" y="377.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">routes/stages.py</text>
+<text x="151.5" y="393.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">routes/incidents.py</text>
+<text x="151.5" y="425.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">traduit HTTP en commandes</text>
+<text x="151.5" y="441.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">et les erreurs en 400/404/409</text>
+<rect x="40" y="510" width="215" height="120" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="33" y="522" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="33" y="536" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="151.5" y="542.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="151.5" y="558.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Schémas Pydantic</text>
+<text x="151.5" y="574.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">api/schemas/*</text>
+<text x="151.5" y="590.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">format des requêtes, DTO</text>
+<text x="151.5" y="606.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">InputSanitizer (XSS)</text>
+<rect x="40" y="660" width="215" height="125" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="33" y="672" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="33" y="686" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="151.5" y="694.5" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="151.5" y="710.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Sécurité HTTP</text>
+<text x="151.5" y="726.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">security/security_headers.py</text>
+<text x="151.5" y="742.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">security/error_handler.py</text>
+<text x="151.5" y="758.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">enveloppent l&#x27;application</text>
+<rect x="332" y="250" width="161" height="145" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="412.5" y="278.5" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="412.5" y="294.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Commandes métier</text>
+<text x="412.5" y="310.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">IScheduleConcertPort</text>
+<text x="412.5" y="326.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">IRescheduleConcertPort</text>
+<text x="412.5" y="342.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">IPublishFestivalPort</text>
+<text x="412.5" y="358.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">IUnpublishFestivalPort</text>
+<text x="412.5" y="374.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">IDeclareIncidentPort</text>
+<rect x="577" y="250" width="226" height="118" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="570" y="262" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="570" y="276" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="694.0" y="273.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="694.0" y="289.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Planification</text>
+<text x="694.0" y="305.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Schedule, Reschedule, Cancel,</text>
+<text x="694.0" y="321.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">GetConcert, GetFestivalSchedule</text>
+<text x="694.0" y="337.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">requiert : Concert, FestivalQuery,</text>
+<text x="694.0" y="353.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Stage, Artist, Notification</text>
+<rect x="577" y="380" width="226" height="118" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="570" y="392" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="570" y="406" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="694.0" y="411.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="694.0" y="427.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Référentiel</text>
+<text x="694.0" y="443.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Create/Get/ListFestival(s)</text>
+<text x="694.0" y="459.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Create/ListArtist(s), Create/ListStage(s)</text>
+<text x="694.0" y="475.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">requiert : Festival, Artist, Stage</text>
+<rect x="577" y="510" width="226" height="118" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="570" y="522" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="570" y="536" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="694.0" y="533.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="694.0" y="549.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Opérations</text>
+<text x="694.0" y="565.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Publish, Unpublish, Declare,</text>
+<text x="694.0" y="581.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">ListIncidents, ResolveIncident</text>
+<text x="694.0" y="597.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">requiert : Festival, Concert, Stage,</text>
+<text x="694.0" y="613.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Artist, Incident, Notification</text>
+<rect x="332" y="722" width="150" height="118" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="325" y="734" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="325" y="748" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="411.0" y="761.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="411.0" y="777.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Entités</text>
+<text x="411.0" y="793.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Festival, Concert,</text>
+<text x="411.0" y="809.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Stage, Artist, Incident</text>
+<rect x="494" y="722" width="150" height="118" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="487" y="734" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="487" y="748" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="573.0" y="753.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="573.0" y="769.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">Valeurs, événements</text>
+<text x="573.0" y="785.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">TimeSlot, FestivalPeriod,</text>
+<text x="573.0" y="801.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">EquipmentSet, statuts</text>
+<text x="573.0" y="817.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Concert/Festival*Event</text>
+<rect x="656" y="722" width="147" height="118" rx="2" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.3" />
+<rect x="649" y="734" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<rect x="649" y="748" width="14" height="8" fill="#e3ecfa" stroke="#4a6fa5" stroke-width="1.1"/>
+<text x="733.5" y="753.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«component»</text>
+<text x="733.5" y="769.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">scheduling_policy</text>
+<text x="733.5" y="785.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">R2 à R8 : point</text>
+<text x="733.5" y="801.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">unique des règles</text>
+<text x="733.5" y="817.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">du planning</text>
+<rect x="862" y="231" width="190" height="66" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="957.0" y="260.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="957.0" y="276.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IConcertRepository</text>
+<rect x="1137" y="225" width="216" height="37" rx="2" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3" />
+<text x="1245.0" y="247.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">ConcertSqlRepository</text>
+<rect x="1137" y="266" width="216" height="37" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="1.3" stroke-dasharray="4 3"/>
+<text x="1245.0" y="288.5" font-size="12.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">InMemoryConcertRepository</text>
+<rect x="862" y="319" width="190" height="66" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="957.0" y="348.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="957.0" y="364.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IFestivalRepository</text>
+<rect x="1137" y="313" width="216" height="37" rx="2" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3" />
+<text x="1245.0" y="335.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">FestivalSqlRepository</text>
+<rect x="1137" y="354" width="216" height="37" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="1.3" stroke-dasharray="4 3"/>
+<text x="1245.0" y="376.5" font-size="11.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">InMemoryFestivalRepository</text>
+<rect x="862" y="407" width="190" height="66" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="957.0" y="436.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="957.0" y="452.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IFestivalQueryPort</text>
+<rect x="1137" y="401" width="216" height="37" rx="2" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3" />
+<text x="1245.0" y="423.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">FestivalSqlQueryAdapter</text>
+<rect x="862" y="495" width="190" height="66" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="957.0" y="524.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="957.0" y="540.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IStageRepository</text>
+<rect x="1137" y="489" width="216" height="37" rx="2" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3" />
+<text x="1245.0" y="511.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">StageSqlRepository</text>
+<rect x="1137" y="530" width="216" height="37" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="1.3" stroke-dasharray="4 3"/>
+<text x="1245.0" y="552.5" font-size="12.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">InMemoryStageRepository</text>
+<rect x="862" y="583" width="190" height="66" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="957.0" y="612.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="957.0" y="628.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IArtistRepository</text>
+<rect x="1137" y="577" width="216" height="37" rx="2" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3" />
+<text x="1245.0" y="599.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">ArtistSqlRepository</text>
+<rect x="1137" y="618" width="216" height="37" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="1.3" stroke-dasharray="4 3"/>
+<text x="1245.0" y="640.5" font-size="12.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">InMemoryArtistRepository</text>
+<rect x="862" y="671" width="190" height="66" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="957.0" y="700.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="957.0" y="716.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IIncidentRepository</text>
+<rect x="1137" y="665" width="216" height="37" rx="2" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3" />
+<text x="1245.0" y="687.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">IncidentSqlRepository</text>
+<rect x="1137" y="706" width="216" height="37" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="1.3" stroke-dasharray="4 3"/>
+<text x="1245.0" y="728.5" font-size="11.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">InMemoryIncidentRepository</text>
+<rect x="862" y="759" width="190" height="66" rx="2" fill="#ede4f7" stroke="#7a52a8" stroke-width="1.3" />
+<text x="957.0" y="788.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«interface»</text>
+<text x="957.0" y="804.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">INotificationSenderPort</text>
+<rect x="1137" y="753" width="216" height="37" rx="2" fill="#e4f3e8" stroke="#3c8d50" stroke-width="1.3" />
+<text x="1245.0" y="775.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">EmailNotificationAdapter</text>
+<rect x="1137" y="794" width="216" height="37" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="1.3" stroke-dasharray="4 3"/>
+<text x="1245.0" y="816.5" font-size="12.5" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">FakeNotificationAdapter</text>
+<rect x="1425" y="225" width="135" height="477" rx="2" fill="#f2f2f2" stroke="#555555" stroke-width="1.3" />
+<text x="1492.5" y="435.5" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«artefact»</text>
+<text x="1492.5" y="451.5" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">SQLite</text>
+<text x="1492.5" y="467.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">SQLAlchemy</text>
+<text x="1492.5" y="483.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">database/models.py</text>
+<text x="1492.5" y="499.5" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">database/session.py</text>
+<rect x="1425" y="753" width="135" height="78" rx="2" fill="#f2f2f2" stroke="#555555" stroke-width="1.3" />
+<text x="1492.5" y="780.0" font-size="10.5" font-weight="normal" font-style="italic" fill="#555555" text-anchor="middle">«artefact»</text>
+<text x="1492.5" y="796.0" font-size="12.5" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="middle">email_sender</text>
+<text x="1492.5" y="812.0" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">envoi simulé</text>
+<rect x="149.0" y="154" width="82" height="15" fill="#ffffff" fill-opacity="0.95"/>
+<text x="190" y="165" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">requête HTTP</text>
+<rect x="338.0" y="89" width="64" height="15" fill="#ffffff" fill-opacity="0.95"/>
+<text x="370" y="100" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">Depends()</text>
+<rect x="270.0" y="287" width="52" height="15" fill="#ffffff" fill-opacity="0.95"/>
+<text x="296" y="298" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">appelle</text>
+<rect x="317.0" y="417" width="196" height="15" fill="#ffffff" fill-opacity="0.95"/>
+<text x="415" y="428" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">lectures, créations, annulation</text>
+<rect x="661.0" y="147" width="58" height="15" fill="#ffffff" fill-opacity="0.95"/>
+<text x="690" y="158" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">«create»</text>
+<rect x="1041.0" y="89" width="58" height="15" fill="#ffffff" fill-opacity="0.95"/>
+<text x="1070" y="100" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">«create»</text>
+<rect x="699.0" y="649" width="52" height="15" fill="#ffffff" fill-opacity="0.95"/>
+<text x="725" y="660" font-size="10.5" font-weight="normal" font-style="normal" fill="#333333" text-anchor="middle">utilise</text>
+<rect x="20" y="877" width="1540" height="95" rx="4" fill="#ffffff" stroke="#c9ced6"/>
+<text x="36" y="897" font-size="13" font-weight="bold" font-style="normal" fill="#1f2933" text-anchor="start">Légende</text>
+<rect x="36" y="911" width="30" height="16" rx="2" fill="#e3ecfa" stroke="#4a6fa5" />
+<text x="74" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Composant</text>
+<rect x="236" y="911" width="30" height="16" rx="2" fill="#ede4f7" stroke="#7a52a8" />
+<text x="274" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Interface (port)</text>
+<rect x="436" y="911" width="30" height="16" rx="2" fill="#e4f3e8" stroke="#3c8d50" />
+<text x="474" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Adaptateur de production</text>
+<rect x="636" y="911" width="30" height="16" rx="2" fill="#f4f4f4" stroke="#8a8a8a" stroke-dasharray="4 3"/>
+<text x="674" y="924" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Double de test</text>
+<line x1="36" y1="951" x2="86" y2="951" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="96" y="955" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Dépendance</text>
+<line x1="236" y1="951" x2="286" y2="951" stroke="#333" stroke-width="1.2" stroke-dasharray="6 4" marker-end="url(#tri)"/>
+<text x="296" y="955" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Réalisation : l&#x27;adaptateur implémente le port</text>
+<text x="640" y="955" font-size="11.5" font-weight="normal" font-style="normal" fill="#1f2933" text-anchor="start">Toutes les dépendances de code pointent vers le cœur ; seul app/composition.py connaît les adaptateurs concrets.</text>
+</svg>

@@ -29,58 +29,11 @@ L'application initiale suit une organisation apparemment en couches (contrôleur
 ### Schémas d'Architecture Initiale
 Le couplage initial est documenté sous deux formes complémentaires :
 * Le schéma Draw.io téléchargeable : **[architecture-initiale.drawio](architecture-initiale.drawio)**.
-* Le diagramme de flux Mermaid ci-dessous, matérialisant les dépendances illégitimes :
+* Le diagramme ci-dessous, matérialisant les dépendances illégitimes :
 
-> [!NOTE]
-> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+![Dépendances du code initial](dependances_initiales.svg)
 
-```mermaid
-flowchart TD
-    subgraph Layer_HTTP [Couche Web - API]
-        R_Concert["api/concerts.py"]
-        R_Incident["api/incidents.py"]
-        R_Festival["api/festivals.py"]
-        R_Artist["api/artists.py"]
-        R_Stage["api/stages.py"]
-    end
-
-    subgraph Layer_Services [Couche Services]
-        S_Sched["SchedulingService"]
-        S_Pub["PublicationService"]
-        S_Notif["NotificationService"]
-        S_Fest["FestivalService"]
-        S_Stage["StageService"]
-    end
-
-    subgraph Layer_Data [Couche Données & ORM]
-        Repo_Concert["ConcertRepository"]
-        SQL_Models["app/models.py (SQLAlchemy Models)"]
-        SQL_Session["SQLAlchemy db: Session"]
-    end
-
-    subgraph Layer_External [Effets Secondaires & Config]
-        EmailSender["app/utils/email_sender.py"]
-        GlobalSettings["app/config.py (settings)"]
-    end
-
-    %% Dépendances illégitimes
-    R_Concert -->|"① Requête directe db.query()"| SQL_Models
-    R_Concert -->|"Instanciation directe"| S_Sched
-    R_Incident -->|"① Requête directe db.query() sans service"| SQL_Models
-    R_Incident -->|"db.add() & db.commit()"| SQL_Session
-
-    S_Sched -->|"Instanciation en dur"| Repo_Concert
-    S_Sched -->|"③ Instanciation en dur"| S_Notif
-    S_Sched -->|"② db.query() sans repository & db.commit()"| SQL_Session
-    S_Sched -->|"Manipulation directe"| SQL_Models
-
-    S_Pub -->|"③ Instanciation en dur"| S_Notif
-    S_Pub -->|"② Requête directe sans repo & db.commit()"| SQL_Session
-
-    S_Notif -->|"Appel direct"| EmailSender
-    EmailSender -->|"Lecture directe en dur"| GlobalSettings
-    Repo_Concert -->|"Requêtes & Commit"| SQL_Session
-```
+Version modifiable : [dependances_initiales.drawio](dependances_initiales.drawio).
 
 ### Analyse des Écarts et Raccourcis Observés
 1. **① La route interroge directement la base :**
@@ -213,6 +166,7 @@ L'application legacy souffre d'un **couplage direct à l'infrastructure** et d'u
 La cible hexagonale mise en place :
 1. **Domaine pur :** Objets-valeurs (`TimeSlot`), entités autonomes avec invariants (`Concert.check_conflict_with`), exceptions de domaine explicites, testables en mémoire sans framework.
 2. **Ports abstraits :** `IConcertRepository`, `IFestivalQueryPort`, `INotificationSenderPort`.
-3. **Cas d'usage applicatifs :** `RescheduleConcertUseCase` et `PublishFestivalUseCase` qui orchestrant les règles avant persistance et isolent les effets de bord (notifications tolérantes aux pannes).
+3. **Cas d'usage applicatifs :** `RescheduleConcertUseCase` et `PublishFestivalUseCase` qui orchestrent les règles avant persistance et isolent les effets de bord (notifications tolérantes aux pannes).
 4. **Adaptateurs interchangeables :** `ConcertSqlRepository` et `InMemoryConcertRepository`.
 
+Les trois défauts ont été exécutés sur le code initial : les requêtes et les résultats figurent dans [reproduction_defauts.md](reproduction_defauts.md).

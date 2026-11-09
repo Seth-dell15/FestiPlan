@@ -21,17 +21,18 @@ L'objectif est double :
 ### Les Points Forts Remarquables
 * **Cœur de domaine 100% pur (DDD respecté) :** Les entités (`Concert`, `Incident`) et objets-valeurs (`TimeSlot`) sont totalement agnostiques de tout framework. Zéro dépendance à FastAPI, Pydantic ou SQLAlchemy dans `app/domain/`.
 * **Inversion de dépendance exemplaire (Ports & Adapters) :** L'application communique exclusivement avec des contrats abstraits (`typing.Protocol`), ce qui permet d'interchanger instantanément la persistance SQLite réelle avec des dépôts en mémoire.
-* **Pyramide de tests ultra-rapide (169 tests en ~3.8s) :**
-  * 57 tests unitaires de domaine purs (Planification, Logistique, Opérations).
-  * 48 tests unitaires applicatifs validant l'orchestration des cas d'usage avec repositories InMemory.
-  * 44 tests d'intégration réelle avec FastAPI `TestClient` et base relationnelle SQLite.
-  * 10 tests automatisés de cybersécurité (Injections SQL, XSS, headers OWASP, anti-fuite d'erreurs).
-  * 10 tests transverses et de non-régression.
+* **Pyramide de tests (236 tests) :**
+  * 81 tests unitaires de domaine sans framework.
+  * 63 tests de cas d'usage avec des doubles de test.
+  * 49 tests d'adaptateurs avec FastAPI et SQLite.
+  * 19 tests HTTP de non-régression.
+  * 14 tests de sécurité.
+  * 6 tests de l'API initiale et 4 tests du sens des dépendances.
 * **Résolution éprouvée des 3 défauts initiaux :**
   * *Défaut 1 (Conflits de scène et d'artiste) :* Impossible de créer un chevauchement.
   * *Défaut 2 (Panne de notification) :* La persistance en base n'est plus compromise par une défaillance de messagerie réseau.
   * *Défaut 3 (Verrouillage du planning) :* Toute altération ordinaire d'un festival publié est formellement bloquée.
-* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Strategy/Policy, Factory Method, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`livrables_finaux.md`](livrables_finaux.md#38-patrons-de-conception-design-patterns-mobilisés--justifications-pourquoi)).
+* **Mobilisation rigoureuse des Design Patterns éprouvés :** Intégration systématique des patrons Repository, Value Object, Adapter, Domain Event, Command, Strategy/Policy, Factory Method, Middleware et DTO, documentés et justifiés dans la note d'architecture ([`note_architecture.md`](note_architecture.md#9-patrons-de-conception)).
 
 ### Les Faiblesses et Dettes Techniques Résiduelles
 1. **Absence de gestion de la concurrence (Race Conditions) :**
@@ -49,7 +50,7 @@ L'objectif est double :
 
 | Axe d'Amélioration | Conception Actuelle | Conception Supérieure ("State of the Art") | Bénéfice direct |
 | :--- | :--- | :--- | :--- |
-| **Gestion des Événements** | Notification appelée directement dans le Use Case (`notification_sender.notify(...)`). | **Outbox Pattern** : L'événement `ConcertRescheduledEvent` est persisté dans une table `outbox` dans la même transaction SQL que le concert, puis un worker d'arrière-plan dépile les notifications. | Tolérance absolue aux pannes : zéro perte de message, temps de réponse HTTP quasi-instantané (< 15ms). |
+| **Gestion des Événements** | Notification appelée directement dans le Use Case (`notify_concert_rescheduled(event)`). | **Outbox Pattern** : L'événement `ConcertRescheduledEvent` est persisté dans une table `outbox` dans la même transaction SQL que le concert, puis un worker d'arrière-plan dépile les notifications. | Tolérance absolue aux pannes : zéro perte de message, temps de réponse HTTP quasi-instantané (< 15ms). |
 | **Gestion de la Concurrence** | Vérification en lecture puis écriture (`list_for_festival` puis `save`). | **Optimistic Locking** : Chaque concert ou festival porte un champ `version: int`. Le `UPDATE` SQL vérifie `WHERE id = :id AND version = :v`. | Élimination mathématique de toute possibilité de conflit horaire sous forte charge concurrente. |
 | **Migrations BDD** | `create_all()` automatique au démarrage. | **Alembic** avec fichiers de migrations versionnés dans Git (`alembic upgrade head`). | Capacité à faire évoluer le schéma de base de données en production sans perte de données. |
 | **Command / Query Responsibility** | Les Use Cases mélangent lecture et écriture (`get_schedule_info` + mise à jour). | **CQRS léger** : Séparer strictement les modèles de lecture (requêtes directes ultra-rapides sans charger d'entités complètes) des modèles d'écriture (commandes transactionnelles). | Code de lecture plus simple et performances de consultation décuplées. |
@@ -62,25 +63,9 @@ Dans ce projet, l'**Architecture Hexagonale (Ports & Adapters)** était le choix
 
 Néanmoins, en entreprise, d'autres architectures auraient présenté des avantages majeurs :
 
-> [!NOTE]
-> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+![Architecture hexagonale et Vertical Slice](architectures_comparees.svg)
 
-```mermaid
-graph TD
-    subgraph Hexagonal ["Architecture Hexagonale (Choix Actuel)"]
-        H_Dom["Domaine Central"]
-        H_App["Application (Use Cases)"]
-        H_Ports["Ports Abstraits"]
-        H_Adap["Adaptateurs Concrets"]
-        H_Adap --> H_Ports --> H_App --> H_Dom
-    end
-
-    subgraph VerticalSlice ["Vertical Slice Architecture (Alternative Idéale pour Trinôme)"]
-        VS_1["Tranche 1 : Reschedule Concert<br><i>(DTO + Handler + SQL dans un seul dossier)</i>"]
-        VS_2["Tranche 2 : Publish Festival<br><i>(DTO + Handler + SQL indépendants)</i>"]
-        VS_3["Tranche 3 : Report Incident<br><i>(DTO + Handler + SQL isolés)</i>"]
-    end
-```
+Version modifiable : [architectures_comparees.drawio](architectures_comparees.drawio).
 
 ### 1. Vertical Slice Architecture (Architecture en Tranches Verticales) — *La plus adaptée au travail d'équipe*
 * **Principe :** Au lieu de découper horizontalement en couches techniques (`domain`, `application`, `adapters`, `repositories`), on découpe verticalement par **cas d'utilisation métier** (ex. `features/scheduling/reschedule_concert/`). Chaque tranche contient son DTO, son handler de commande et sa requête SQL.
@@ -118,7 +103,7 @@ Pour transformer cette application d'école en produit logiciel de niveau profes
   ```bash
   make install   # Crée venv, installe dépendances, configure pre-commit
   make seed      # Peuple la base de démonstration
-  make test      # Lance toute la suite de 83 tests
+  make test      # Lance toute la suite de tests
   make run       # Démarre l'API en mode rechargement
   ```
 * Conteneurisation **Docker & Docker Compose** : éliminer définitivement les différences Windows / macOS / Linux et les soucis de chemins `.venv`.

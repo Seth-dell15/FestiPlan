@@ -165,16 +165,9 @@ tests/
 
 ## 5. Feuille de Route par Phases
 
-> [!NOTE]
-> **Rendu du diagramme :** Si le diagramme Mermaid ne s'affiche pas dans votre lecteur/prévisualisation Markdown local, veuillez consulter ce document directement sur l'interface GitHub où le rendu graphique Mermaid est pris en charge nativement.
+![Feuille de route par phases](docs/feuille_de_route.svg)
 
-```mermaid
-graph TD
-    P0[Phase 0 : Socle Commun & Structure des Dossiers] --> P1[Phase 1 : Domaine Pur & Tests Unitaires]
-    P1 --> P2[Phase 2 : Ports d'Entrée/Sortie & Cas d'Usage]
-    P2 --> P3[Phase 3 : Adaptateurs DB & API FastAPI]
-    P3 --> P4[Phase 4 : Validation des 3 Scénarios Legacy & Intégration]
-```
+Version modifiable : [feuille_de_route.drawio](docs/feuille_de_route.drawio).
 
 ### Phase 0 : Socle Commun (Ensemble)
 - Création de l'arborescence des dossiers.

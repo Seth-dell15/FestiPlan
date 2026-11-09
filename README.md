@@ -6,7 +6,7 @@ API FastAPI de gestion de festival de musique (*Hellforge Open Air*), refactoris
 
 ## 1. Fonctionnalités & Domaine Métier
 
-* **Festivals :** Création, consultation, cycle de vie et publication du planning.
+* **Festivals :** Création, consultation, publication et dépublication du planning.
 * **Artistes & Scènes :** Enregistrement des groupes et de leurs besoins techniques, gestion des capacités et équipements des scènes.
 * **Programmation des Concerts (`Scheduling`) :**
   * Création de concerts avec contrôle strict de non-chevauchement (**R2, R3**) et respect des dates du festival (**R6**).
@@ -23,17 +23,20 @@ Le code sépare rigoureusement la logique métier pure des mécanismes technique
 
 ```text
 app/
-├── domain/                         # Cœur Métier 100% Python pur (0 dépendance framework/DB)
-│   ├── models/                     # Entités DDD (Concert, etc.)
-│   ├── value_objects/              # Objets-Valeurs immuables (TimeSlot, etc.)
-│   ├── exceptions/                 # Exceptions métier explicites (StageOccupiedError...)
-│   ├── events/                     # Événements de domaine (ConcertRescheduledEvent)
-│   └── ports/                      # Interfaces abstraites (IConcertRepository, IFestivalQueryPort...)
-├── application/                    # Cas d'usage applicatifs (Use Cases)
-│   └── use_cases/scheduling/       # RescheduleConcertUseCase, ScheduleConcertUseCase...
-└── adapters/                       # Adaptateurs d'infrastructure
-    ├── primary/api/                # Contrôleurs HTTP FastAPI & Schemas Pydantic
-    └── secondary/                  # Repositories SQLAlchemy, InMemory & Adaptateurs Mail
+├── composition.py                  # Point de composition : crée et injecte les adaptateurs
+├── domain/                         # Cœur métier sans framework
+│   ├── models/                     # Entités (Festival, Concert, Stage, Artist, Incident)
+│   ├── value_objects/              # TimeSlot, FestivalPeriod, EquipmentSet, statuts
+│   ├── services/                   # scheduling_policy : règles du planning
+│   ├── events/                     # Événements de domaine
+│   ├── exceptions/                 # Exceptions métier
+│   └── ports/                      # Ports sortants (repositories, notification)
+├── application/
+│   ├── ports/inbound.py            # Ports entrants et commandes
+│   └── use_cases/                  # scheduling, logistics, operations
+└── adapters/
+    ├── primary/                    # Routes FastAPI, schémas Pydantic, sécurité HTTP
+    └── secondary/                  # SQLAlchemy, doubles en mémoire, notification
 ```
 
 ---
@@ -74,7 +77,7 @@ uvicorn app.main:app --reload
 
 ## 4. Exécution des Tests
 
-Le projet intègre une suite complète de **169 tests automatisés** (unitaires purs, applicatifs, intégration réelle avec SQLite et sécurité OWASP) exécutables en ~3.8 secondes :
+Le projet contient **236 tests automatisés** : domaine, cas d'usage, adaptateurs, non-régression et sécurité.
 
 ```bash
 # Exécution de toute la suite de tests
@@ -126,10 +129,12 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 1. Publiez le festival via `POST /festivals/1/publish`.
 2. Tentez ensuite de déplacer un concert via `PATCH /concerts/1/reschedule`.
 3. L'API refuse la modification et renvoie **HTTP 409 Conflict** (`"Le festival a déjà été publié. Les modifications ordinaires du planning sont verrouillées."`).
+4. Pour rouvrir le planning, appelez `POST /festivals/1/unpublish`. Le déplacement est alors accepté, et une nouvelle publication repasse par tous les contrôles.
 
 ### Scénario 5 : Publication avec contrôle strict du planning (R8)
 1. Tentez de publier un festival dont le planning contient des conflits ou des concerts hors dates : l'API bloque la publication et renvoie **HTTP 400 Bad Request**.
 2. Sur un planning valide, `POST /festivals/1/publish` passe le statut à `"published"` et notifie les équipes.
+3. Publier un festival déjà publié renvoie **HTTP 409 Conflict**.
 
 ### Scénario 6 : Déclaration et résolution d'incidents (R10)
 1. Déclarez un incident via `POST /incidents` avec :
@@ -146,17 +151,14 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 
 ## 6. Documentation Technique & Livrables
 
-Tous les livrables d'ingénierie logicielle sont regroupés dans le dossier unique [`docs/`](docs/) :
-* [Livrable Intermédiaire Étape 1 : Diagnostic Initial & Architecture Legacy](docs/livrable_intermediaire_step_1.md)
-* [Schéma Draw.io Étape 1 : Architecture Initiale](docs/architecture-initiale.drawio)
-* [Livrable Intermédiaire Étape 2 : Modélisation Métier DDD](docs/livrable_intermediaire_step_2.md)
-* [Livrable Étape 6 : Stratégie de Tests & Pyramide](docs/strategie_de_tests.md)
-* [Livrables Finaux (Pôle Développeur 1) : Diagrammes UML & Note d'Architecture Planning](docs/livrables_finaux.md)
-* [Livrables Finaux (Pôle Développeur 2) : Diagrammes UML & Note d'Architecture Logistique](docs/livrables_dev2_logistique.md)
-* [Livrables Finaux (Pôle Développeur 3) : Diagrammes UML & Note d'Architecture Opérations](docs/livrables_dev3_operations.md)
-* [Dossier d'Ingénierie Cybersécurité & Hardening OWASP](docs/cybersecurite_hardening.md)
-* [Matrice de Traçabilité des Règles Métier & Défauts](docs/regles_metier.md)
-* [Rétrospective, Analyse Critique & Guide des Bonnes Pratiques pour Futurs Projets](docs/bilan_critique_et_guide_bonnes_pratiques.md)
+Tous les livrables sont regroupés dans le dossier [`docs/`](docs/) :
 
-
-
+* [Note d'architecture et diagramme de séquence](docs/note_architecture.md)
+* [Diagramme UML de composants](docs/diagramme_composants.svg) ([version modifiable](docs/diagramme_composants.drawio))
+* [Diagnostic de l'architecture initiale](docs/livrable_intermediaire_step_1.md) et son [schéma](docs/architecture-initiale.drawio)
+* [Modélisation DDD](docs/livrable_intermediaire_step_2.md) et son [schéma](docs/modele-domaine.drawio)
+* [Reproduction des trois défauts](docs/reproduction_defauts.md)
+* [Stratégie de tests](docs/strategie_de_tests.md)
+* [Traçabilité des règles métier](docs/regles_metier.md)
+* [Sécurité](docs/cybersecurite_hardening.md)
+* [Rétrospective et bonnes pratiques](docs/bilan_critique_et_guide_bonnes_pratiques.md)
