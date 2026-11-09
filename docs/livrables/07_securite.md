@@ -5,6 +5,9 @@
 **Pôles contributeurs :** Initialement conçu par Développeur 3 (Opérations), puis étendu et généralisé par Développeur 2 (Logistique) et Développeur 1 (Planification)  
 **Référence des menaces :** OWASP Top 10 API Security Risks  
 
+> [!NOTE]
+> **Lecture conseillée sur GitHub** : il est préférable de consulter ce document sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
+
 ---
 
 ## 1. Pourquoi la Cybersécurité dans FestiPlan ?

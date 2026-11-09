@@ -6,6 +6,9 @@
 **Dépôt de référence :** Commit initial `3a5aa55`, avant refactorisation  
 **Schéma Draw.io associé :** [architecture-initiale.drawio](../schemas/architecture-initiale.drawio) (les repères ①, ② et ③ ci-dessous renvoient à ses flèches)
 
+> [!NOTE]
+> **Lecture conseillée sur GitHub** : il est préférable de consulter ce document sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
+
 ---
 
 ## 1. Responsabilités des grandes parties du code initial

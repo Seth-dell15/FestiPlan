@@ -2,6 +2,9 @@
 
 Cette note justifie la refactorisation de FestiPlan en architecture hexagonale, avec les concepts DDD utiles au projet. Elle décrit le code livré sur `feat/logistics-domain-usecases`.
 
+> [!NOTE]
+> **Lecture conseillée sur GitHub** : il est préférable de consulter ce document sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
+
 ## Sommaire
 
 1. Défauts de l'architecture initiale

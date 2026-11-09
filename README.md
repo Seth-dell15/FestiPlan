@@ -151,6 +151,9 @@ Vous pouvez tester l'application directement depuis Swagger ([http://127.0.0.1:8
 
 ## 6. Documentation Technique & Livrables
 
+> [!NOTE]
+> **Lecture conseillée sur GitHub** : il est préférable de consulter les livrables sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
+
 Les documents sont dans [`docs/livrables/`](docs/livrables/), à lire dans cet ordre :
 
 1. [Diagnostic de l'architecture initiale](docs/livrables/01_diagnostic_initial.md)

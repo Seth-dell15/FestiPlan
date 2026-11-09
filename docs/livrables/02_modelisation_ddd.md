@@ -5,6 +5,9 @@
 **Contexte :** Module Architecture Hexagonale & DDD — Ynov B3  
 **Référence du sujet :** Consignes Étape 2 (p. 7-8 du sujet de synthèse)
 
+> [!NOTE]
+> **Lecture conseillée sur GitHub** : il est préférable de consulter ce document sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
+
 ---
 
 ## 1. Vue d'ensemble du Modèle Métier DDD

@@ -5,6 +5,9 @@
 **Document :** Rétrospective d'ingénierie, analyse comparative des architectures et Blueprint pour futurs projets  
 **Auteurs :** Équipe FestiPlan (Hugo Cabanes & trinôme)
 
+> [!NOTE]
+> **Lecture conseillée sur GitHub** : il est préférable de consulter ce document sur GitHub, où la présentation est meilleure et les schémas plus lisibles.
+
 ---
 
 ## 1. Introduction
