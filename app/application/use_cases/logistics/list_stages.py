@@ -1,9 +1,9 @@
 from app.domain.models.stage import Stage
-from app.domain.ports.repositories.stage_repository_port import StageRepositoryPort
+from app.domain.ports.repositories.stage_repository_port import IStageRepository
 
 
 class ListStagesUseCase:
-    def __init__(self, stage_repository: StageRepositoryPort):
+    def __init__(self, stage_repository: IStageRepository):
         self._stages = stage_repository
 
     def execute(self, festival_id: int) -> list[Stage]:

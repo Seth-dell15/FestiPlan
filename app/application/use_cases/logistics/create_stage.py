@@ -3,8 +3,8 @@ from dataclasses import dataclass
 
 from app.domain.exceptions.logistics_exceptions import FestivalNotFoundError
 from app.domain.models.stage import Stage
-from app.domain.ports.repositories.festival_repository_port import FestivalRepositoryPort
-from app.domain.ports.repositories.stage_repository_port import StageRepositoryPort
+from app.domain.ports.repositories.festival_repository_port import IFestivalRepository
+from app.domain.ports.repositories.stage_repository_port import IStageRepository
 from app.domain.value_objects.equipment_set import EquipmentSet
 
 
@@ -17,13 +17,13 @@ class CreateStageCommand:
 
 
 class CreateStageUseCase:
-    def __init__(self, stage_repository: StageRepositoryPort, festival_repository: FestivalRepositoryPort):
+    def __init__(self, stage_repository: IStageRepository, festival_repository: IFestivalRepository):
         self._stages = stage_repository
         self._festivals = festival_repository
 
     def execute(self, command: CreateStageCommand) -> Stage:
         # L'existence du festival demande un repository, donc elle se vérifie ici ; la capacité est vérifiée par Stage.
-        if self._festivals.get(command.festival_id) is None:
+        if self._festivals.get_by_id(command.festival_id) is None:
             raise FestivalNotFoundError(command.festival_id)
         stage = Stage(
             festival_id=command.festival_id,

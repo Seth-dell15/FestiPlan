@@ -1,18 +1,18 @@
 from sqlalchemy.orm import Session
 
 from app.domain.models.stage import Stage
-from app.domain.ports.repositories.stage_repository_port import StageRepositoryPort
+from app.domain.ports.repositories.stage_repository_port import IStageRepository
 from app.domain.value_objects.equipment_set import EquipmentSet
 from app.models import Stage as StageRow
 
 
-class StageSqlRepository(StageRepositoryPort):
+class StageSqlRepository(IStageRepository):
     """Traduit entre le modèle ORM legacy et l'entité Stage ; les équipements restent stockés en CSV."""
 
     def __init__(self, session: Session):
         self._session = session
 
-    def get(self, stage_id: int) -> Stage | None:
+    def get_by_id(self, stage_id: int) -> Stage | None:
         row = self._session.get(StageRow, stage_id)
         return _to_entity(row) if row else None
 

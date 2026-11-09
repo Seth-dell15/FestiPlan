@@ -1,8 +1,8 @@
 from app.domain.models.festival import Festival
-from app.domain.ports.repositories.festival_repository_port import FestivalRepositoryPort
+from app.domain.ports.repositories.festival_repository_port import IFestivalRepository
 
 
-class InMemoryFestivalRepository(FestivalRepositoryPort):
+class InMemoryFestivalRepository(IFestivalRepository):
     """Implémentation en mémoire, pour les tests sans base de données."""
 
     def __init__(self, initial: list[Festival] | None = None):
@@ -11,7 +11,7 @@ class InMemoryFestivalRepository(FestivalRepositoryPort):
         for festival in initial or []:
             self.save(festival)
 
-    def get(self, festival_id: int) -> Festival | None:
+    def get_by_id(self, festival_id: int) -> Festival | None:
         return self._storage.get(festival_id)
 
     def list(self) -> list[Festival]:

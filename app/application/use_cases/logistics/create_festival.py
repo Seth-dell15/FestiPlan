@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from app.domain.models.festival import Festival
-from app.domain.ports.repositories.festival_repository_port import FestivalRepositoryPort
+from app.domain.ports.repositories.festival_repository_port import IFestivalRepository
 from app.domain.value_objects.festival_period import FestivalPeriod
 
 
@@ -15,7 +15,7 @@ class CreateFestivalCommand:
 
 
 class CreateFestivalUseCase:
-    def __init__(self, festival_repository: FestivalRepositoryPort):
+    def __init__(self, festival_repository: IFestivalRepository):
         self._festivals = festival_repository
 
     def execute(self, command: CreateFestivalCommand) -> Festival:

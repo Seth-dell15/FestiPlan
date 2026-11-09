@@ -105,7 +105,7 @@ tests/
   * Entité `Concert`.
   * Value Object `TimeSlot` (gestion début/fin, calcul de durée, détection de chevauchement `overlaps`).
   * Règles de validation des conflits (disponibilité de la scène, disponibilité de l'artiste, respect des dates de festival).
-  * Exceptions : `StageOccupiedError`, `ArtistAlreadyBookedError`, `InvalidConcertDurationError`.
+  * Exceptions : `StageOccupiedError`, `ArtistAlreadyBookedError`, `InvalidTimeSlotError`.
 * **Application (Use Cases) :**
   * `ScheduleConcertUseCase`
   * `RescheduleConcertUseCase` *(Correction du bug 1 : réappliquer toutes les vérifications de conflits et de dates)*.

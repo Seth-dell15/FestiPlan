@@ -1,8 +1,8 @@
 from app.domain.models.stage import Stage
-from app.domain.ports.repositories.stage_repository_port import StageRepositoryPort
+from app.domain.ports.repositories.stage_repository_port import IStageRepository
 
 
-class InMemoryStageRepository(StageRepositoryPort):
+class InMemoryStageRepository(IStageRepository):
     """Implémentation en mémoire, pour les tests sans base de données."""
 
     def __init__(self, initial: list[Stage] | None = None):
@@ -11,7 +11,7 @@ class InMemoryStageRepository(StageRepositoryPort):
         for stage in initial or []:
             self.save(stage)
 
-    def get(self, stage_id: int) -> Stage | None:
+    def get_by_id(self, stage_id: int) -> Stage | None:
         return self._storage.get(stage_id)
 
     def list_for_festival(self, festival_id: int) -> list[Stage]:

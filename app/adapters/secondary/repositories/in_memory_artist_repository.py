@@ -1,8 +1,8 @@
 from app.domain.models.artist import Artist
-from app.domain.ports.repositories.artist_repository_port import ArtistRepositoryPort
+from app.domain.ports.repositories.artist_repository_port import IArtistRepository
 
 
-class InMemoryArtistRepository(ArtistRepositoryPort):
+class InMemoryArtistRepository(IArtistRepository):
     """Implémentation en mémoire, pour les tests sans base de données."""
 
     def __init__(self, initial: list[Artist] | None = None):
@@ -11,7 +11,7 @@ class InMemoryArtistRepository(ArtistRepositoryPort):
         for artist in initial or []:
             self.save(artist)
 
-    def get(self, artist_id: int) -> Artist | None:
+    def get_by_id(self, artist_id: int) -> Artist | None:
         return self._storage.get(artist_id)
 
     def list(self) -> list[Artist]:

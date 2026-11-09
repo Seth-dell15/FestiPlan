@@ -40,7 +40,7 @@ def test_create_stage_in_existing_festival(stages, festivals):
     assert stage.id is not None
     assert stage.belongs_to(1)
     assert stage.available_equipment == EquipmentSet.of(["special_lighting"])
-    assert stages.get(stage.id) is stage
+    assert stages.get_by_id(stage.id) is stage
 
 
 def test_create_stage_in_unknown_festival_saves_nothing(stages, festivals):

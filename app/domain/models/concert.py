@@ -5,6 +5,7 @@ from app.domain.events.concert_events import ConcertRescheduledEvent
 from app.domain.exceptions.scheduling_exceptions import (
     StageOccupiedError,
     ArtistAlreadyBookedError,
+    ConcertAlreadyCancelledError,
 )
 
 
@@ -29,7 +30,7 @@ class Concert:
     def reschedule(self, new_time_slot: TimeSlot) -> ConcertRescheduledEvent:
         """Déplace le concert sur un nouveau créneau et produit un événement de domaine."""
         if self.is_cancelled:
-            raise ValueError("Impossible de déplacer un concert annulé")
+            raise ConcertAlreadyCancelledError("Impossible de déplacer un concert annulé")
         
         previous_slot = self.time_slot
         self.time_slot = new_time_slot
@@ -43,7 +44,9 @@ class Concert:
         )
 
     def cancel(self) -> None:
-        """Annule le concert."""
+        """Annule le concert. Un concert déjà annulé ne peut pas l'être à nouveau."""
+        if self.is_cancelled:
+            raise ConcertAlreadyCancelledError(f"Le concert #{self.id} est déjà annulé")
         self.status = "cancelled"
 
     def check_conflict_with(self, other: "Concert") -> None:
