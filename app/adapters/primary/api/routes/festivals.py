@@ -7,6 +7,7 @@ from app.composition import (
     get_festival_use_case,
     list_festivals_use_case,
 )
+from app.adapters.primary.api.schemas.common import EntityId
 from app.adapters.primary.api.schemas.festival_schemas import FestivalCreateRequest, FestivalResponse
 from app.application.use_cases.logistics.create_festival import CreateFestivalCommand, CreateFestivalUseCase
 from app.application.use_cases.logistics.get_festival import GetFestivalUseCase
@@ -51,7 +52,7 @@ def create_festival(
     response_model=FestivalResponse,
     responses={404: {"description": "Festival introuvable"}},
 )
-def get_festival(festival_id: int, use_case: Annotated[GetFestivalUseCase, Depends(get_festival_use_case)]):
+def get_festival(festival_id: EntityId, use_case: Annotated[GetFestivalUseCase, Depends(get_festival_use_case)]):
     try:
         festival = use_case.execute(festival_id)
     except FestivalNotFoundError as exc:

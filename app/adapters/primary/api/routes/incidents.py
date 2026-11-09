@@ -7,6 +7,7 @@ from app.composition import (
     list_incidents_use_case,
     resolve_incident_use_case,
 )
+from app.adapters.primary.api.schemas.common import EntityId
 from app.adapters.primary.api.schemas.incident_schemas import IncidentCreate, IncidentRead
 from app.application.ports.inbound import DeclareIncidentCommand, IDeclareIncidentPort
 from app.application.use_cases.operations.list_incidents import ListIncidentsUseCase
@@ -58,7 +59,7 @@ def create_incident(
 @router.get("", response_model=list[IncidentRead])
 def list_incidents(
     use_case: Annotated[ListIncidentsUseCase, Depends(list_incidents_use_case)],
-    concert_id: int | None = None,
+    concert_id: EntityId | None = None,
 ):
     return [_to_read_dto(incident) for incident in use_case.execute(concert_id=concert_id)]
 
@@ -69,7 +70,7 @@ def list_incidents(
     responses={400: {"description": "Incident déjà résolu"}, 404: {"description": "Incident introuvable"}},
 )
 def resolve_incident(
-    incident_id: int,
+    incident_id: EntityId,
     use_case: Annotated[ResolveIncidentUseCase, Depends(resolve_incident_use_case)],
 ):
     try:

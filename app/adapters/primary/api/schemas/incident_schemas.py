@@ -2,11 +2,12 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from app.adapters.primary.api.schemas.common import EntityId
 from app.adapters.primary.security.sanitizer import InputSanitizer
 
 
 class IncidentCreate(BaseModel):
-    concert_id: int
+    concert_id: EntityId
     description: str = Field(min_length=3, max_length=2000)
     occurred_at: datetime | None = None
 

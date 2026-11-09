@@ -2,11 +2,13 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
+from app.adapters.primary.api.schemas.common import EntityId
+
 
 class ConcertCreate(BaseModel):
-    festival_id: int
-    artist_id: int
-    stage_id: int
+    festival_id: EntityId
+    artist_id: EntityId
+    stage_id: EntityId
     start_time: datetime
     end_time: datetime
 
