@@ -1,6 +1,6 @@
-# Stratégie de Tests & Choix d'Architecture — FestiPlan
+# Stratégie de Tests & Pyramide Globale — FestiPlan
 
-Ce document détaille la démarche de test mise en place dans le cadre de la refactorisation hexagonale du pôle **Programmation / Scheduling (Développeur 1)**, en réponse aux exigences de l'Étape 6 du sujet ("Mettre en place une stratégie de tests").
+Ce document détaille la démarche de test exhaustive mise en place dans le cadre de la refactorisation hexagonale unifiée des trois pôles : **Développeur 1 (Planification)**, **Développeur 2 (Logistique & Référentiel)** et **Développeur 3 (Opérations & Publication)**, en réponse aux exigences de l'Étape 6 du sujet ("Mettre en place une stratégie de tests").
 
 ---
 
@@ -11,115 +11,107 @@ Dans le dépôt initial ("legacy"), la logique métier était fortement couplée
 Notre stratégie poursuit 4 objectifs clés :
 1. **Prouver la non-régression :** valider formellement la correction des défauts 1, 2 et 3 décrits dans le sujet.
 2. **Tester le domaine en isolation pure :** exécuter la totalité des règles métier en une fraction de seconde, sans dépendance externe (ni SQLite, ni réseau, ni FastAPI).
-3. **Valider les interactions des cas d'usage :** vérifier l'orchestration des ports et des entités via des doubles de tests (`InMemoryRepository`).
-4. **Garantir l'intégrité de bout en bout :** s'assurer que les routes HTTP et les adaptateurs SQLAlchemy fonctionnent de concert avec le modèle de base de données.
+3. **Valider les interactions des cas d'usage :** vérifier l'orchestration des ports et des entités via des doubles de tests (`InMemoryRepository` et fakes de notification).
+4. **Garantir l'intégrité de bout en bout et la sécurité :** s'assurer que les routes HTTP, les adaptateurs SQLAlchemy et le middleware de sécurité OWASP fonctionnent harmonieusement.
 
 ---
 
 ## 2. La Pyramide de Tests adoptée
 
 ```text
-           ▲
-          / \     Tests de Sécurité & Hardening OWASP (10 tests)
-         /   \    - test_security_hardening.py (Injections SQL, XSS, Headers, DoS, Info Leak)
-        /─────\
-       /       \  Tests d'Intégration & E2E (API + SQLite) (20 tests)
-      /         \ - test_scheduling_integration.py (6 tests)
-     /           \- test_operations_integration.py (8 tests)
-    /             \ - Tests API initiaux legacy (6 tests)
-   /───────────────\
-  /                 \ Tests Applicatifs des Cas d'Usage (25 tests)
- /                   \- Scheduling: reschedule (7 tests), schedule (5 tests)
-/                     \- Operations: publish (7 tests), incidents (6 tests)
-/───────────────────────\ Repositories In-Memory & fakes de notification
-|                       | Tests Unitaires Purs du Domaine (28 tests)
-|                       | - Scheduling: TimeSlot (12 tests), Concert (8 tests)
-|                       | - Operations: Incident R10 (8 tests)
-|                       | - 100% Python pur (dataclasses, 0 I/O)
+               ▲
+              / \     Tests de Sécurité & Hardening OWASP (10 tests)
+             /   \    - test_security_hardening.py (Injections SQL, XSS, Headers, DoS, Info Leak)
+            /─────\
+           /       \  Tests d'Intégration & E2E (API + SQLite) (44 tests)
+          /         \ - test_scheduling_integration.py & test_scheduling_regressions.py (18 tests)
+         /           \- test_operations_integration.py (8 tests)
+        /             \- test_logistics_api.py & test_logistics_sql_repositories.py (15 tests)
+       /               \- Tests API legacy initiaux (6 tests)
+      /─────────────────\
+     /                   \ Tests Applicatifs des Cas d'Usage (48 tests)
+    /                     \- Scheduling: reschedule, schedule, catalog & rules (30 tests)
+   /                       \- Operations: publish & incidents (13 tests)
+  /                         \- Logistics: festival, artist & stage use cases (12 tests)
+ /───────────────────────────\ Repositories In-Memory & doubles de tests
+|                             | Tests Unitaires Purs du Domaine (57 tests)
+|                             | - Scheduling: TimeSlot, Concert, SchedulingPolicy (38 tests)
+|                             | - Logistics: Stage (R9, R5), Festival, EquipmentSet, Period (21 tests)
+|                             | - Operations: Incident (R10) (8 tests)
+|                             | - 100% Python pur (dataclasses, 0 I/O)
 ```
 
-**Bilan d'exécution :** **83 tests automatisés exécutés en ~1.7 seconde (100% au vert)**.
-
-
+**Bilan d'exécution global :** **169 tests automatisés exécutés en ~3.8 secondes (100% au vert)**.
 
 ---
 
-## 3. Cartographie des Tests (Lesquels ?)
+## 3. Cartographie Détaillée des Tests
 
-### A. Tests Unitaires du Domaine (20 tests) — `tests/unit/scheduling/`
+### A. Tests Unitaires du Domaine (57 tests)
+* **Scheduling (`tests/unit/scheduling/`) :**
+  - `test_time_slot.py` (12 tests) : bornes chronologiques (**R1**), durée, intersection temporelle (`overlaps`), inclusion (**R6**).
+  - `test_concert.py` (8 tests) : conflits de scène (**R2**), conflits d'artiste (**R3**), cycle de vie d'annulation.
+  - `test_scheduling_policy.py` (18 tests) : vérification centralisée des règles de programmation (**R2, R3, R4, R5, R6, R7**).
+* **Logistics (`tests/unit/logistics/`) :**
+  - `test_stage.py` (7 tests) : validation de capacité strictement positive (**R9**), appartenance au festival (**R4**), adéquation du matériel (**R5**).
+  - `test_equipment_set.py` (6 tests) : calcul ensembliste immuable (`frozenset`), inclusion (`covers`), matériel manquant (`missing`).
+  - `test_festival_period.py` (2 tests) : invariant chronologique du festival (`start < end`).
+  - `test_festival.py` (3 tests) : statut et cycle de publication.
+* **Operations (`tests/unit/operations/`) :**
+  - `test_incident.py` (8 tests) : invariant de description non vide (**R10**), horodatage, cycle de résolution.
 
-| Fichier | Test | Règle / Invariant validé |
-| :--- | :--- | :--- |
-| `test_time_slot.py` | `test_valid_time_slot_creation` | Création nominale d'un créneau horaire et calcul de durée. |
-| `test_time_slot.py` | `test_time_slot_end_before_start_raises_error` | **R1 :** rejet si `end < start` (`InvalidTimeSlotError`). |
-| `test_time_slot.py` | `test_time_slot_end_equal_to_start_raises_error` | **R1 :** rejet si `end == start` (durée nulle interdite). |
-| `test_time_slot.py` | `test_time_slot_overlaps` (8 cas paramétrés) | Algorithme de chevauchement strict (inclus, partiel, contigu non-chevauchant). |
-| `test_time_slot.py` | `test_time_slot_is_within` | **R6 :** vérification de l'inclusion dans les dates du festival. |
-| `test_concert.py` | `test_concert_creation_and_reschedule` | Déplacement nominal d'un concert et émission de l'événement de domaine. |
-| `test_concert.py` | `test_cannot_reschedule_cancelled_concert` | Interdiction de déplacer un concert déjà annulé. |
-| `test_concert.py` | `test_cancel_concert` | Transition d'état vers `cancelled`. |
-| `test_concert.py` | `test_conflict_on_same_stage_raises_stage_occupied_error` | **R2 :** détection de conflit sur la même scène (`StageOccupiedError`). |
-| `test_concert.py` | `test_conflict_with_same_artist_raises_artist_already_booked_error` | **R3 :** détection de conflit pour le même artiste (`ArtistAlreadyBookedError`). |
-| `test_concert.py` | `test_no_conflict_when_different_stages_and_artists` | Deux concerts simultanés sur scènes différentes avec artistes différents sont acceptés. |
-| `test_concert.py` | `test_no_conflict_with_self` | Un concert ne crée pas de faux conflit avec lui-même lors d'un déplacement. |
-| `test_concert.py` | `test_no_conflict_if_one_is_cancelled` | Un concert annulé ne bloque pas la scène ni l'artiste. |
+### B. Tests Applicatifs des Cas d'Usage (48 tests)
+* **Scheduling :**
+  - `test_reschedule_use_case.py` (7 tests) : cas nominal, détection de conflits (**Défaut 1**), résilience à la panne de notification (**Défaut 2**), verrouillage si festival publié (**Défaut 3 & R7**).
+  - `test_schedule_use_case.py` (5 tests) : programmation initiale et gestion d'erreurs.
+  - `test_scheduling_use_cases_rules.py` (11 tests) : règles métier combinées.
+* **Operations :**
+  - `test_publish_festival_use_case.py` (7 tests) : intégrité complète du planning avant publication (**R8**), résilience notification (**Défaut 2**).
+  - `test_incident_use_cases.py` (6 tests) : déclaration, résolution et consultation d'incidents.
+* **Logistics :**
+  - `test_festival_use_cases.py` (5 tests) : création et consultation de festivals.
+  - `test_stage_use_cases.py` (4 tests) : création de scène avec contrôle festival (**R4**) et capacité (**R9**).
+  - `test_artist_use_cases.py` (3 tests) : création et listage des artistes.
 
-### B. Tests Applicatifs des Cas d'Usage (12 tests) — `tests/unit/scheduling/`
+### C. Tests d'Intégration & E2E (44 tests)
+* **Scheduling & Regressions :**
+  - `test_scheduling_integration.py` (6 tests) : cycle complet HTTP FastAPI -> SQLite -> Notification.
+  - `test_scheduling_regressions.py` (12 tests) : validation stricte des scénarios du sujet.
+* **Operations :**
+  - `test_operations_integration.py` (8 tests) : publication et incidents via l'API.
+* **Logistics :**
+  - `test_logistics_api.py` (10 tests) : endpoints `/festivals`, `/artists`, `/stages` et protection XSS.
+  - `test_logistics_sql_repositories.py` (5 tests) : validation du mapping ORM et conversion CSV <-> `EquipmentSet`.
+* **Legacy API :** 6 tests historiques validant la compatibilité ascendante.
 
-| Fichier | Test | Défaut / Cas d'usage validé |
-| :--- | :--- | :--- |
-| `test_reschedule_use_case.py` | `test_reschedule_success` | Déplacement nominal, persistance et déclenchement de notification. |
-| `test_reschedule_use_case.py` | `test_defect_1_stage_conflict_refused` | **Défaut 1 :** refus du déplacement si la scène est occupée. |
-| `test_reschedule_use_case.py` | `test_defect_1_artist_conflict_refused` | **Défaut 1 :** refus du déplacement si l'artiste est déjà programmé. |
-| `test_reschedule_use_case.py` | `test_defect_2_notification_failure_does_not_break_persistence` | **Défaut 2 :** une panne du service d'email n'annule pas la persistance et ne crash pas l'application. |
-| `test_reschedule_use_case.py` | `test_defect_3_cannot_reschedule_published_festival` | **Défaut 3 & R7 :** refus de modification ordinaire si festival publié. |
-| `test_reschedule_use_case.py` | `test_reschedule_outside_festival_dates_refused` | **R6 :** refus si le nouveau créneau sort des dates du festival. |
-| `test_reschedule_use_case.py` | `test_reschedule_nonexistent_concert_raises_not_found` | Gestion d'un identifiant de concert inconnu (`ConcertNotFoundError`). |
-| `test_schedule_use_case.py` | `test_schedule_concert_success` | Cas nominal de programmation d'un concert. |
-| `test_schedule_use_case.py` | `test_schedule_concert_conflict_raises_stage_occupied` | Rejet à la création si scène occupée. |
-| `test_schedule_use_case.py` | `test_cancel_concert` | Annulation d'un concert existant. |
-| `test_schedule_use_case.py` | `test_cancel_nonexistent_concert` | Annulation d'un concert inexistant. |
-| `test_schedule_use_case.py` | `test_get_festival_schedule` | Tri chronologique du planning par heure de début. |
-
-### C. Tests d'Intégration de Bout en Bout (6 tests) — `tests/integration/`
-
-| Fichier | Test | Scénario d'intégration validé |
-| :--- | :--- | :--- |
-| `test_scheduling_integration.py` | `test_integration_create_and_reschedule_concert` | Chaîne complète HTTP `POST /concerts` -> `PATCH /concerts/{id}/reschedule` -> `GET /concerts/{id}` avec persistance SQLite. |
-| `test_scheduling_integration.py` | `test_integration_defect_1_stage_overlap_rejected` | **Défaut 1 (HTTP) :** validation que l'API renvoie un statut HTTP 400 Bad Request avec le message de conflit de scène. |
-| `test_scheduling_integration.py` | `test_integration_defect_1_artist_overlap_rejected` | **Défaut 1 (HTTP) :** validation que l'API renvoie un statut HTTP 400 si l'artiste est en double programmation. |
-| `test_scheduling_integration.py` | `test_integration_defect_2_notification_failure_does_not_crash_http` | **Défaut 2 (HTTP) :** avec `FESTIPLAN_FAIL_NOTIFICATIONS=true`, l'API renvoie HTTP 200 (au lieu de 500) et la base de données est correctement mise à jour. |
-| `test_scheduling_integration.py` | `test_integration_defect_3_published_festival_locked` | **Défaut 3 (HTTP) :** après `POST /festivals/{id}/publish`, tout `PATCH /reschedule` est rejeté en HTTP 400. |
-| `test_scheduling_integration.py` | `test_integration_cancel_concert` | Annulation via HTTP `POST /concerts/{id}/cancel` et vérification du statut en base. |
+### D. Tests de Cybersécurité & Hardening OWASP (10 tests)
+* `test_security_headers_present_on_endpoints` : présence des en-têtes OWASP (`nosniff`, `DENY`, CSP).
+* `test_sqli_in_query_parameters_fails_safe` : immunité aux injections SQL.
+* `test_xss_payload_in_incident_description_sanitized` : assainissement automatique du payload malveillant.
+* `test_information_disclosure_stack_trace_masked` : masquage des erreurs 500 et des chemins système.
+* `test_dos_large_payload_rejected` : rejet immédiat des charges utiles excessives (**HTTP 422**).
 
 ---
 
 ## 4. Choix de Conception Justifiés
 
 ### A. Découplage In-Memory vs SQLAlchemy
-* **Le choix :** Nous avons développé deux implémentations du port `IConcertRepository` :
-  - `InMemoryConcertRepository` (stockage dans un dictionnaire Python en mémoire).
-  - `ConcertSqlRepository` (mapping SQLAlchemy avec la base relationnelle).
-* **Pourquoi ?**
-  - Les 32 tests unitaires s'exécutent en **moins de 0.3 seconde**.
-  - Si demain SQLite est remplacé par PostgreSQL ou MongoDB, le domaine et les tests applicatifs ne changent pas d'une seule ligne.
+* **Le choix :** Chaque pôle a développé une double implémentation de ses ports de persistance (`InMemory` et `SQL`).
+* **Bénéfice :**
+  - Les tests unitaires du domaine et applicatifs s'exécutent en **moins de 0.8 seconde**.
+  - Remplacement possible de la base sans modifier une seule ligne du domaine.
 
 ### B. Traitement du Défaut 2 (Notification en échec)
-* **Problème legacy :** `db.commit()` était suivi de `send_email()`. Si l'email échouait, une exception non gérée provoquait une réponse 500, laissant croire au client que la modification n'avait pas été faite, alors qu'elle était déjà en base.
-* **Choix retenu :** Le cas d'usage `RescheduleConcertUseCase` gère la notification comme un effet secondaire non bloquant. Si le sender de notification lève une exception, celle-ci est interceptée, consignée dans les logs d'avertissement, et le résultat `RescheduleConcertResult` indique `notification_sent=False`. L'API HTTP répond un code **200 OK** car l'opération métier principale a réussi.
-
-### C. Gestion des erreurs et codes HTTP
-* **Le choix :** Aucune exception technique SQLAlchemy ne remonte au contrôleur.
-* Les règles métier lèvent des sous-classes de `DomainException`.
-* Le contrôleur FastAPI intercepte `DomainException` et la traduit en `HTTPException(status_code=400, detail=str(exc))`, et `ConcertNotFoundError` en `HTTP 404`.
+* **Problème legacy :** `db.commit()` était suivi de `send_email()`. Si l'email échouait, une exception non gérée provoquait une réponse 500 post-persistance.
+* **Choix retenu :** Découplage via `INotificationSenderPort`. Si la notification échoue, l'incident est loggué sans interrompre la requête. L'API répond **HTTP 200 OK** car l'opération métier a été persistée avec succès.
 
 ---
 
-## 5. Bilan d'Exécution
+## 5. Bilan d'Exécution Global
 
 ```text
-======================== 44 passed, 1 warning in 0.82s ========================
+======================= 169 passed, 1 warning in 3.80s ========================
 ```
-* **44 tests exécutés avec succès** (32 unitaires + 6 intégration + 6 legacy).
-* **Temps total : 0.82 seconde.**
-* **Couverture des 3 défauts du sujet :** 100% couverte au niveau unitaire et au niveau intégration HTTP.
+* **169 tests exécutés avec succès** (100% au vert).
+* **Temps total : ~3.8 secondes.**
+* **Couverture des règles métier :** R1 à R10 et défauts 1 à 3 intégralement couverts.

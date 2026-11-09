@@ -21,11 +21,12 @@ L'objectif est double :
 ### Les Points Forts Remarquables
 * **Cœur de domaine 100% pur (DDD respecté) :** Les entités (`Concert`, `Incident`) et objets-valeurs (`TimeSlot`) sont totalement agnostiques de tout framework. Zéro dépendance à FastAPI, Pydantic ou SQLAlchemy dans `app/domain/`.
 * **Inversion de dépendance exemplaire (Ports & Adapters) :** L'application communique exclusivement avec des contrats abstraits (`typing.Protocol`), ce qui permet d'interchanger instantanément la persistance SQLite réelle avec des dépôts en mémoire.
-* **Pyramide de tests ultra-rapide (83 tests en ~1.7s) :**
-  * 28 tests unitaires de domaine purs (exécutés en quelques millisecondes, sans I/O).
-  * 25 tests unitaires applicatifs validant l'orchestration des cas d'usage.
-  * 20 tests d'intégration réelle avec FastAPI `TestClient` et base relationnelle.
+* **Pyramide de tests ultra-rapide (169 tests en ~3.8s) :**
+  * 57 tests unitaires de domaine purs (Planification, Logistique, Opérations).
+  * 48 tests unitaires applicatifs validant l'orchestration des cas d'usage avec repositories InMemory.
+  * 44 tests d'intégration réelle avec FastAPI `TestClient` et base relationnelle SQLite.
   * 10 tests automatisés de cybersécurité (Injections SQL, XSS, headers OWASP, anti-fuite d'erreurs).
+  * 10 tests transverses et de non-régression.
 * **Résolution éprouvée des 3 défauts initiaux :**
   * *Défaut 1 (Conflits de scène et d'artiste) :* Impossible de créer un chevauchement.
   * *Défaut 2 (Panne de notification) :* La persistance en base n'est plus compromise par une défaillance de messagerie réseau.

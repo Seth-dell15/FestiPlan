@@ -1,7 +1,7 @@
-# Livrables Finaux & Documentation Technique — FestiPlan
+# Note d'Architecture & Choix Techniques — Pôle Planification & Programmation (Développeur 1)
 
 **Projet :** FestiPlan — Refactorisation en Architecture Hexagonale & DDD  
-**Auteur :** Hugo Cabanes (Développeur 1 — Planning & Scheduling)  
+**Auteur du pôle :** Hugo Cabanes (Développeur 1 — Planning & Scheduling)  
 **Contexte :** Module Architecture Hexagonale — Ynov B3  
 **Références du sujet :** Documentation technique attendue (p. 13-14 du sujet de synthèse)
 

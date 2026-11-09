@@ -212,3 +212,4 @@ La cible hexagonale mise en place :
 2. **Ports abstraits :** `IConcertRepository`, `IFestivalQueryPort`, `INotificationSenderPort`.
 3. **Cas d'usage applicatifs :** `RescheduleConcertUseCase` et `PublishFestivalUseCase` qui orchestrant les règles avant persistance et isolent les effets de bord (notifications tolérantes aux pannes).
 4. **Adaptateurs interchangeables :** `ConcertSqlRepository` et `InMemoryConcertRepository`.
+

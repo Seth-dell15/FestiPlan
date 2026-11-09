@@ -74,7 +74,7 @@ uvicorn app.main:app --reload
 
 ## 4. Exécution des Tests
 
-Le projet intègre une suite complète de **83 tests automatisés** (unitaires purs, applicatifs, intégration réelle et sécurité OWASP) exécutables en moins de 2 secondes :
+Le projet intègre une suite complète de **169 tests automatisés** (unitaires purs, applicatifs, intégration réelle avec SQLite et sécurité OWASP) exécutables en ~3.8 secondes :
 
 ```bash
 # Exécution de toute la suite de tests
@@ -152,9 +152,10 @@ Tous les livrables d'ingénierie logicielle sont regroupés dans le dossier uniq
 * [Livrable Intermédiaire Étape 2 : Modélisation Métier DDD](docs/livrable_intermediaire_step_2.md)
 * [Livrable Étape 6 : Stratégie de Tests & Pyramide](docs/strategie_de_tests.md)
 * [Livrables Finaux (Pôle Développeur 1) : Diagrammes UML & Note d'Architecture Planning](docs/livrables_finaux.md)
+* [Livrables Finaux (Pôle Développeur 2) : Diagrammes UML & Note d'Architecture Logistique](docs/livrables_dev2_logistique.md)
 * [Livrables Finaux (Pôle Développeur 3) : Diagrammes UML & Note d'Architecture Opérations](docs/livrables_dev3_operations.md)
 * [Dossier d'Ingénierie Cybersécurité & Hardening OWASP](docs/cybersecurite_hardening.md)
-* [Matrice de Traçabilité des Règles Métier](docs/regles_metier.md)
+* [Matrice de Traçabilité des Règles Métier & Défauts](docs/regles_metier.md)
 * [Rétrospective, Analyse Critique & Guide des Bonnes Pratiques pour Futurs Projets](docs/bilan_critique_et_guide_bonnes_pratiques.md)
 
 
